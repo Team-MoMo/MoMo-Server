@@ -66,27 +66,23 @@ const crypto = {
   refresh: (user: User) => {
     // 토큰 재발급
     const payload = {
-      idx: user.id,
+      userId: user.id,
     };
     return jwt.sign(payload, process.env.TOKEN_SECRET_KEY, options);
   },
-  checkLogin: async (req: Request, res: Response, next: NextFunction) => {
-    const { token } = req.headers;
+  isLoggedIn: async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization;
 
     if (!token) {
-      return res.json(authUtil.successFalse(statusCode.BAD_REQUEST, responseMessage.EMPTY_TOKEN));
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(responseMessage.EMPTY_TOKEN));
     }
     const user = crypto.verify(token);
 
     if (user === -3) {
-      return res.json(
-        authUtil.successFalse(statusCode.UNAUTHORIZED, responseMessage.EXPIRED_TOKEN)
-      );
+      return res.status(statusCode.UNAUTHORIZED).json(authUtil.successFalse(responseMessage.EXPIRED_TOKEN));
     }
     if (user === -2) {
-      return res.json(
-        authUtil.successFalse(statusCode.UNAUTHORIZED, responseMessage.INVALID_TOKEN)
-      );
+      return res.status(statusCode.UNAUTHORIZED).json(authUtil.successFalse(responseMessage.INVALID_TOKEN));
     }
     req.decoded = user;
     next();
