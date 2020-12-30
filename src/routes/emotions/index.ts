@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { emotions_controller } from '../../controllers';
-var router = express.Router();
+import { emotionsController } from '../../controllers';
+const router = express.Router();
 
-router.get('/', emotions_controller.readAll);
+router.get('/', emotionsController.readAll);
 
 export default router;

@@ -1,11 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { diaries_controller } from '../../controllers';
-var router = express.Router();
+import { diariesController } from '../../controllers';
+const router = express.Router();
 
-router.get('/', diaries_controller.readAll);
-router.get('/:id', diaries_controller.readOne);
-router.post('/', diaries_controller.create);
-router.put('/:id', diaries_controller.updateOne);
-router.delete('/:id', diaries_controller.deleteOne);
+router.get('/', diariesController.readAll);
+router.get('/:id', diariesController.readOne);
+router.post('/', diariesController.create);
+router.put('/:id', diariesController.updateOne);
+router.delete('/:id', diariesController.deleteOne);
 
 export default router;

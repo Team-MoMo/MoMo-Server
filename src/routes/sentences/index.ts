@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { sentences_controller } from '../../controllers';
-var router = express.Router();
+import { sentencesController } from '../../controllers';
+const router = express.Router();
 
-router.get('/', sentences_controller.readAll);
+router.get('/', sentencesController.readAll);
 
 export default router;

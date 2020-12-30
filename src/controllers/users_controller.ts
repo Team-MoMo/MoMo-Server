@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import util from '../utils/authUtil';
 import resMessage from '../utils/resMessage';
 import express, { Request, Response, NextFunction, Send } from 'express';
-import { users_service } from '../services';
+import { usersService } from '../services';
 
 export const signup = async (req: Request, res: Response) => {
   const {} = req.body;
@@ -34,7 +34,7 @@ export const signin = async (req: Request, res: Response) => {
 
 export const readAll = async (req: Request, res: Response) => {
   try {
-    await users_service.readAll(); //라우팅 테스트용
+    await usersService.readAll(); //라우팅 테스트용
     res.send('result'); //라우팅 테스트용
   } catch (err) {}
 };

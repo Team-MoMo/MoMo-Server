@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
-var router = express.Router();
 import users from './users/index';
 import diaries from './diaries/index';
-import sentences from './sentences';
-import emotions from './emotions';
+import sentences from './sentences/index';
+import emotions from './emotions/index';
+const router = express.Router();
 
 router.use('/users', users);
 router.use('/diaries', diaries);
