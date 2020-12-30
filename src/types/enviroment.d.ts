@@ -1,10 +1,9 @@
+// import { User } from '../models/Users';
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      // GITHUB_AUTH_TOKEN: string;
       NODE_ENV: 'development' | 'production';
-      // PORT?: string;
-      // PWD: string;
       TOKEN_SECRET_KEY: string;
       // DATABASE
       DATABASE_NAME: string;
@@ -12,6 +11,11 @@ declare global {
       DATABASE_DIALECT: string;
       DATABASE_USERNAME: string;
       DATABASE_PASSWORD: string;
+    }
+  }
+  namespace Express {
+    interface Request {
+      decoded?: string;
     }
   }
 }

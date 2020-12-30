@@ -1,6 +1,11 @@
+import createError from 'http-errors';
+import { Request, Response, NextFunction } from 'express';
+
 interface Error {
   syscall: string;
   code: string;
+  message: string;
+  status: number;
 }
 
 export function normalizePort(val: string): any {
@@ -11,6 +16,20 @@ export function normalizePort(val: string): any {
 
   return false;
 }
+
+export const handle404Error = (req: Request, res: Response, next: NextFunction) => {
+  next(createError(404));
+};
+
+export const handleError = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+};
 
 export function onError(port: string, error: Error) {
   if (error.syscall !== 'listen') {

@@ -1,4 +1,3 @@
-import createError from 'http-errors';
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
@@ -8,7 +7,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import indexRouter from './routes/index';
-import { normalizePort } from './middleWares/index';
+import { normalizePort, handle404Error, handleError } from './middleWares/index';
 
 const app: express.Application = express();
 
@@ -30,19 +29,9 @@ app.use(bodyParser.json());
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use((req: Request, res: Response, next: NextFunction) => {
-  next(createError(404));
-});
+app.use(handle404Error);
 
 // error handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use(handleError);
 
 export default app;
