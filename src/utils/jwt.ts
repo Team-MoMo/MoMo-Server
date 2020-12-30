@@ -89,4 +89,4 @@ const crypto = {
   },
 };
 
-module.exports = crypto;
+export default crypto;
