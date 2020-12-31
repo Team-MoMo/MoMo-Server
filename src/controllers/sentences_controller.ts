@@ -1,10 +1,13 @@
-import util from '../utils/authUtil';
+import { statusCode, authUtil } from '../utils';
 import resMessage from '../utils/resMessage';
-//import { Sentences } from '../models';
 import express, { Request, Response, NextFunction, Send } from 'express';
 import { sentencesService } from '../services';
 
 export const readAll = async (req: Request, res: Response) => {
   try {
-  } catch (err) {}
+    const sentences = await sentencesService.readAll();
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_ALL_FAIL('문장'), sentences));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_ALL_FAIL('문장')));
+  }
 };

@@ -1,6 +1,10 @@
-// import { Sentences } from '../models';
+import model from '../models';
 
 export const readAll = async () => {
   try {
-  } catch (err) {}
+    const sentences = await model.Sentence.findAll();
+    return sentences;
+  } catch (err) {
+    throw err;
+  }
 };
