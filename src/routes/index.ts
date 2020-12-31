@@ -10,7 +10,7 @@ router.use('/diaries', diaries);
 router.use('/sentences', sentences);
 router.use('/emotions', emotions);
 
-/* GET home page. */
+// health check API
 router.get('/', function (req: Request, res: Response, next: NextFunction) {
   return res.json({ body: { data: 'MoMo Server' } });
 });
