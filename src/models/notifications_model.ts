@@ -28,7 +28,7 @@ Notification.init(
       primaryKey: true,
     },
     deviceToken: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     userId: {

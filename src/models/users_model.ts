@@ -43,20 +43,20 @@ User.init(
       primaryKey: true,
     },
     email: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING,
       unique: true,
       allowNull: false,
     },
     name: {
-      type: DataTypes.STRING(20),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     password: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     passwordSalt: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     isAlarmSet: {

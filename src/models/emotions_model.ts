@@ -34,7 +34,7 @@ Emotion.init(
       primaryKey: true,
     },
     name: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
