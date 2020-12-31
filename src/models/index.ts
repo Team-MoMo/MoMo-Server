@@ -6,11 +6,11 @@ export const sequelize = new Sequelize(database.database, database.username, dat
   dialect: 'mysql',
 });
 
-import User from './user';
-import Diary from './diary';
-import Emotion from './emotion';
-import Sentence from './sentence';
-import Notification from './notification';
+import User from './users_model';
+import Diary from './diaries_model';
+import Emotion from './emotions_model';
+import Sentence from './sentences_model';
+import Notification from './notifications_model';
 
 User.hasMany(Diary, {
   sourceKey: 'id',
