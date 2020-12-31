@@ -1,5 +1,5 @@
 import { statusCode, authUtil, resMessage } from '../utils';
-import express, { Request, Response, NextFunction, Send } from 'express';
+import { Request, Response } from 'express';
 import { emotionsService } from '../services';
 
 export const readAll = async (req: Request, res: Response) => {
