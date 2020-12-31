@@ -1,5 +1,4 @@
-import { statusCode, authUtil } from '../utils';
-import resMessage from '../utils/resMessage';
+import { statusCode, authUtil, resMessage } from '../utils';
 import express, { Request, Response, NextFunction, Send } from 'express';
 import { sentencesService } from '../services';
 
