@@ -14,6 +14,18 @@ const app: express.Application = express();
 // use env_values
 dotenv.config();
 
+const { sequelize } = require('./models');
+sequelize
+  .sync({
+    alter: false,
+  })
+  .then(() => {
+    console.log('Sequelize Sync Success');
+  })
+  .catch((error: any) => {
+    console.error(error);
+  });
+
 app.set('port', normalizePort(process.env.PORT || '3000'));
 app.use(cors());
 app.use(process.env.NODE_ENV === 'production' ? logger('combined') : logger('dev'));
