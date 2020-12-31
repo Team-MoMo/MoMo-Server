@@ -1,8 +1,8 @@
 import { Model, DataTypes, Association, Optional } from 'sequelize';
-import Diary from './diary';
+import Diary from './diaries_model';
 
 import { sequelize } from './index';
-import Notification from './notification';
+import Notification from './notifications_model';
 
 interface UserAttributes {
   id: number;
@@ -38,7 +38,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 User.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },

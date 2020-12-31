@@ -1,7 +1,7 @@
 import { Model, DataTypes, Association, Optional } from 'sequelize';
 
 import { sequelize } from './index';
-import Diary from './diary';
+import Diary from './diaries_model';
 
 interface SentenceAttributes {
   id: number;
@@ -13,9 +13,7 @@ interface SentenceAttributes {
 
 interface SentenceCreationAttributes extends Optional<SentenceAttributes, 'id'> {}
 
-class Sentence
-  extends Model<SentenceAttributes, SentenceCreationAttributes>
-  implements SentenceAttributes {
+class Sentence extends Model<SentenceAttributes, SentenceCreationAttributes> implements SentenceAttributes {
   public id!: number;
   public contents!: string;
   public writer!: string;
@@ -33,7 +31,7 @@ class Sentence
 Sentence.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
@@ -50,7 +48,7 @@ Sentence.init(
       allowNull: false,
     },
     emotionId: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },

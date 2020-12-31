@@ -1,7 +1,7 @@
 import { Model, DataTypes, HasManyGetAssociationsMixin, Association, Optional } from 'sequelize';
 import { sequelize } from './index';
-import Sentence from './sentence';
-import Diary from './diary';
+import Sentence from './sentences_model';
+import Diary from './diaries_model';
 
 interface EmotionAttributes {
   id: number;
@@ -10,9 +10,7 @@ interface EmotionAttributes {
 
 interface EmotionCreationAttributes extends Optional<EmotionAttributes, 'id'> {}
 
-class Emotion
-  extends Model<EmotionAttributes, EmotionCreationAttributes>
-  implements EmotionAttributes {
+class Emotion extends Model<EmotionAttributes, EmotionCreationAttributes> implements EmotionAttributes {
   public id!: number;
   public name!: string;
 
@@ -31,7 +29,7 @@ class Emotion
 Emotion.init(
   {
     id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
