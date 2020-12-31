@@ -1,8 +1,8 @@
-import Emotion from '../models';
+import model from '../models';
 
 export const readAll = async () => {
   try {
-    const emotions = await Emotion.Emotion.findAll();
+    const emotions = await model.Emotion.findAll();
     return emotions;
   } catch (err) {
     throw err;
