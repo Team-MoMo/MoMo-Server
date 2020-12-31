@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import randToken from 'rand-token';
-import authUtil from './authUtil';
+import { authUtil } from './authUtil';
 import responseMessage from './resMessage';
 import statusCode from './statusCode';
 import { Response, Request, NextFunction } from 'express';

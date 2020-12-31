@@ -1,4 +1,5 @@
 export default {
+  HEALTH_CHECK: 'health check',
   NULL_VALUE: '필요한 값이 없습니다.',
   OUT_OF_VALUE: '파라미터 값이 잘못 되었습니다.',
   BODY_VALUE_ERROR: 'Body 타입이 잘못 되었습니다.',

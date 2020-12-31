@@ -16,4 +16,5 @@ const authUtil: AuthUtil = {
     };
   },
 };
+
 export default authUtil;
