@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-// import { User } from '../models';
+import model from '../models';
 
 export const signup = async () => {
   try {
@@ -23,13 +23,24 @@ export const signin = async () => {
 
 export const readAll = async () => {
   try {
-    console.log('success'); //라우팅 테스트용
-  } catch (err) {}
+    const users = await model.User.findAll();
+    return users;
+  } catch (err) {
+    throw err;
+  }
 };
 
-export const readOne = async () => {
+export const readOne = async (id: any) => {
   try {
-  } catch (err) {}
+    const user = await model.User.findOne({
+      where: {
+        id,
+      },
+    });
+    return user;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const readOneByEmail = async () => {
@@ -37,17 +48,101 @@ export const readOneByEmail = async () => {
   } catch (err) {}
 };
 
-export const updateInfo = async () => {
-  try {
-  } catch (err) {}
+export const updateInfo = async (id: any, name: any, alarmTime: any) => {
+  if (name == null) {
+    try {
+      const alarmTimeChange = await model.User.update(
+        {
+          alarmTime,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      return;
+    } catch (err) {
+      throw err;
+    }
+  } else if (alarmTime == null) {
+    try {
+      const nameChange = await model.User.update(
+        {
+          name,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      return;
+    } catch (err) {
+      throw err;
+    }
+  } else {
+    try {
+      const allUserInfoChange = await model.User.update(
+        {
+          name,
+          alarmTime,
+        },
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      return;
+    } catch (err) {
+      throw err;
+    }
+  }
 };
 
-export const updatePassword = async () => {
+export const updatePassword = async (id: any, password: any) => {
   try {
-  } catch (err) {}
+    const salt = crypto.randomBytes(64).toString('base64');
+    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64'); //회원가입 보고 확인하기
+    const passwordChange = await model.User.update(
+      {
+        password: hashedPassword,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+    return;
+  } catch (err) {
+    throw err;
+  }
 };
 
-export const deleteOne = async () => {
+export const deleteOne = async (id: any) => {
   try {
-  } catch (err) {}
+    const deleteDiary = await model.Diary.destroy({
+      where: {
+        id,
+      },
+    })
+      .then(async () => {
+        const deleteNotification = await model.Notification.destroy({
+          where: {
+            id,
+          },
+        });
+      })
+      .then(async () => {
+        const deleteUser = await model.User.destroy({
+          where: {
+            id,
+          },
+        });
+      });
+  } catch (err) {
+    throw err;
+  }
 };
