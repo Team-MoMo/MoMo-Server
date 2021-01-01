@@ -2,7 +2,7 @@
 
 declare global {
   namespace NodeJS {
-    interface ProcessEnv {
+    export interface ProcessEnv {
       NODE_ENV: 'development' | 'production';
       TOKEN_SECRET_KEY: string;
       // DATABASE
@@ -14,7 +14,7 @@ declare global {
     }
   }
   namespace Express {
-    interface Request {
+    export interface Request {
       decoded?: string | object;
     }
   }
