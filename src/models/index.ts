@@ -4,6 +4,11 @@ import database from '../configs/database';
 export const sequelize = new Sequelize(database.database, database.username, database.password, {
   host: database.host,
   dialect: 'mysql',
+  logging: false,
+  define: {
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci',
+  },
 });
 
 import User from './users_model';
@@ -33,7 +38,7 @@ Sentence.hasMany(Diary, {
 Emotion.hasMany(Sentence, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
-  as: 'senetences', // this determines the name in `associations`!
+  as: 'sentences', // this determines the name in `associations`!
 });
 
 Emotion.hasMany(Diary, {
