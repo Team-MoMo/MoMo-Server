@@ -10,8 +10,8 @@ interface UserAttributes {
   password: string;
   passwordSalt: string;
   name: string;
-  isAlarmSet: boolean;
-  alarmTime: Date | null;
+  isAlarmSet?: boolean;
+  alarmTime?: Date | null;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
