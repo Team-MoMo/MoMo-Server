@@ -13,6 +13,12 @@ class Emotion extends Model<EmotionAttributes> implements EmotionAttributes {
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
+<<<<<<< HEAD
+=======
+  getSentence!: HasManyGetAssociationsMixin<Sentence>;
+  public readonly sentences?: Sentence[];
+
+>>>>>>> Fix: 오타 수정
   static associations: {
     diaries: Association<Emotion, Diary>;
   };
