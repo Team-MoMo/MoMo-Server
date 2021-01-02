@@ -18,11 +18,14 @@ class Emotion extends Model<EmotionAttributes, EmotionCreationAttributes> implem
   readonly updatedAt!: Date;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   getSentence!: HasManyGetAssociationsMixin<Sentence>;
   public readonly sentences?: Sentence[];
 
 >>>>>>> Fix: 오타 수정
+=======
+>>>>>>> Style: 사용하지않는 코드 삭제
   static associations: {
     sentences: Association<Emotion, Sentence>;
     diaries: Association<Emotion, Diary>;
