@@ -1,6 +1,12 @@
-// import { Emotions } from '../models';
+import model from '../models';
 
 export const readAll = async () => {
   try {
-  } catch (err) {}
+    const emotions = await model.Emotion.findAll({
+      attributes: ['id', 'name'],
+    });
+    return emotions;
+  } catch (err) {
+    throw err;
+  }
 };
