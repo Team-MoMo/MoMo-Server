@@ -14,10 +14,16 @@ export const readAllNotInUserSentences = async (emotionId: any, userSentences: n
         emotionId,
         id: { [Op.notIn]: userSentences },
       },
-      order: [sequelize.fn('RAND')],
+      order: [sequelize.fn('RAND')], //order 순서.. order를 랜덤으로 돌려서 3개를 뽑고, 그 뽑은거를 다시 오름차순으로 정렬하는 방법
       limit: 3,
     });
-    return sentences;
+    //정렬 다시보기
+    return sentences.sort((a, b) => {
+      if (a.id == b.id) {
+        return 0;
+      }
+      return a.id > b.id ? 1 : -1;
+    });
   } catch (err) {
     throw err;
   }
@@ -25,6 +31,8 @@ export const readAllNotInUserSentences = async (emotionId: any, userSentences: n
 
 export const readAllNInUserRecommendSentences = async (userRecommendSentenceIds: number[]) => {
   //readAllUsersRecommendSentences에서 조인해서 한번에 해결할 수 있도록 수정하기
+  //순서는 바껴도 되는지 기획한테 물어보기........
+  console.log('readAllInUserRecommendSentences');
   try {
     const sentences: Sentence[] = await model.Sentence.findAll({
       attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
@@ -48,7 +56,6 @@ export const readAllUsersRecommendSentences = async (emotionId: any, userId: any
     },
   });
   sentences.forEach((element) => {
-    // console.log(element.sentenceId);
     sentenceIds.push(element.sentenceId);
   });
 
@@ -68,7 +75,6 @@ export const readAllDiaries = async (emotionId: any, userId: any) => {
     },
   });
   userDiarySentences.forEach((element) => {
-    // console.log(element.sentenceId);
     userDiarySentenceIds.push(element.sentenceId);
   });
 
@@ -84,10 +90,6 @@ export const createUsersRecommendSentences = async (userId: number, recommendSen
     });
   });
   return;
-
-  // try {
-  //   for(const i: number = 0; i < usersRecommendSentences.length; i++) {
-  //     const createUsersRecommendSentences: object = await model.UsersRecommendedSentences.create()
-  //   }
-  //   }
 };
+
+//스케줄러 작업하기

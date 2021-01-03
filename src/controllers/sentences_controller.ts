@@ -12,6 +12,7 @@ export const readAll = async (req: Request, res: Response) => {
   } else {
     const userRecommendSentenceIds: number[] = await sentencesService.readAllUsersRecommendSentences(emotion, user);
     if (userRecommendSentenceIds.length > 0) {
+      console.log('userRecommendSentenceIds.length > 0');
       recommendSentences = await sentencesService.readAllNInUserRecommendSentences(userRecommendSentenceIds);
       return res
         .status(statusCode.OK)
