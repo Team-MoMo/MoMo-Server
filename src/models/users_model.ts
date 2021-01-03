@@ -1,6 +1,5 @@
 import { Model, DataTypes, Association, Optional } from 'sequelize';
 import Diary from './diaries_model';
-
 import { sequelize } from './index';
 import Notification from './notifications_model';
 
@@ -8,7 +7,7 @@ interface UserAttributes {
   id: number;
   email: string;
   password: string;
-  passwordSalt: string;
+  passwordSalt?: string;
   name: string;
   isAlarmSet?: boolean;
   alarmTime?: Date | null;
