@@ -9,6 +9,7 @@ interface DiaryAttributes {
   userId: number;
   sentenceId: number;
   emotionId: number;
+  createdAt: string;
 }
 
 interface DiaryCreationAttributes extends Optional<DiaryAttributes, 'id'> {}
@@ -22,7 +23,7 @@ class Diary extends Model<DiaryAttributes, DiaryCreationAttributes> implements D
   public sentenceId!: number;
   public emotionId!: number;
 
-  readonly createdAt!: Date;
+  readonly createdAt!: string;
   readonly updatedAt!: Date;
 }
 
@@ -55,6 +56,10 @@ Diary.init(
     },
     emotionId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
   },
