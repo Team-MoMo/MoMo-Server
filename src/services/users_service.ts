@@ -1,9 +1,25 @@
 import crypto from 'crypto';
-// import { User } from '../models';
+import db from '../models';
+import User from '../models/users_model';
 
-export const signup = async () => {
-  try {
-  } catch (err) {}
+export const signup = async (email: string, name: string, password: string) => {
+  const salt = crypto.randomBytes(64).toString('base64');
+  const hashedPassword = hashPassword(password, salt);
+  const user = await db.User.create({
+    email,
+    name,
+    password: hashedPassword,
+    passwordSalt: salt,
+  });
+  return user;
+};
+
+export const signin = (user: User, password: string) => {
+  const hashedPassword = hashPassword(password, user.passwordSalt);
+  if (hashedPassword != user.password) {
+    return false;
+  }
+  return true;
 };
 
 export const signupByApple = async () => {
@@ -16,9 +32,12 @@ export const signupByKakao = async () => {
   } catch (err) {}
 };
 
-export const signin = async () => {
+export const hashPassword = (password: string, salt: string) => {
   try {
-  } catch (err) {}
+    return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const readAll = async () => {
@@ -32,9 +51,11 @@ export const readOne = async () => {
   } catch (err) {}
 };
 
-export const readOneByEmail = async () => {
-  try {
-  } catch (err) {}
+export const readOneByEmail = async (email: string) => {
+  const user = await db.User.findOne({
+    where: { email },
+  });
+  return user;
 };
 
 export const updateInfo = async () => {
