@@ -8,7 +8,7 @@ router.post('/signup/kakao', usersController.signupByKakao);
 router.post('/signin', usersController.signin);
 router.get('/', usersController.readAll);
 router.get('/:id', usersController.readOne);
-router.put('/:id', usersController.updateInfo);
+router.put('/:id/alarm', usersController.updateAlarm);
 router.put('/:id/password', usersController.updatePassword);
 router.delete('/:id', usersController.deleteOne);
 

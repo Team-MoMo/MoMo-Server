@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { Sequelize } from 'sequelize/types';
 import model from '../models';
 
 export const signup = async () => {
@@ -48,28 +49,14 @@ export const readOneByEmail = async () => {
   } catch (err) {}
 };
 
-export const updateInfo = async (id: any, name: any, alarmTime: any) => {
-  if (name == null) {
+export const updateAlarm = async (id: any, alarmTime: Date) => {
+  console.log(alarmTime);
+  if (alarmTime) {
     try {
       const alarmTimeChange = await model.User.update(
         {
+          isAlarmSet: true,
           alarmTime,
-        },
-        {
-          where: {
-            id,
-          },
-        }
-      );
-      return;
-    } catch (err) {
-      throw err;
-    }
-  } else if (alarmTime == null) {
-    try {
-      const nameChange = await model.User.update(
-        {
-          name,
         },
         {
           where: {
@@ -83,10 +70,11 @@ export const updateInfo = async (id: any, name: any, alarmTime: any) => {
     }
   } else {
     try {
-      const allUserInfoChange = await model.User.update(
+      await model.User.update(
         {
-          name,
-          alarmTime,
+          isAlarmSet: false,
+          alarmTime: null,
+          //alarmTime null로 바꿔야할지말지 생각중(view 보고)
         },
         {
           where: {
@@ -123,26 +111,43 @@ export const updatePassword = async (id: any, password: any) => {
 
 export const deleteOne = async (id: any) => {
   try {
-    const deleteDiary = await model.Diary.destroy({
+    // const userDiaries = await model.Diary.destroy({
+    //   where: {
+    //     userId: id,
+    //   },
+    // });
+    // await model.Notification.destroy({
+    //   where: {
+    //     id,
+    //   },
+    // });
+    // await model.User.destroy({
+    //   where: {
+    //     id,
+    //   },
+    // });
+    // return;
+    await model.Diary.destroy({
       where: {
-        id,
+        userId: id,
       },
     })
       .then(async () => {
-        const deleteNotification = await model.Notification.destroy({
+        await model.Notification.destroy({
           where: {
-            id,
+            userId: id,
           },
         });
       })
       .then(async () => {
-        const deleteUser = await model.User.destroy({
+        await model.User.destroy({
           where: {
             id,
           },
         });
       });
   } catch (err) {
+    console.log('serviceError');
     throw err;
   }
 };

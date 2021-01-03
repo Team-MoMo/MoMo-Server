@@ -65,7 +65,7 @@ User.init(
       defaultValue: false,
     },
     alarmTime: {
-      type: DataTypes.DATE,
+      type: DataTypes.TIME,
       allowNull: true,
     },
   },
