@@ -13,7 +13,7 @@ router.use('/sentences', sentences);
 router.use('/emotions', emotions);
 
 // health check API
-router.get('/', function (req: Request, res: Response, next: NextFunction) {
+router.get('/', (req: Request, res: Response, next: NextFunction) => {
   return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.HEALTH_CHECK));
 });
 
