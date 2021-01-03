@@ -7,6 +7,8 @@ export default {
   DUPLICATE_VALUE_ERROR: '중복된 파라미터 값',
   SIGN_UP_SUCCESS: '회원가입 성공',
   SIGN_IN_SUCCESS: '로그인 성공',
+  SIGN_UP_FAIL: '회원가입 실패',
+  SIGN_IN_FAIL: '로그인 실패',
   POSSIBLE_ID: '사용 가능한 ID입니다.',
   DUPLICATE_ID: '사용 불가능한 ID입니다.',
   MISS_MATCH_USER_INFO: 'ID 또는 비밀번호가 일치하지 않습니다',
