@@ -111,41 +111,12 @@ export const updatePassword = async (id: any, password: any) => {
 
 export const deleteOne = async (id: any) => {
   try {
-    // const userDiaries = await model.Diary.destroy({
-    //   where: {
-    //     userId: id,
-    //   },
-    // });
-    // await model.Notification.destroy({
-    //   where: {
-    //     id,
-    //   },
-    // });
-    // await model.User.destroy({
-    //   where: {
-    //     id,
-    //   },
-    // });
-    // return;
-    await model.Diary.destroy({
+    await model.User.destroy({
       where: {
-        userId: id,
+        id,
       },
-    })
-      .then(async () => {
-        await model.Notification.destroy({
-          where: {
-            userId: id,
-          },
-        });
-      })
-      .then(async () => {
-        await model.User.destroy({
-          where: {
-            id,
-          },
-        });
-      });
+    });
+    return;
   } catch (err) {
     console.log('serviceError');
     throw err;
