@@ -1,8 +1,7 @@
 import util from '../utils/authUtil';
 import { jwt } from '../utils';
-import crypto from 'crypto';
 import resMessage from '../utils/resMessage';
-import express, { Request, Response, NextFunction, Send } from 'express';
+import { Request, Response } from 'express';
 import { usersService } from '../services';
 import { statusCode } from '../utils';
 
@@ -53,7 +52,7 @@ export const signin = async (req: Request, res: Response) => {
 
   try {
     const user = await usersService.readOneByEmail(email);
-    if (user == null) {
+    if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(util.successFalse(resMessage.MISS_MATCH_USER_INFO));
     }
 
