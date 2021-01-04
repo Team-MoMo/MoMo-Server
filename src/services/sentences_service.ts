@@ -2,34 +2,28 @@ import model from '../models';
 import sequelize, { Op } from 'sequelize';
 import dayjs from 'dayjs';
 import Diary from '../models/diaries_model';
-import { randomBytes } from 'crypto';
 import Sentence from '../models/sentences_model';
 import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 
 export const readAllNotInUserSentences = async (emotionId: any, userSentences: number[]) => {
-  try {
-    const sentences: Sentence[] = await model.Sentence.findAll({
-      attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
-      where: {
-        emotionId,
-        id: { [Op.notIn]: userSentences },
-      },
-      order: [sequelize.fn('RAND')], //order 순서.. order를 랜덤으로 돌려서 3개를 뽑고, 그 뽑은거를 다시 오름차순으로 정렬하는 방법
-      limit: 3,
-    });
-    //정렬 다시보기
-    return sentences.sort((a, b) => {
-      if (a.id == b.id) {
-        return 0;
-      }
-      return a.id > b.id ? 1 : -1;
-    });
-  } catch (err) {
-    throw err;
-  }
+  const sentences: Sentence[] = await model.Sentence.findAll({
+    attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
+    where: {
+      emotionId,
+      id: { [Op.notIn]: userSentences },
+    },
+    order: [sequelize.fn('RAND')],
+    limit: 3,
+  });
+  return sentences.sort((a, b) => {
+    if (a.id == b.id) {
+      return 0;
+    }
+    return a.id > b.id ? 1 : -1;
+  });
 };
 
-export const readAllInUserRecommendSentenceIds = async (userRecommendSentenceIds: number[]) => {
+export const readAllInUserRecommendSentences = async (userRecommendSentenceIds: number[]) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
     attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
     where: {
@@ -39,9 +33,10 @@ export const readAllInUserRecommendSentenceIds = async (userRecommendSentenceIds
   return sentences;
 };
 
-export const readAllUsersRecommendedSentences = async (emotionId: any, userId: any, date: dayjs.Dayjs) => {
-  const sentenceIds: number[] = [];
-  const sentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
+export const readAllUsersRecommendSentencesAfter6 = async (emotionId: any, userId: any, date: dayjs.Dayjs) => {
+  const userRecommendedsentenceIds: number[] = [];
+
+  const usersRecommendedSentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
     attributes: ['sentenceId'],
     where: {
       emotionId,
@@ -49,16 +44,33 @@ export const readAllUsersRecommendedSentences = async (emotionId: any, userId: a
       createdAt: { [Op.gte]: date },
     },
   });
-  sentences.forEach((element) => {
-    sentenceIds.push(element.sentenceId);
+  usersRecommendedSentences.forEach((element) => {
+    userRecommendedsentenceIds.push(element.sentenceId);
   });
 
-  return sentenceIds;
+  return userRecommendedsentenceIds;
 };
 
-export const readAllDiaries = async (emotionId: any, userId: any, before30Day: dayjs.Dayjs) => {
+export const readAllUsersRecommendSentences = async (emotionId: any, userId: any) => {
+  const userRecommendedsentenceIds: number[] = [];
+  const usersRecommendedSentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
+    attributes: ['sentenceId'],
+    where: {
+      emotionId,
+      userId,
+    },
+  });
+  usersRecommendedSentences.forEach((element) => {
+    userRecommendedsentenceIds.push(element.sentenceId);
+  });
+
+  return userRecommendedsentenceIds;
+};
+
+export const readAllDiaries = async (emotionId: any, userId: any) => {
   const userDiarySentenceIds: number[] = [];
 
+  const before30Day = dayjs(new Date()).subtract(30, 'day');
   const userDiarySentences: Diary[] = await model.Diary.findAll({
     attributes: [[sequelize.fn('DISTINCT', sequelize.col('sentenceId')), 'sentenceId']],
     where: {
@@ -74,16 +86,13 @@ export const readAllDiaries = async (emotionId: any, userId: any, before30Day: d
   return userDiarySentenceIds;
 };
 
-export const createUsersRecommendSentences = async (userId: any, recommendSentences: Sentence[]) => {
+export const createUsersRecommendSentences = async (userId: number, recommendSentences: Sentence[]) => {
   recommendSentences.forEach(async (element) => {
-    const create = await model.UsersRecommendedSentences.create({
+    await model.UsersRecommendedSentences.create({
       userId: userId,
       emotionId: element.emotionId,
       sentenceId: element.id,
-      createdAt: dayjs(new Date()).format('YYYY-MM-DD HH:mm'),
     });
   });
   return;
 };
-
-//스케줄러 작업하기

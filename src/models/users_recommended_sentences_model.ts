@@ -6,7 +6,7 @@ interface UsersRecommendedSentencesAttributes {
   userId: number;
   sentenceId: number;
   emotionId: number;
-  createdAt: string;
+  createdAt?: Date;
 }
 
 interface UsersRecommendedSentencesCreationAttributes extends Optional<UsersRecommendedSentencesAttributes, 'id'> {}
@@ -19,7 +19,7 @@ class UsersRecommendedSentences
   public sentenceId!: number;
   public emotionId!: number;
 
-  readonly createdAt!: string;
+  readonly createdAt!: Date;
   readonly updatedAt!: Date;
 }
 
