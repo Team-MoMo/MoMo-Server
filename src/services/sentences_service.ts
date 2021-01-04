@@ -29,30 +29,24 @@ export const readAllNotInUserSentences = async (emotionId: any, userSentences: n
   }
 };
 
-export const readAllNInUserRecommendSentences = async (userRecommendSentenceIds: number[]) => {
-  //readAllUsersRecommendSentences에서 조인해서 한번에 해결할 수 있도록 수정하기
-  //순서는 바껴도 되는지 기획한테 물어보기........
-  console.log('readAllInUserRecommendSentences');
-  try {
-    const sentences: Sentence[] = await model.Sentence.findAll({
-      attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
-      where: {
-        id: { [Op.in]: userRecommendSentenceIds },
-      },
-    });
-    return sentences;
-  } catch (err) {
-    throw err;
-  }
+export const readAllInUserRecommendSentenceIds = async (userRecommendSentenceIds: number[]) => {
+  const sentences: Sentence[] = await model.Sentence.findAll({
+    attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
+    where: {
+      id: { [Op.in]: userRecommendSentenceIds },
+    },
+  });
+  return sentences;
 };
 
-export const readAllUsersRecommendSentences = async (emotionId: any, userId: any) => {
+export const readAllUsersRecommendedSentences = async (emotionId: any, userId: any, date: dayjs.Dayjs) => {
   const sentenceIds: number[] = [];
   const sentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
     attributes: ['sentenceId'],
     where: {
       emotionId,
       userId,
+      createdAt: { [Op.gte]: date },
     },
   });
   sentences.forEach((element) => {
@@ -62,10 +56,9 @@ export const readAllUsersRecommendSentences = async (emotionId: any, userId: any
   return sentenceIds;
 };
 
-export const readAllDiaries = async (emotionId: any, userId: any) => {
+export const readAllDiaries = async (emotionId: any, userId: any, before30Day: dayjs.Dayjs) => {
   const userDiarySentenceIds: number[] = [];
 
-  const before30Day = dayjs(new Date()).subtract(30, 'day');
   const userDiarySentences: Diary[] = await model.Diary.findAll({
     attributes: [[sequelize.fn('DISTINCT', sequelize.col('sentenceId')), 'sentenceId']],
     where: {
@@ -81,12 +74,13 @@ export const readAllDiaries = async (emotionId: any, userId: any) => {
   return userDiarySentenceIds;
 };
 
-export const createUsersRecommendSentences = async (userId: number, recommendSentences: Sentence[]) => {
+export const createUsersRecommendSentences = async (userId: any, recommendSentences: Sentence[]) => {
   recommendSentences.forEach(async (element) => {
     const create = await model.UsersRecommendedSentences.create({
       userId: userId,
       emotionId: element.emotionId,
       sentenceId: element.id,
+      createdAt: dayjs(new Date()).format('YYYY-MM-DD HH:mm'),
     });
   });
   return;
