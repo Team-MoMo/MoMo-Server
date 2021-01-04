@@ -91,15 +91,15 @@ export const readOne = async (req: Request, res: Response) => {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
   try {
-    const userInfo = await usersService.readOne(id);
-    if (!userInfo) {
+    const user = await usersService.readOne(id);
+    if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
 
-    userInfo.password = '';
-    userInfo.passwordSalt = '';
-    userInfo.tempPassword = '';
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS('회원'), userInfo));
+    user.password = '';
+    user.passwordSalt = '';
+    user.tempPassword = '';
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS('회원'), user));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_FAIL('회원')));
   }
@@ -113,8 +113,8 @@ export const updateAlarm = async (req: Request, res: Response) => {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
   try {
-    const userInfo = await usersService.readOne(id);
-    if (!userInfo) {
+    const user = await usersService.readOne(id);
+    if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
 
@@ -140,11 +140,11 @@ export const checkPassword = async (req: Request, res: Response) => {
   }
 
   try {
-    const userInfo = await usersService.readOne(id);
-    if (!userInfo) {
+    const user = await usersService.readOne(id);
+    if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
-    const checkPasswordResult = await usersService.checkPassword(userInfo, password);
+    const checkPasswordResult = await usersService.checkPassword(user, password);
     if (!checkPasswordResult) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_PASSWORD));
     }
@@ -162,15 +162,16 @@ export const updatePassword = async (req: Request, res: Response) => {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
   try {
-    const userInfo = await usersService.readOne(id);
-    if (!userInfo) {
+    const user = await usersService.readOne(id);
+    if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
     await usersService.updatePassword(id, newPassword);
-    userInfo.password = '';
-    userInfo.passwordSalt = '';
-    userInfo.tempPassword = '';
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('비밀번호'), userInfo));
+    user.password = '';
+    user.passwordSalt = '';
+    user.tempPassword = '';
+
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('비밀번호'), user));
   } catch (err) {
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
@@ -184,15 +185,15 @@ export const deleteOne = async (req: Request, res: Response) => {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
   try {
-    const userInfo = await usersService.readOne(id);
-    if (!userInfo) {
+    const user = await usersService.readOne(id);
+    if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
-    await userInfo.destroy();
-    userInfo.password = '';
-    userInfo.passwordSalt = '';
-    userInfo.tempPassword = '';
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_DELETE_SUCCESS('회원'), userInfo));
+    await user.destroy();
+    user.password = '';
+    user.passwordSalt = '';
+    user.tempPassword = '';
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_DELETE_SUCCESS('회원'), user));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_DELETE_FAIL('회원')));
   }
