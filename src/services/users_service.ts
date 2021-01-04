@@ -4,7 +4,7 @@ import User from '../models/users_model';
 
 export const signup = async (email: string, name: string, password: string) => {
   const salt = crypto.randomBytes(64).toString('base64');
-  const hashedPassword = hashPassword(password, salt);
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
   const user = await model.User.create({
     email,
     name,
@@ -14,8 +14,12 @@ export const signup = async (email: string, name: string, password: string) => {
   return user;
 };
 
+(password: string, salt: string) => {
+  return;
+};
+
 export const signin = (user: User, password: string) => {
-  const hashedPassword = hashPassword(password, user.passwordSalt);
+  const hashedPassword = crypto.pbkdf2Sync(password, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
   if (hashedPassword != user.password) {
     return false;
   }
@@ -30,14 +34,6 @@ export const signupByApple = async () => {
 export const signupByKakao = async () => {
   try {
   } catch (err) {}
-};
-
-export const hashPassword = (password: string, salt: string) => {
-  try {
-    return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
-  } catch (err) {
-    throw err;
-  }
 };
 
 export const readAll = async () => {
@@ -55,7 +51,7 @@ export const readOne = async (id: number) => {
 };
 
 export const readOneByEmail = async (email: string) => {
-  const user = await db.User.findOne({
+  const user = await model.User.findOne({
     where: { email },
   });
   return user;
