@@ -1,31 +1,20 @@
-import { Model, DataTypes, HasManyGetAssociationsMixin, Association, Optional } from 'sequelize';
+import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from './index';
 import Sentence from './sentences_model';
 import Diary from './diaries_model';
 
 interface EmotionAttributes {
-  id: number;
-  name: string;
+  id?: number;
+  name?: string;
 }
 
-interface EmotionCreationAttributes extends Optional<EmotionAttributes, 'id'> {}
-
-class Emotion extends Model<EmotionAttributes, EmotionCreationAttributes> implements EmotionAttributes {
+class Emotion extends Model<EmotionAttributes> implements EmotionAttributes {
   public id!: number;
   public name!: string;
 
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-  getSentence!: HasManyGetAssociationsMixin<Sentence>;
-  public readonly sentences?: Sentence[];
-
->>>>>>> Fix: 오타 수정
-=======
->>>>>>> Style: 사용하지않는 코드 삭제
   static associations: {
     sentences: Association<Emotion, Sentence>;
     diaries: Association<Emotion, Diary>;

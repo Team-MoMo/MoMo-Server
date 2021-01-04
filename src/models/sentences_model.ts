@@ -1,19 +1,16 @@
-import { Model, DataTypes, Association, Optional } from 'sequelize';
-
+import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from './index';
 import Diary from './diaries_model';
 
 interface SentenceAttributes {
-  id: number;
+  id?: number;
   contents: string;
   writer: string;
   publisher: string;
   emotionId: number;
 }
 
-interface SentenceCreationAttributes extends Optional<SentenceAttributes, 'id'> {}
-
-class Sentence extends Model<SentenceAttributes, SentenceCreationAttributes> implements SentenceAttributes {
+class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
   public id!: number;
   public contents!: string;
   public writer!: string;
