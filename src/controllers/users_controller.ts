@@ -19,6 +19,7 @@ export const signup = async (req: Request, res: Response) => {
     const { token } = jwt.sign(newUser);
     newUser.password = '';
     newUser.passwordSalt = '';
+    newUser.tempPassword = '';
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.SIGN_UP_SUCCESS, { user: newUser, token }));
   } catch (err) {
@@ -61,6 +62,7 @@ export const signin = async (req: Request, res: Response) => {
     const { token } = jwt.sign(user);
     user.password = '';
     user.passwordSalt = '';
+    user.tempPassword = '';
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.SIGN_IN_SUCCESS, { user, token }));
   } catch (err) {
@@ -71,7 +73,13 @@ export const signin = async (req: Request, res: Response) => {
 export const readAll = async (req: Request, res: Response) => {
   try {
     const users = await usersService.readAll();
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('회원'), users));
+    const data = users.map((user) => {
+      user.password = '';
+      user.passwordSalt = '';
+      user.tempPassword = '';
+      return user;
+    });
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('회원'), data));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_ALL_FAIL('회원')));
   }
@@ -87,6 +95,10 @@ export const readOne = async (req: Request, res: Response) => {
     if (!userInfo) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
+
+    userInfo.password = '';
+    userInfo.passwordSalt = '';
+    userInfo.tempPassword = '';
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS('회원'), userInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_FAIL('회원')));
@@ -112,6 +124,7 @@ export const updateAlarm = async (req: Request, res: Response) => {
     } else {
       userAlarmInfo = await usersService.updateAlarmTime(id, isAlarmSet, alarmTime);
     }
+
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('알람'), userAlarmInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_UPDATE_FAIL('알람')));
@@ -156,6 +169,7 @@ export const updatePassword = async (req: Request, res: Response) => {
     await usersService.updatePassword(id, newPassword);
     userInfo.password = '';
     userInfo.passwordSalt = '';
+    userInfo.tempPassword = '';
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('비밀번호'), userInfo));
   } catch (err) {
     return res
@@ -177,6 +191,7 @@ export const deleteOne = async (req: Request, res: Response) => {
     await userInfo.destroy();
     userInfo.password = '';
     userInfo.passwordSalt = '';
+    userInfo.tempPassword = '';
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_DELETE_SUCCESS('회원'), userInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_DELETE_FAIL('회원')));
@@ -205,15 +220,14 @@ export const createTempPassword = async (req: Request, res: Response) => {
     }
 
     const randomString = Math.random().toString(36).slice(2);
-    const updatedUser = await usersService.updateTempPassword(user, randomString, tempPasswordIssueCount);
     await emailUtil.send(email, randomString);
+    const updatedUser = await usersService.updateTempPassword(user, randomString, tempPasswordIssueCount);
+    const data = {
+      email: email,
+      tempPasswordIssueCount: updatedUser.tempPasswordIssueCount,
+    };
 
-    return res.status(statusCode.OK).json(
-      authUtil.successTrue(resMessage.X_SUCCESS('임시 비밀번호 발급'), {
-        email: email,
-        tempPasswordIssueCount: updatedUser.tempPasswordIssueCount,
-      })
-    );
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_SUCCESS('임시 비밀번호 발급'), data));
   } catch (err) {
     console.log(err);
     return res
