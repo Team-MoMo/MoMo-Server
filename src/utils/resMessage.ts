@@ -14,9 +14,9 @@ export default {
   MISS_MATCH_USER_INFO: 'ID 또는 비밀번호가 일치하지 않습니다',
   MISS_MATCH_PASSWORD: '비밀번호가 일치하지 않습니다',
   MATCH_PASSWORD: '비밀번호가 일치합니다',
+  TEMP_PASSWORD_ISSUE_EXCEDDED: '임시 비밀번호 발급 횟수 초과',
 
   DB_ERROR: '데이터베이스 에러',
-
   EMPTY_TOKEN: '헤더에 토큰이 없음',
   EXPIRED_TOKEN: '유효기간이 지난 토큰',
   INVALID_TOKEN: '잘못된 토큰',
@@ -34,4 +34,6 @@ export default {
   X_DELETE_FAIL: (x: string) => `${x} 삭제 실패`,
   NO_X: (x: string) => `존재하지 않는 ${x}`,
   ALREADY_X: (x: string) => `존재하는 ${x}`,
+  X_SUCCESS: (x: string) => `${x} 성공`,
+  X_FAIL: (x: string) => `${x} 실패`,
 };
