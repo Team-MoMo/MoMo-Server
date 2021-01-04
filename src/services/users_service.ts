@@ -54,13 +54,12 @@ export const deleteOne = async (user: User) => {
   return;
 };
 
-export const checkPassword = async (user: User, password: string) => {
+export const checkPassword = (user: User, password: string) => {
   const hashedPassword = crypto.pbkdf2Sync(password, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
-  if (hashedPassword != user.password) {
+  if (hashedPassword != user.password && hashedPassword != user.tempPassword) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 };
 
 export const updatePassword = async (id: number, password: string) => {
@@ -81,8 +80,9 @@ export const updatePassword = async (id: number, password: string) => {
 };
 
 export const updateTempPassword = async (user: User, tempPassword: string, tempPasswordIssueCount: number) => {
+  const hashedTempPassword = crypto.pbkdf2Sync(tempPassword, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
   return await user.update({
-    tempPassword: tempPassword,
+    tempPassword: hashedTempPassword,
     tempPasswordCreatedAt: new Date(),
     tempPasswordIssueCount: tempPasswordIssueCount,
   });

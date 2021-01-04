@@ -1,4 +1,4 @@
-import { statusCode, jwt, authUtil, emailUtil,resMessage } from '../utils';
+import { statusCode, jwt, authUtil, emailUtil, resMessage } from '../utils';
 import { Request, Response } from 'express';
 import { usersService } from '../services';
 
