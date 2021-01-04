@@ -1,7 +1,5 @@
-import crypto from 'crypto';
-import util from '../utils/authUtil';
-import resMessage from '../utils/resMessage';
-import express, { Request, Response, NextFunction, Send } from 'express';
+import { statusCode, authUtil, resMessage } from '../utils';
+import { Request, Response } from 'express';
 import { usersService } from '../services';
 
 export const signup = async (req: Request, res: Response) => {
@@ -34,27 +32,115 @@ export const signin = async (req: Request, res: Response) => {
 
 export const readAll = async (req: Request, res: Response) => {
   try {
-    await usersService.readAll(); //라우팅 테스트용
-    res.send('result'); //라우팅 테스트용
-  } catch (err) {}
+    const users = await usersService.readAll();
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('회원'), users));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_ALL_FAIL('회원')));
+  }
 };
 
 export const readOne = async (req: Request, res: Response) => {
+  const { id }: { id?: number } = req.params;
+  if (!id) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
   try {
-  } catch (err) {}
+    const userInfo = await usersService.readOne(id);
+    if (!userInfo) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
+    }
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS('회원'), userInfo));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_FAIL('회원')));
+  }
 };
 
-export const updateInfo = async (req: Request, res: Response) => {
+export const updateAlarm = async (req: Request, res: Response) => {
+  const { id }: { id?: number } = req.params;
+  const { isAlarmSet, alarmTime } = req.body;
+
+  if (!id || !isAlarmSet) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
   try {
-  } catch (err) {}
+    const userInfo = await usersService.readOne(id);
+    if (!userInfo) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
+    }
+
+    let userAlarmInfo;
+    if (!alarmTime) {
+      userAlarmInfo = await usersService.updateAlarmSet(id, isAlarmSet);
+    } else {
+      userAlarmInfo = await usersService.updateAlarmTime(id, isAlarmSet, alarmTime);
+    }
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('알람'), userAlarmInfo));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_UPDATE_FAIL('알람')));
+  }
+};
+
+export const checkPassword = async (req: Request, res: Response) => {
+  const { id }: { id?: number } = req.params;
+  const { password } = req.body;
+
+  if (!id || !password) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
+
+  try {
+    const userInfo = await usersService.readOne(id);
+    if (!userInfo) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
+    }
+    const checkPasswordResult = await usersService.checkPassword(userInfo, password);
+    if (!checkPasswordResult) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_PASSWORD));
+    }
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.MATCH_PASSWORD));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.INTERNAL_SERVER_ERROR));
+  }
 };
 
 export const updatePassword = async (req: Request, res: Response) => {
+  const { id }: { id?: number } = req.params;
+  const { newPassword } = req.body;
+
+  if (!id || !newPassword) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
   try {
-  } catch (err) {}
+    const userInfo = await usersService.readOne(id);
+    if (!userInfo) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
+    }
+    await usersService.updatePassword(id, newPassword);
+    userInfo.password = '';
+    userInfo.passwordSalt = '';
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('비밀번호'), userInfo));
+  } catch (err) {
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .json(authUtil.successFalse(resMessage.X_UPDATE_FAIL('비밀번호')));
+  }
 };
 
 export const deleteOne = async (req: Request, res: Response) => {
+  const { id }: { id?: number } = req.params;
+  if (!id) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
   try {
-  } catch (err) {}
+    const userInfo = await usersService.readOne(id);
+    if (!userInfo) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
+    }
+    await userInfo.destroy();
+    userInfo.password = '';
+    userInfo.passwordSalt = '';
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_DELETE_SUCCESS('회원'), userInfo));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_DELETE_FAIL('회원')));
+  }
 };

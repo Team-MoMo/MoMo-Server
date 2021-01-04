@@ -1,5 +1,6 @@
 import crypto from 'crypto';
-// import { User } from '../models';
+import model from '../models';
+import User from '../models/users_model';
 
 export const signup = async () => {
   try {
@@ -22,14 +23,17 @@ export const signin = async () => {
 };
 
 export const readAll = async () => {
-  try {
-    console.log('success'); //라우팅 테스트용
-  } catch (err) {}
+  const users = await model.User.findAll();
+  return users;
 };
 
-export const readOne = async () => {
-  try {
-  } catch (err) {}
+export const readOne = async (id: number) => {
+  const user = await model.User.findOne({
+    where: {
+      id,
+    },
+  });
+  return user;
 };
 
 export const readOneByEmail = async () => {
@@ -37,17 +41,81 @@ export const readOneByEmail = async () => {
   } catch (err) {}
 };
 
-export const updateInfo = async () => {
-  try {
-  } catch (err) {}
+export const updateAlarmSet = async (id: number, isAlarmSet: boolean) => {
+  await model.User.update(
+    {
+      isAlarmSet,
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  );
+
+  const userAlarmInfo = await model.User.findOne({
+    attributes: ['isAlarmSet', 'alarmTime'],
+    where: {
+      id,
+    },
+  });
+  return userAlarmInfo;
 };
 
-export const updatePassword = async () => {
-  try {
-  } catch (err) {}
+export const updateAlarmTime = async (id: number, isAlarmSet: boolean, alarmTime: Date) => {
+  await model.User.update(
+    {
+      isAlarmSet,
+      alarmTime,
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  );
+
+  const userAlarmInfo = await model.User.findOne({
+    attributes: ['isAlarmSet', 'alarmTime'],
+    where: {
+      id,
+    },
+  });
+
+  return userAlarmInfo;
 };
 
-export const deleteOne = async () => {
-  try {
-  } catch (err) {}
+export const checkPassword = async (user: User, password: string) => {
+  const hashedPassword = crypto.pbkdf2Sync(password, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
+  if (hashedPassword != user.password) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const updatePassword = async (id: number, password: string) => {
+  const salt = crypto.randomBytes(64).toString('base64');
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64'); //채원이 hash service
+  await model.User.update(
+    {
+      password: hashedPassword,
+      passwordSalt: salt,
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  );
+  return;
+};
+
+export const deleteOne = async (user: User) => {
+  await model.User.destroy({
+    where: {
+      id: user.id,
+    },
+  });
+  return;
 };

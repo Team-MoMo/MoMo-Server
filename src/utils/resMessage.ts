@@ -10,6 +10,8 @@ export default {
   POSSIBLE_ID: '사용 가능한 ID입니다.',
   DUPLICATE_ID: '사용 불가능한 ID입니다.',
   MISS_MATCH_USER_INFO: 'ID 또는 비밀번호가 일치하지 않습니다',
+  MISS_MATCH_PASSWORD: '비밀번호가 일치하지 않습니다',
+  MATCH_PASSWORD: '비밀번호가 일치합니다',
 
   DB_ERROR: '데이터베이스 에러',
 
