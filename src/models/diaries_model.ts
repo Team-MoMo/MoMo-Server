@@ -1,8 +1,8 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { sequelize } from './index';
 
 interface DiaryAttributes {
-  id: number;
+  id?: number;
   contents: string;
   position: number;
   depth: number;
@@ -12,9 +12,7 @@ interface DiaryAttributes {
   createdAt?: string;
 }
 
-interface DiaryCreationAttributes extends Optional<DiaryAttributes, 'id'> {}
-
-class Diary extends Model<DiaryAttributes, DiaryCreationAttributes> implements DiaryAttributes {
+class Diary extends Model<DiaryAttributes> implements DiaryAttributes {
   public id!: number;
   public contents!: string;
   public position!: number;
