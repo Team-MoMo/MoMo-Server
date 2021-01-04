@@ -50,7 +50,7 @@ export const signin = async (req: Request, res: Response) => {
 
   try {
     const user = await usersService.readOneByEmail(email);
-    if (user == null) {
+    if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_USER_INFO));
     }
 
