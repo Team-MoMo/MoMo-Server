@@ -4,7 +4,6 @@ import { usersService } from '../services';
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
-
   if (!email || !password || !name) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
@@ -44,7 +43,6 @@ export const signupByKakao = async (req: Request, res: Response) => {
 
 export const signin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
@@ -72,14 +70,15 @@ export const signin = async (req: Request, res: Response) => {
 
 export const readAll = async (req: Request, res: Response) => {
   try {
-    const users = await usersService.readAll();
-    const data = users.map((user) => {
+    let users = await usersService.readAll();
+    users = users.map((user) => {
       user.password = '';
       user.passwordSalt = '';
       user.tempPassword = '';
       return user;
     });
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('회원'), data));
+
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('회원'), users));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_ALL_FAIL('회원')));
   }
@@ -90,6 +89,7 @@ export const readOne = async (req: Request, res: Response) => {
   if (!id) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
+
   try {
     const user = await usersService.readOne(id);
     if (!user) {
@@ -99,6 +99,7 @@ export const readOne = async (req: Request, res: Response) => {
     user.password = '';
     user.passwordSalt = '';
     user.tempPassword = '';
+
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS('회원'), user));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_FAIL('회원')));
@@ -108,10 +109,10 @@ export const readOne = async (req: Request, res: Response) => {
 export const updateAlarm = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
   const { isAlarmSet, alarmTime } = req.body;
-
   if (!id || !isAlarmSet) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
+
   try {
     const user = await usersService.readOne(id);
     if (!user) {
@@ -134,7 +135,6 @@ export const updateAlarm = async (req: Request, res: Response) => {
 export const checkPassword = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
   const { password } = req.body;
-
   if (!id || !password) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
@@ -144,10 +144,12 @@ export const checkPassword = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
+
     const checkPasswordResult = await usersService.checkPassword(user, password);
     if (!checkPasswordResult) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_PASSWORD));
     }
+
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.MATCH_PASSWORD));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.INTERNAL_SERVER_ERROR));
@@ -157,15 +159,16 @@ export const checkPassword = async (req: Request, res: Response) => {
 export const updatePassword = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
   const { newPassword } = req.body;
-
   if (!id || !newPassword) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
+
   try {
     const user = await usersService.readOne(id);
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
+
     await usersService.updatePassword(id, newPassword);
     user.password = '';
     user.passwordSalt = '';
@@ -184,15 +187,18 @@ export const deleteOne = async (req: Request, res: Response) => {
   if (!id) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
+
   try {
     const user = await usersService.readOne(id);
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
+
     await user.destroy();
     user.password = '';
     user.passwordSalt = '';
     user.tempPassword = '';
+
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_DELETE_SUCCESS('회원'), user));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_DELETE_FAIL('회원')));
