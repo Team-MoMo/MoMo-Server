@@ -1,6 +1,4 @@
-import { Console } from 'console';
 import crypto from 'crypto';
-import { Sequelize } from 'sequelize/types';
 import model from '../models';
 import User from '../models/users_model';
 
@@ -43,49 +41,48 @@ export const readOneByEmail = async () => {
   } catch (err) {}
 };
 
-export const updateAlarm = async (id: any, isAlarmSet: boolean, alarmTime: Date) => {
-  let userAlarmTime: any;
-  if (alarmTime) {
-    await model.User.update(
-      {
-        isAlarmSet,
-        alarmTime,
+export const updateAlarmSet = async (id: any, isAlarmSet: boolean) => {
+  await model.User.update(
+    {
+      isAlarmSet,
+    },
+    {
+      where: {
+        id,
       },
-      {
-        where: {
-          id,
-        },
-      }
-    ).then(async () => {
-      userAlarmTime = await model.User.findOne({
-        attributes: ['isAlarmSet', 'alarmTime'],
-        where: {
-          id,
-        },
-      });
-    });
+    }
+  );
 
-    return userAlarmTime;
-  } else {
-    await model.User.update(
-      {
-        isAlarmSet,
+  const userAlarmInfo = await model.User.findOne({
+    attributes: ['isAlarmSet', 'alarmTime'],
+    where: {
+      id,
+    },
+  });
+  return userAlarmInfo;
+};
+
+export const updateAlarmTime = async (id: any, isAlarmSet: boolean, alarmTime: Date) => {
+  await model.User.update(
+    {
+      isAlarmSet,
+      alarmTime,
+    },
+    {
+      where: {
+        id,
       },
-      {
-        where: {
-          id,
-        },
-      }
-    ).then(async () => {
-      userAlarmTime = await model.User.findOne({
-        attributes: ['isAlarmSet', 'alarmTime'],
-        where: {
-          id,
-        },
-      });
-    });
-    return userAlarmTime;
-  }
+    }
+  );
+
+  const userAlarmInfo = await model.User.findOne({
+    attributes: ['isAlarmSet', 'alarmTime'],
+    where: {
+      id,
+    },
+  });
+
+  return userAlarmInfo;
 };
 
 export const checkPassword = async (user: User, password: string) => {
@@ -114,10 +111,10 @@ export const updatePassword = async (id: any, password: string) => {
   return;
 };
 
-export const deleteOne = async (id: any) => {
+export const deleteOne = async (user: User) => {
   await model.User.destroy({
     where: {
-      id,
+      id: user.id,
     },
   });
   return;
