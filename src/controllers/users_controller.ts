@@ -1,10 +1,10 @@
-import { statusCode, authUtil, resMessage } from '../utils';
+import { statusCode, jwt, authUtil, emailUtil } from '../utils';
+import resMessage from '../utils/resMessage';
 import { Request, Response } from 'express';
-import { jwt } from '../utils';
 import { usersService } from '../services';
 
 export const signup = async (req: Request, res: Response) => {
-  const { email, password, name }: { email: string; password: string; name: string } = req.body;
+  const { email, password, name } = req.body;
 
   if (!email || !password || !name) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
@@ -16,13 +16,14 @@ export const signup = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.DUPLICATE_ID));
     }
 
-    const newUser = await usersService.signup(email, password, name);
+    const newUser = await usersService.create(email, name, password);
     const { token } = jwt.sign(newUser);
     newUser.password = '';
     newUser.passwordSalt = '';
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.SIGN_UP_SUCCESS, { user: newUser, token }));
   } catch (err) {
+    console.log(err);
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.SIGN_UP_FAIL));
   }
 };
@@ -42,7 +43,7 @@ export const signupByKakao = async (req: Request, res: Response) => {
 };
 
 export const signin = async (req: Request, res: Response) => {
-  const { email, password }: { email: string; password: string } = req.body;
+  const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
@@ -51,10 +52,10 @@ export const signin = async (req: Request, res: Response) => {
   try {
     const user = await usersService.readOneByEmail(email);
     if (!user) {
-      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_USER_INFO));
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('이메일')));
     }
 
-    if (!usersService.signin(user, password)) {
+    if (!usersService.checkPassword(user, password)) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_USER_INFO));
     }
 
@@ -63,7 +64,8 @@ export const signin = async (req: Request, res: Response) => {
     user.passwordSalt = '';
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.SIGN_IN_SUCCESS, { user, token }));
-  } catch (error) {
+  } catch (err) {
+    console.log(err);
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.SIGN_IN_FAIL));
   }
 };
@@ -180,5 +182,44 @@ export const deleteOne = async (req: Request, res: Response) => {
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_DELETE_SUCCESS('회원'), userInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_DELETE_FAIL('회원')));
+  }
+};
+
+export const createTempPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
+
+  try {
+    const user = await usersService.readOneByEmail(email);
+    if (!user) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('이메일')));
+    }
+
+    let tempPasswordIssueCount;
+    if (!user.tempPasswordCreatedAt || user.tempPasswordIssueCount < 3) {
+      tempPasswordIssueCount = user.tempPasswordIssueCount + 1;
+    } else if (user.tempPasswordCreatedAt.getDate() != new Date().getDate()) {
+      tempPasswordIssueCount = 1;
+    } else {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.TEMP_PASSWORD_ISSUE_EXCEDDED));
+    }
+
+    const randomString = Math.random().toString(36).slice(2);
+    const updatedUser = await usersService.updateTempPassword(user, randomString, tempPasswordIssueCount);
+    await emailUtil.send(email, randomString);
+
+    return res.status(statusCode.OK).json(
+      authUtil.successTrue(resMessage.X_SUCCESS('임시 비밀번호 발급'), {
+        email: email,
+        tempPasswordIssueCount: updatedUser.tempPasswordIssueCount,
+      })
+    );
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .json(authUtil.successFalse(resMessage.X_FAIL('임시 비밀번호 발급')));
   }
 };
