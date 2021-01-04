@@ -5,6 +5,13 @@ export const sequelize = new Sequelize(database.database, database.username, dat
   host: database.host,
   dialect: 'mysql',
   logging: false,
+  timezone: '+09:00',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
   define: {
     charset: 'utf8mb4',
     collate: 'utf8mb4_unicode_ci',
