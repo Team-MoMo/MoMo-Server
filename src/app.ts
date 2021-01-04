@@ -19,8 +19,8 @@ const app: express.Application = express();
 
 // Database Init & Insert DummyData
 (async () => {
-  await sequelize.sync({ force: database.init });
   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
+  await sequelize.sync({ force: database.init });
   database.init && insertDummy(db);
   console.log(`Database Init: ${database.init}`);
   console.log('Sequelize connect success');
