@@ -5,5 +5,6 @@ import resMessage from './resMessage';
 import statusCode from './statusCode';
 import insertDummy from './insertDummy';
 import loginUtil from './login_util';
+import random from './random';
 
-export { authUtil, jwt, emailUtil, resMessage, statusCode, insertDummy, loginUtil };
+export { authUtil, jwt, emailUtil, resMessage, statusCode, insertDummy, loginUtil, random };
