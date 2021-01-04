@@ -1,7 +1,6 @@
 import { statusCode, authUtil, resMessage } from '../utils';
 import { Request, Response } from 'express';
 import { usersService } from '../services';
-import User from '../models/users_model';
 
 export const signup = async (req: Request, res: Response) => {
   const {} = req.body;
@@ -41,8 +40,10 @@ export const readAll = async (req: Request, res: Response) => {
 };
 
 export const readOne = async (req: Request, res: Response) => {
-  const { id } = req.params;
-
+  const { id }: { id?: number } = req.params;
+  if (!id) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
   try {
     const userInfo = await usersService.readOne(id);
     if (!userInfo) {
@@ -55,7 +56,7 @@ export const readOne = async (req: Request, res: Response) => {
 };
 
 export const updateAlarm = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id }: { id?: number } = req.params;
   const { isAlarmSet, alarmTime } = req.body;
 
   if (!id || !isAlarmSet) {
@@ -80,7 +81,7 @@ export const updateAlarm = async (req: Request, res: Response) => {
 };
 
 export const checkPassword = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id }: { id?: number } = req.params;
   const { password } = req.body;
 
   if (!id || !password) {
@@ -103,7 +104,7 @@ export const checkPassword = async (req: Request, res: Response) => {
 };
 
 export const updatePassword = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id }: { id?: number } = req.params;
   const { newPassword } = req.body;
 
   if (!id || !newPassword) {
@@ -126,7 +127,7 @@ export const updatePassword = async (req: Request, res: Response) => {
 };
 
 export const deleteOne = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id }: { id?: number } = req.params;
   if (!id) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }

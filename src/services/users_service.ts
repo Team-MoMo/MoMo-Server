@@ -27,7 +27,7 @@ export const readAll = async () => {
   return users;
 };
 
-export const readOne = async (id: any) => {
+export const readOne = async (id: number) => {
   const user = await model.User.findOne({
     where: {
       id,
@@ -41,7 +41,7 @@ export const readOneByEmail = async () => {
   } catch (err) {}
 };
 
-export const updateAlarmSet = async (id: any, isAlarmSet: boolean) => {
+export const updateAlarmSet = async (id: number, isAlarmSet: boolean) => {
   await model.User.update(
     {
       isAlarmSet,
@@ -62,7 +62,7 @@ export const updateAlarmSet = async (id: any, isAlarmSet: boolean) => {
   return userAlarmInfo;
 };
 
-export const updateAlarmTime = async (id: any, isAlarmSet: boolean, alarmTime: Date) => {
+export const updateAlarmTime = async (id: number, isAlarmSet: boolean, alarmTime: Date) => {
   await model.User.update(
     {
       isAlarmSet,
@@ -94,7 +94,7 @@ export const checkPassword = async (user: User, password: string) => {
   }
 };
 
-export const updatePassword = async (id: any, password: string) => {
+export const updatePassword = async (id: number, password: string) => {
   const salt = crypto.randomBytes(64).toString('base64');
   const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64'); //채원이 hash service
   await model.User.update(
