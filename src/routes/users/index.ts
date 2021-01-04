@@ -6,6 +6,7 @@ router.post('/signup', usersController.signup);
 router.post('/signup/apple', usersController.signupByApple);
 router.post('/signup/kakao', usersController.signupByKakao);
 router.post('/signin', usersController.signin);
+router.post('/:id/password', usersController.checkPassword);
 router.get('/', usersController.readAll);
 router.get('/:id', usersController.readOne);
 router.put('/:id/alarm', usersController.updateAlarm);

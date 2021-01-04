@@ -1,6 +1,8 @@
+import { Console } from 'console';
 import crypto from 'crypto';
 import { Sequelize } from 'sequelize/types';
 import model from '../models';
+import User from '../models/users_model';
 
 export const signup = async () => {
   try {
@@ -23,25 +25,17 @@ export const signin = async () => {
 };
 
 export const readAll = async () => {
-  try {
-    const users = await model.User.findAll();
-    return users;
-  } catch (err) {
-    throw err;
-  }
+  const users = await model.User.findAll();
+  return users;
 };
 
 export const readOne = async (id: any) => {
-  try {
-    const user = await model.User.findOne({
-      where: {
-        id,
-      },
-    });
-    return user;
-  } catch (err) {
-    throw err;
-  }
+  const user = await model.User.findOne({
+    where: {
+      id,
+    },
+  });
+  return user;
 };
 
 export const readOneByEmail = async () => {
@@ -49,76 +43,82 @@ export const readOneByEmail = async () => {
   } catch (err) {}
 };
 
-export const updateAlarm = async (id: any, alarmTime: Date) => {
-  console.log(alarmTime);
+export const updateAlarm = async (id: any, isAlarmSet: boolean, alarmTime: Date) => {
+  let userAlarmTime: any;
   if (alarmTime) {
-    try {
-      const alarmTimeChange = await model.User.update(
-        {
-          isAlarmSet: true,
-          alarmTime,
-        },
-        {
-          where: {
-            id,
-          },
-        }
-      );
-      return;
-    } catch (err) {
-      throw err;
-    }
-  } else {
-    try {
-      await model.User.update(
-        {
-          isAlarmSet: false,
-          alarmTime: null,
-          //alarmTime null로 바꿔야할지말지 생각중(view 보고)
-        },
-        {
-          where: {
-            id,
-          },
-        }
-      );
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-};
-
-export const updatePassword = async (id: any, password: any) => {
-  try {
-    const salt = crypto.randomBytes(64).toString('base64');
-    const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64'); //회원가입 보고 확인하기
-    const passwordChange = await model.User.update(
+    await model.User.update(
       {
-        password: hashedPassword,
+        isAlarmSet,
+        alarmTime,
       },
       {
         where: {
           id,
         },
       }
-    );
-    return;
-  } catch (err) {
-    throw err;
+    ).then(async () => {
+      userAlarmTime = await model.User.findOne({
+        attributes: ['isAlarmSet', 'alarmTime'],
+        where: {
+          id,
+        },
+      });
+    });
+
+    return userAlarmTime;
+  } else {
+    await model.User.update(
+      {
+        isAlarmSet,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    ).then(async () => {
+      userAlarmTime = await model.User.findOne({
+        attributes: ['isAlarmSet', 'alarmTime'],
+        where: {
+          id,
+        },
+      });
+    });
+    return userAlarmTime;
   }
 };
 
-export const deleteOne = async (id: any) => {
-  try {
-    await model.User.destroy({
+export const checkPassword = async (user: User, password: string) => {
+  const hashedPassword = crypto.pbkdf2Sync(password, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
+  if (hashedPassword != user.password) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const updatePassword = async (id: any, password: string) => {
+  const salt = crypto.randomBytes(64).toString('base64');
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64'); //채원이 hash service
+  await model.User.update(
+    {
+      password: hashedPassword,
+      passwordSalt: salt,
+    },
+    {
       where: {
         id,
       },
-    });
-    return;
-  } catch (err) {
-    console.log('serviceError');
-    throw err;
-  }
+    }
+  );
+  return;
+};
+
+export const deleteOne = async (id: any) => {
+  await model.User.destroy({
+    where: {
+      id,
+    },
+  });
+  return;
 };

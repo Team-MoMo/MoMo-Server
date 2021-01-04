@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { statusCode, authUtil, resMessage } from '../utils';
 import express, { Request, Response, NextFunction, Send } from 'express';
 import { usersService } from '../services';
+import User from '../models/users_model';
 
 export const signup = async (req: Request, res: Response) => {
   const {} = req.body;
@@ -56,41 +57,60 @@ export const readOne = async (req: Request, res: Response) => {
 };
 
 export const updateAlarm = async (req: Request, res: Response) => {
-  //view나오는 거 보고 isAlarmSet 어떻게 할지 변경 예정!
   const { id } = req.params;
-  const { alarmTime } = req.body;
-  if (!id) {
+  const { isAlarmSet, alarmTime } = req.body;
+
+  if (!id || !isAlarmSet) {
     res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
   try {
-    await usersService.updateAlarm(id, alarmTime);
-    res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('알람')));
+    const users = await usersService.readOne(id);
+    if (users) {
+      const userAlarmTime = await usersService.updateAlarm(id, isAlarmSet, alarmTime);
+      res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('알람'), userAlarmTime));
+    } else {
+      res.status(statusCode.OK).json(authUtil.successFalse(resMessage.NO_X('회원')));
+    }
   } catch (err) {
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_UPDATE_FAIL('알람')));
   }
 };
 
-export const updatePassword = async (req: Request, res: Response) => {
-  //view에 따라 변경 가능성있음
-  //회원가입 알고리즘에 따라 변경 가능성있음
+export const checkPassword = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { password, newPassword } = req.body;
+  const { password } = req.body;
 
-  if (!id || !password || !newPassword) {
+  if (!id || !password) {
+    res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
+
+  try {
+    const user = await usersService.readOne(id);
+    if (user) {
+      const checkPasswordResult = await usersService.checkPassword(user, password);
+      if (checkPasswordResult) {
+        res.status(statusCode.OK).json(authUtil.successTrue(resMessage.MATCH_PASSWORD));
+      } else {
+        res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_PASSWORD));
+      }
+    }
+  } catch (err) {
+    res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.INTERNAL_SERVER_ERROR));
+  }
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { newPassword } = req.body;
+
+  if (!id || !newPassword) {
     res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
   try {
     const user = await usersService.readOne(id);
-    console.log(user?.passwordSalt);
     if (user) {
-      const inputPassword = crypto.pbkdf2Sync(password, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
-
-      if (user.password == inputPassword) {
-        await usersService.updatePassword(id, newPassword);
-        return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('비밀번호')));
-      } else {
-        return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.MISS_MATCH_PASSWORD));
-      }
+      await usersService.updatePassword(id, newPassword);
+      res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('비밀번호')));
     }
   } catch (err) {
     res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_UPDATE_FAIL('비밀번호')));
