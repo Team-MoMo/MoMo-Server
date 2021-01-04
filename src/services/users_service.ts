@@ -45,6 +45,49 @@ export const readOneByEmail = async (email: string) => {
   return user;
 };
 
+export const deleteOne = async (user: User) => {
+  await model.User.destroy({
+    where: {
+      id: user.id,
+    },
+  });
+  return;
+};
+
+export const checkPassword = async (user: User, password: string) => {
+  const hashedPassword = crypto.pbkdf2Sync(password, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
+  if (hashedPassword != user.password) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+export const updatePassword = async (id: number, password: string) => {
+  const salt = crypto.randomBytes(64).toString('base64');
+  const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
+  await model.User.update(
+    {
+      password: hashedPassword,
+      passwordSalt: salt,
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  );
+  return;
+};
+
+export const updateTempPassword = async (user: User, tempPassword: string, tempPasswordIssueCount: number) => {
+  return await user.update({
+    tempPassword: tempPassword,
+    tempPasswordCreatedAt: new Date(),
+    tempPasswordIssueCount: tempPasswordIssueCount,
+  });
+};
+
 export const updateAlarmSet = async (id: number, isAlarmSet: boolean) => {
   await model.User.update(
     {
@@ -87,47 +130,4 @@ export const updateAlarmTime = async (id: number, isAlarmSet: boolean, alarmTime
   });
 
   return userAlarmInfo;
-};
-
-export const checkPassword = async (user: User, password: string) => {
-  const hashedPassword = crypto.pbkdf2Sync(password, user.passwordSalt, 10000, 64, 'sha512').toString('base64');
-  if (hashedPassword != user.password) {
-    return false;
-  } else {
-    return true;
-  }
-};
-
-export const updatePassword = async (id: number, password: string) => {
-  const salt = crypto.randomBytes(64).toString('base64');
-  const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
-  await model.User.update(
-    {
-      password: hashedPassword,
-      passwordSalt: salt,
-    },
-    {
-      where: {
-        id,
-      },
-    }
-  );
-  return;
-};
-
-export const deleteOne = async (user: User) => {
-  await model.User.destroy({
-    where: {
-      id: user.id,
-    },
-  });
-  return;
-};
-
-export const updateTempPassword = async (user: User, tempPassword: string, tempPasswordIssueCount: number) => {
-  return await user.update({
-    tempPassword: tempPassword,
-    tempPasswordCreatedAt: new Date(),
-    tempPasswordIssueCount: tempPasswordIssueCount,
-  });
 };

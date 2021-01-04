@@ -1,5 +1,4 @@
-import { statusCode, jwt, authUtil, emailUtil } from '../utils';
-import resMessage from '../utils/resMessage';
+import { statusCode, jwt, authUtil, emailUtil,resMessage } from '../utils';
 import { Request, Response } from 'express';
 import { usersService } from '../services';
 
@@ -65,7 +64,6 @@ export const signin = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.SIGN_IN_SUCCESS, { user, token }));
   } catch (err) {
-    console.log(err);
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.SIGN_IN_FAIL));
   }
 };
