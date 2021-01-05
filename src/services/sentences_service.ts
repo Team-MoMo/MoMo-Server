@@ -5,14 +5,13 @@ import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 
-export const readAllNotInUserSentences = async (emotionId: any, userSentences: number[]) => {
+export const readAllNotInUserSentences = async (emotionId: number, cannotRecommendSentence: number[]) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
-    attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
     where: {
       emotionId,
-      id: { [Op.notIn]: userSentences },
+      id: { [Op.notIn]: cannotRecommendSentence },
     },
-    order: [sequelize.fn('RAND')],
+    order: [sequelize.fn('RAND'), ['id', 'DESC']],
     limit: 3,
   });
   return sentences.sort((a, b) => {
@@ -25,7 +24,6 @@ export const readAllNotInUserSentences = async (emotionId: any, userSentences: n
 
 export const readAllInUserRecommendSentences = async (userRecommendSentenceIds: number[]) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
-    attributes: ['id', 'contents', 'writer', 'publisher', 'emotionId'],
     where: {
       id: { [Op.in]: userRecommendSentenceIds },
     },
@@ -33,26 +31,26 @@ export const readAllInUserRecommendSentences = async (userRecommendSentenceIds: 
   return sentences;
 };
 
-export const readAllUsersRecommendSentencesAfter6 = async (emotionId: any, userId: any, date: dayjs.Dayjs) => {
-  const userRecommendedsentenceIds: number[] = [];
+export const readAllUsersRecommendSentencesAfter6 = async (emotionId: number, userId: number, date: dayjs.Dayjs) => {
+  let userRecommendedSentenceIds: number[] = [];
 
   const usersRecommendedSentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
     attributes: ['sentenceId'],
     where: {
       emotionId,
       userId,
-      createdAt: { [Op.gte]: date },
+      createdAt: { [Op.gte]: date.format('YYYY-MM-DD HH:mm') },
     },
   });
-  usersRecommendedSentences.forEach((element) => {
-    userRecommendedsentenceIds.push(element.sentenceId);
+  userRecommendedSentenceIds = usersRecommendedSentences.map((element) => {
+    return element.sentenceId;
   });
 
-  return userRecommendedsentenceIds;
+  return userRecommendedSentenceIds;
 };
 
-export const readAllUsersRecommendSentences = async (emotionId: any, userId: any) => {
-  const userRecommendedsentenceIds: number[] = [];
+export const readAllUsersRecommendSentences = async (emotionId: number, userId: number) => {
+  let userRecommendedSentenceIds: number[] = [];
   const usersRecommendedSentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
     attributes: ['sentenceId'],
     where: {
@@ -60,39 +58,35 @@ export const readAllUsersRecommendSentences = async (emotionId: any, userId: any
       userId,
     },
   });
-  usersRecommendedSentences.forEach((element) => {
-    userRecommendedsentenceIds.push(element.sentenceId);
+  userRecommendedSentenceIds = usersRecommendedSentences.map((element) => {
+    return element.sentenceId;
   });
-
-  return userRecommendedsentenceIds;
+  return userRecommendedSentenceIds;
 };
 
-export const readAllDiaries = async (emotionId: any, userId: any) => {
-  const userDiarySentenceIds: number[] = [];
+export const readAllDiaries = async (emotionId: number, userId: number, before30Day: dayjs.Dayjs) => {
+  let userDiarySentenceIds: number[] = [];
 
-  const before30Day = dayjs(new Date()).subtract(30, 'day');
   const userDiarySentences: Diary[] = await model.Diary.findAll({
     attributes: [[sequelize.fn('DISTINCT', sequelize.col('sentenceId')), 'sentenceId']],
     where: {
       emotionId,
       userId,
-      createdAt: { [Op.lt]: before30Day },
+      createdAt: { [Op.gt]: before30Day.format('YYYY-MM-DD HH:mm') },
     },
   });
-  userDiarySentences.forEach((element) => {
-    userDiarySentenceIds.push(element.sentenceId);
+
+  userDiarySentenceIds = userDiarySentences.map((element) => {
+    return element.sentenceId;
   });
 
   return userDiarySentenceIds;
 };
 
 export const createUsersRecommendSentences = async (userId: number, recommendSentences: Sentence[]) => {
-  recommendSentences.forEach(async (element) => {
-    await model.UsersRecommendedSentences.create({
-      userId: userId,
-      emotionId: element.emotionId,
-      sentenceId: element.id,
-    });
-  });
-  return;
+  await model.UsersRecommendedSentences.bulkCreate([
+    { userId: userId, emotionId: recommendSentences[0].emotionId, sentenceId: recommendSentences[0].id },
+    { userId: userId, emotionId: recommendSentences[1].emotionId, sentenceId: recommendSentences[1].id },
+    { userId: userId, emotionId: recommendSentences[2].emotionId, sentenceId: recommendSentences[2].id },
+  ]);
 };

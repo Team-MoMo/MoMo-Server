@@ -8,7 +8,7 @@ import resMessage from '../utils/resMessage';
 import { schedulerController } from '../controllers';
 
 const router = express.Router();
-schedulerController.deleteAll();
+schedulerController.deleteAllYesterday();
 
 router.use('/users', users);
 router.use('/diaries', diaries);
