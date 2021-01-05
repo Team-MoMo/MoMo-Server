@@ -29,6 +29,7 @@
     "nodemailer": "^6.4.17",
     "rand-token": "^1.0.1",
     "sequelize": "^6.3.5",
+    "sequelize-cli": "^6.2.0",
     "swagger-cli": "^4.0.4",
     "swagger-ui-express": "^4.1.6"
   },
