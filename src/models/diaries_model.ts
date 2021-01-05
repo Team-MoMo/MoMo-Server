@@ -58,10 +58,6 @@ Diary.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
   },
   {
     sequelize,

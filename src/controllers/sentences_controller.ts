@@ -5,7 +5,10 @@ import Sentence from '../models/sentences_model';
 import dayjs from 'dayjs';
 
 export const readAll = async (req: Request, res: Response) => {
-  const { emotion, user }: { emotion?: number; user?: number } = req.query;
+  const { emotion, user }: { emotion?: string; user?: string } = req.query;
+
+  const emotionId = parseInt(emotion!);
+  const userId = parseInt(user!);
 
   let recommendSentences: Sentence[];
 
@@ -15,6 +18,7 @@ export const readAll = async (req: Request, res: Response) => {
   const now = dayjs(new Date());
   const before30Day = now.subtract(30, 'day');
   let date;
+
   if (now.get('hour') > 5) {
     date = now.set('hour', 6).set('minute', 0).set('second', 0).set('millisecond', 0);
   } else {
@@ -22,8 +26,8 @@ export const readAll = async (req: Request, res: Response) => {
   }
 
   const userRecommendSentenceIds: number[] = await sentencesService.readAllUsersRecommendSentencesAfter6(
-    emotion,
-    user,
+    emotionId,
+    userId,
     date
   );
 
@@ -34,12 +38,12 @@ export const readAll = async (req: Request, res: Response) => {
       .json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('문장'), recommendSentences));
   }
 
-  const userSentences: number[] = await sentencesService.readAllDiaries(emotion, user, before30Day);
-  const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(emotion, user);
+  const userSentences: number[] = await sentencesService.readAllDiaries(emotionId, userId, before30Day);
+  const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(emotionId, userId);
   const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
-  recommendSentences = await sentencesService.readAllNotInUserSentences(emotion, cannotRecommendSentence);
-  await sentencesService.createUsersRecommendSentences(user, recommendSentences);
+  recommendSentences = await sentencesService.readAllNotInUserSentences(emotionId, cannotRecommendSentence);
+  await sentencesService.createUsersRecommendSentences(userId, recommendSentences);
 
   return res
     .status(statusCode.OK)

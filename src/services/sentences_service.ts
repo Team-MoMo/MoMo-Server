@@ -28,6 +28,7 @@ export const readAllInUserRecommendSentences = async (userRecommendSentenceIds: 
       id: { [Op.in]: userRecommendSentenceIds },
     },
   });
+
   return sentences;
 };
 
@@ -42,6 +43,7 @@ export const readAllUsersRecommendSentencesAfter6 = async (emotionId: number, us
       createdAt: { [Op.gte]: date.format('YYYY-MM-DD HH:mm') },
     },
   });
+
   userRecommendedSentenceIds = usersRecommendedSentences.map((element) => {
     return element.sentenceId;
   });
@@ -58,9 +60,11 @@ export const readAllUsersRecommendSentences = async (emotionId: number, userId: 
       userId,
     },
   });
+
   userRecommendedSentenceIds = usersRecommendedSentences.map((element) => {
     return element.sentenceId;
   });
+
   return userRecommendedSentenceIds;
 };
 
@@ -84,9 +88,13 @@ export const readAllDiaries = async (emotionId: number, userId: number, before30
 };
 
 export const createUsersRecommendSentences = async (userId: number, recommendSentences: Sentence[]) => {
-  await model.UsersRecommendedSentences.bulkCreate([
-    { userId: userId, emotionId: recommendSentences[0].emotionId, sentenceId: recommendSentences[0].id },
-    { userId: userId, emotionId: recommendSentences[1].emotionId, sentenceId: recommendSentences[1].id },
-    { userId: userId, emotionId: recommendSentences[2].emotionId, sentenceId: recommendSentences[2].id },
-  ]);
+  await model.UsersRecommendedSentences.bulkCreate(
+    recommendSentences.map((item) => {
+      return {
+        userId,
+        emotionId: item.emotionId,
+        sentenceId: item.id,
+      };
+    })
+  );
 };
