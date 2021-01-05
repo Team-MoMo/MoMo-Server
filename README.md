@@ -1,3 +1,5 @@
+# MOMO SERVER
+
 ### 🌊 당신의 감정 기록을 도와줄 작가의 감정 표현 '**MOMO**' 
 <img src="https://user-images.githubusercontent.com/60434971/103637907-87ab4c00-4f8f-11eb-9007-43d4385e69ad.png" width="200" height="200"> <br>
 * SOPT 27th APPJAM
@@ -54,16 +56,16 @@
 
 </br>
 
-## ERD
+## 🛠 ERD
 
 <br>
 
-## Architecture
+## 🏛 Architecture
 
 <br>
 
 
-## Dependencies
+## ⚙ Dependencies
 * sequelize : ORM 
 * typescript : 타입 스크립트 
 * crypto : 비밀번호 암호화 및 인증
