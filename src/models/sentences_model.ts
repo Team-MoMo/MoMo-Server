@@ -5,6 +5,7 @@ import Diary from './diaries_model';
 interface SentenceAttributes {
   id?: number;
   contents: string;
+  bookName: string;
   writer: string;
   publisher: string;
   emotionId: number;
@@ -13,6 +14,7 @@ interface SentenceAttributes {
 class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
   public id!: number;
   public contents!: string;
+  public bookName!: string;
   public writer!: string;
   public publisher!: string;
   public emotionId!: number;
@@ -33,6 +35,10 @@ Sentence.init(
       primaryKey: true,
     },
     contents: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    bookName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
