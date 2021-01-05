@@ -226,7 +226,7 @@ export const createTempPassword = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.TEMP_PASSWORD_ISSUE_EXCEDDED));
     }
 
-    const randomString = Math.random().toString(36).slice(3);
+    const randomString = Math.random().toString(36).slice(5);
     await emailUtil.send(email, randomString);
     const updatedUser = await usersService.updateTempPassword(user, randomString, tempPasswordIssueCount);
     const data = {
