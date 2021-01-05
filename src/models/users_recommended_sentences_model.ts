@@ -1,24 +1,20 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from './index';
 
-interface DiaryAttributes {
+interface UsersRecommendedSentencesAttributes {
   id: number;
-  contents: string;
-  position: number;
-  depth: number;
   userId: number;
   sentenceId: number;
   emotionId: number;
   createdAt?: string;
 }
 
-interface DiaryCreationAttributes extends Optional<DiaryAttributes, 'id'> {}
+interface UsersRecommendedSentencesCreationAttributes extends Optional<UsersRecommendedSentencesAttributes, 'id'> {}
 
-class Diary extends Model<DiaryAttributes, DiaryCreationAttributes> implements DiaryAttributes {
+class UsersRecommendedSentences
+  extends Model<UsersRecommendedSentencesAttributes, UsersRecommendedSentencesCreationAttributes>
+  implements UsersRecommendedSentencesAttributes {
   public id!: number;
-  public contents!: string;
-  public position!: number;
-  public depth!: number;
   public userId!: number;
   public sentenceId!: number;
   public emotionId!: number;
@@ -27,24 +23,12 @@ class Diary extends Model<DiaryAttributes, DiaryCreationAttributes> implements D
   readonly updatedAt!: Date;
 }
 
-Diary.init(
+UsersRecommendedSentences.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
-    },
-    position: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    depth: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    contents: {
-      type: DataTypes.TEXT,
-      allowNull: false,
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -61,8 +45,8 @@ Diary.init(
   },
   {
     sequelize,
-    tableName: 'Diaries',
+    tableName: 'UsersRecommendedSentences',
   }
 );
 
-export default Diary;
+export default UsersRecommendedSentences;

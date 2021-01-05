@@ -16,6 +16,7 @@ import Emotion from './emotions_model';
 import Sentence from './sentences_model';
 import Diary from './diaries_model';
 import Notification from './notifications_model';
+import UsersRecommendedSentences from './users_recommended_sentences_model';
 
 User.hasMany(Diary, {
   sourceKey: 'id',
@@ -47,6 +48,21 @@ Emotion.hasMany(Diary, {
   as: 'diaries',
 });
 
-const db = { User, Diary, Emotion, Sentence, Notification };
+User.belongsToMany(Sentence, {
+  through: 'UsersRecommendedSentences',
+  foreignKey: 'userId',
+});
+
+Sentence.belongsToMany(User, {
+  through: 'UsersRecommendedSentences',
+  foreignKey: 'sentenceId',
+});
+
+Emotion.hasMany(UsersRecommendedSentences, {
+  sourceKey: 'id',
+  foreignKey: 'emotionId',
+  as: 'usersRecommendedSentences',
+});
+const db = { User, Diary, Emotion, Sentence, Notification, UsersRecommendedSentences };
 
 export default db;
