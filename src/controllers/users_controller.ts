@@ -1,6 +1,7 @@
 import { statusCode, jwt, authUtil, emailUtil, resMessage, loginUtil } from '../utils';
 import { Request, Response } from 'express';
 import { usersService } from '../services';
+import User from '../models/users_model';
 
 const USER: string = '회원';
 const ALARM: string = '알람';
@@ -96,7 +97,7 @@ export const signin = async (req: Request, res: Response) => {
 export const readAll = async (req: Request, res: Response) => {
   try {
     let users = await usersService.readAll();
-    users = users.map((user) => {
+    users = users.map((user: User) => {
       loginUtil.blindPassword(user);
       return user;
     });
