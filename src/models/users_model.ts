@@ -1,6 +1,5 @@
 import { Model, DataTypes, Association, Optional } from 'sequelize';
 import Diary from './diaries_model';
-
 import { sequelize } from './index';
 import Notification from './notifications_model';
 
@@ -8,10 +7,13 @@ interface UserAttributes {
   id: number;
   email: string;
   password: string;
-  passwordSalt: string;
+  passwordSalt?: string;
   name: string;
   isAlarmSet?: boolean;
   alarmTime?: Date | null;
+  tempPassword?: string | null;
+  tempPasswordCreatedAt?: Date | null;
+  tempPasswordIssueCount?: number;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
@@ -24,6 +26,9 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public name!: string;
   public isAlarmSet!: boolean;
   public alarmTime!: Date | null;
+  public tempPassword!: string | null;
+  public tempPasswordCreatedAt!: Date | null;
+  public tempPasswordIssueCount!: number;
 
   // timestamps!
   readonly createdAt!: Date;
@@ -67,6 +72,19 @@ User.init(
     alarmTime: {
       type: DataTypes.TIME,
       allowNull: true,
+    },
+    tempPassword: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    tempPasswordCreatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    tempPasswordIssueCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {

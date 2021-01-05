@@ -12,5 +12,6 @@ router.get('/:id', usersController.readOne);
 router.put('/:id/alarm', usersController.updateAlarm);
 router.put('/:id/password', usersController.updatePassword);
 router.delete('/:id', usersController.deleteOne);
+router.post('/password/temp', usersController.createTempPassword);
 
 export default router;
