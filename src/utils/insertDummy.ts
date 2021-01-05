@@ -43,6 +43,7 @@ const insertDummy = async (db: Models) => {
           return {
             contents: `test_contents_${index}`,
             writer: `test_writer_${index}`,
+            bookName: `test_bookName_${index}`,
             publisher: `test_publisher_${index}`,
             emotionId: random.getInt(1, emotionList.length),
           };
@@ -60,7 +61,7 @@ const insertDummy = async (db: Models) => {
             contents: `test_contents_${index}`,
             userId: random.getInt(1, userList.length),
             sentenceId: sentenceId,
-            emotionId: sentenceList[sentenceId]?.emotionId,
+            emotionId: sentenceList[sentenceId + 1]?.emotionId,
             wroteAt: random.getDate(),
           };
         })
