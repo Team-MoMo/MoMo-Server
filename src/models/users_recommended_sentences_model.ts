@@ -1,18 +1,16 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { sequelize } from './index';
 
 interface UsersRecommendedSentencesAttributes {
-  id: number;
+  id?: number;
   userId: number;
   sentenceId: number;
   emotionId: number;
   createdAt?: string;
 }
 
-interface UsersRecommendedSentencesCreationAttributes extends Optional<UsersRecommendedSentencesAttributes, 'id'> {}
-
 class UsersRecommendedSentences
-  extends Model<UsersRecommendedSentencesAttributes, UsersRecommendedSentencesCreationAttributes>
+  extends Model<UsersRecommendedSentencesAttributes>
   implements UsersRecommendedSentencesAttributes {
   public id!: number;
   public userId!: number;
