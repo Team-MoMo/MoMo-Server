@@ -70,11 +70,13 @@ Sentence.belongsToMany(User, {
   foreignKey: 'sentenceId',
 });
 
+UsersRecommendedSentences.belongsTo(Emotion, { targetKey: 'id' });
 Emotion.hasMany(UsersRecommendedSentences, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
   as: 'usersRecommendedSentences',
 });
+
 const db = { User, Diary, Emotion, Sentence, Notification, UsersRecommendedSentences };
 
 export default db;
