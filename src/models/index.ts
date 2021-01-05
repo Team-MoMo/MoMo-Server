@@ -25,30 +25,35 @@ import Diary from './diaries_model';
 import Notification from './notifications_model';
 import UsersRecommendedSentences from './users_recommended_sentences_model';
 
+Diary.belongsTo(User, { targetKey: 'id' });
 User.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'userId',
   as: 'diaries',
 });
 
+Notification.belongsTo(User, { targetKey: 'id' });
 User.hasMany(Notification, {
   sourceKey: 'id',
   foreignKey: 'userId',
   as: 'notifications',
 });
 
+Diary.belongsTo(Sentence, { targetKey: 'id' });
 Sentence.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'sentenceId',
   as: 'diaries',
 });
 
+Sentence.belongsTo(Emotion, { targetKey: 'id' });
 Emotion.hasMany(Sentence, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
   as: 'sentences',
 });
 
+Diary.belongsTo(Emotion, { targetKey: 'id' });
 Emotion.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
