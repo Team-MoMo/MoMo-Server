@@ -46,11 +46,7 @@ export const readOneByEmail = async (email: string) => {
 };
 
 export const deleteOne = async (user: User) => {
-  await model.User.destroy({
-    where: {
-      id: user.id,
-    },
-  });
+  await user.destroy();
   return;
 };
 
@@ -62,21 +58,13 @@ export const checkPassword = (user: User, password: string) => {
   return true;
 };
 
-export const updatePassword = async (id: number, password: string) => {
+export const updatePassword = async (user: User, password: string) => {
   const salt = crypto.randomBytes(64).toString('base64');
   const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
-  await model.User.update(
-    {
-      password: hashedPassword,
-      passwordSalt: salt,
-    },
-    {
-      where: {
-        id,
-      },
-    }
-  );
-  return;
+  return await user.update({
+    password: hashedPassword,
+    passwordSalt: salt,
+  });
 };
 
 export const updateTempPassword = async (user: User, tempPassword: string, tempPasswordIssueCount: number) => {
@@ -88,46 +76,15 @@ export const updateTempPassword = async (user: User, tempPassword: string, tempP
   });
 };
 
-export const updateAlarmSet = async (id: number, isAlarmSet: boolean) => {
-  await model.User.update(
-    {
-      isAlarmSet,
-    },
-    {
-      where: {
-        id,
-      },
-    }
-  );
-
-  const userAlarmInfo = await model.User.findOne({
-    attributes: ['isAlarmSet', 'alarmTime'],
-    where: {
-      id,
-    },
+export const updateAlarmSet = async (user: User, isAlarmSet: boolean) => {
+  return await user.update({
+    isAlarmSet,
   });
-  return userAlarmInfo;
 };
 
-export const updateAlarmTime = async (id: number, isAlarmSet: boolean, alarmTime: Date) => {
-  await model.User.update(
-    {
-      isAlarmSet,
-      alarmTime,
-    },
-    {
-      where: {
-        id,
-      },
-    }
-  );
-
-  const userAlarmInfo = await model.User.findOne({
-    attributes: ['isAlarmSet', 'alarmTime'],
-    where: {
-      id,
-    },
+export const updateAlarmTime = async (user: User, isAlarmSet: boolean, alarmTime: Date) => {
+  return await user.update({
+    isAlarmSet,
+    alarmTime,
   });
-
-  return userAlarmInfo;
 };

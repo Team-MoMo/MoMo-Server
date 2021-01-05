@@ -1,4 +1,4 @@
-import { statusCode, jwt, authUtil, emailUtil, resMessage } from '../utils';
+import { statusCode, jwt, authUtil, emailUtil, resMessage, passwordUtil } from '../utils';
 import { Request, Response } from 'express';
 import { usersService } from '../services';
 
@@ -16,9 +16,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const newUser = await usersService.create(email, name, password);
     const { token } = jwt.sign(newUser);
-    newUser.password = '';
-    newUser.passwordSalt = '';
-    newUser.tempPassword = '';
+    passwordUtil.blindPassword(newUser);
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.SIGN_UP_SUCCESS, { user: newUser, token }));
   } catch (err) {
@@ -50,7 +48,7 @@ export const signin = async (req: Request, res: Response) => {
   try {
     const user = await usersService.readOneByEmail(email);
     if (!user) {
-      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('이메일')));
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
 
     if (!usersService.checkPassword(user, password)) {
@@ -58,9 +56,7 @@ export const signin = async (req: Request, res: Response) => {
     }
 
     const { token } = jwt.sign(user);
-    user.password = '';
-    user.passwordSalt = '';
-    user.tempPassword = '';
+    passwordUtil.blindPassword(user);
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.SIGN_IN_SUCCESS, { user, token }));
   } catch (err) {
@@ -72,9 +68,7 @@ export const readAll = async (req: Request, res: Response) => {
   try {
     let users = await usersService.readAll();
     users = users.map((user) => {
-      user.password = '';
-      user.passwordSalt = '';
-      user.tempPassword = '';
+      passwordUtil.blindPassword(user);
       return user;
     });
 
@@ -95,10 +89,7 @@ export const readOne = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
-
-    user.password = '';
-    user.passwordSalt = '';
-    user.tempPassword = '';
+    passwordUtil.blindPassword(user);
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS('회원'), user));
   } catch (err) {
@@ -119,14 +110,15 @@ export const updateAlarm = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
 
-    let userAlarmInfo;
+    let updatedUser;
     if (!alarmTime) {
-      userAlarmInfo = await usersService.updateAlarmSet(id, isAlarmSet);
+      updatedUser = await usersService.updateAlarmSet(user, isAlarmSet);
     } else {
-      userAlarmInfo = await usersService.updateAlarmTime(id, isAlarmSet, alarmTime);
+      updatedUser = await usersService.updateAlarmTime(user, isAlarmSet, alarmTime);
     }
+    const alarmInfo = { isAlarmSet: user.isAlarmSet, alarmTime: user.alarmTime };
 
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('알람'), userAlarmInfo));
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('알람'), alarmInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_UPDATE_FAIL('알람')));
   }
@@ -169,10 +161,8 @@ export const updatePassword = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
 
-    await usersService.updatePassword(id, newPassword);
-    user.password = '';
-    user.passwordSalt = '';
-    user.tempPassword = '';
+    const updatedUser = await usersService.updatePassword(user, newPassword);
+    passwordUtil.blindPassword(updatedUser);
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS('비밀번호'), user));
   } catch (err) {
@@ -194,10 +184,8 @@ export const deleteOne = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
     }
 
-    await user.destroy();
-    user.password = '';
-    user.passwordSalt = '';
-    user.tempPassword = '';
+    await usersService.deleteOne(user);
+    passwordUtil.blindPassword(user);
 
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_DELETE_SUCCESS('회원'), user));
   } catch (err) {
@@ -229,12 +217,14 @@ export const createTempPassword = async (req: Request, res: Response) => {
     const randomString = Math.random().toString(36).slice(5);
     await emailUtil.send(email, randomString);
     const updatedUser = await usersService.updateTempPassword(user, randomString, tempPasswordIssueCount);
-    const data = {
+    const tempPasswordInfo = {
       email: email,
       tempPasswordIssueCount: updatedUser.tempPasswordIssueCount,
     };
 
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_SUCCESS('임시 비밀번호 발급'), data));
+    return res
+      .status(statusCode.OK)
+      .json(authUtil.successTrue(resMessage.X_SUCCESS('임시 비밀번호 발급'), tempPasswordInfo));
   } catch (err) {
     console.log(err);
     return res
