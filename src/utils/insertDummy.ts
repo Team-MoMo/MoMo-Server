@@ -24,8 +24,6 @@ const insertDummy = async (db: Models) => {
             name: `test_name_${index}`,
             password: `test_password_${index}`,
             passwordSalt: `test_passwordSalt_${index}`,
-            // isAlarmSet: null,
-            // alarmTime: null,
           };
         })
     );
