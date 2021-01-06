@@ -25,7 +25,21 @@ tags:
   - name: Sentences
     description: "Everything about Sentences"
 paths:
-  $ref: "./paths/_index.yaml"
+  /users :
+    get: 
+      summary: '회원 전체 조회'
+      responses:
+        '200': 
+          description: '회원 정보'
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    
 components:
   securitySchemes:
     BearerAuth:
