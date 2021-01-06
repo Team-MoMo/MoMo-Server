@@ -17,11 +17,8 @@ class Emotion extends Model<EmotionAttributes, EmotionCreationAttributes> implem
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
-  getSentence!: HasManyGetAssociationsMixin<Sentence>;
-  public readonly senetences?: Sentence[];
-
   static associations: {
-    senetences: Association<Emotion, Sentence>;
+    sentences: Association<Emotion, Sentence>;
     diaries: Association<Emotion, Diary>;
   };
 }

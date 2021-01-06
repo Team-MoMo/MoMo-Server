@@ -6,25 +6,26 @@ import logger from 'morgan';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import indexRouter from './routes/index';
-import { normalizePort, handle404Error, handleError } from './middleWares/index';
-
-const app: express.Application = express();
-
 // use env_values
 dotenv.config();
 
-const { sequelize } = require('./models');
-sequelize
-  .sync({
-    alter: false,
-  })
-  .then(() => {
-    console.log('Sequelize Sync Success');
-  })
-  .catch((error: any) => {
-    console.error(error);
-  });
+import db, { sequelize } from './models';
+import indexRouter from './routes/index';
+import { normalizePort, handle404Error, handleError } from './middleWares/index';
+import database from './configs/database';
+import { insertDummy } from './utils';
+
+const app: express.Application = express();
+
+// Database Init & Insert DummyData
+(async () => {
+  await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
+  await sequelize.sync({ force: database.init });
+  database.init && insertDummy(db);
+  console.log(`Database Init: ${database.init}`);
+  console.log('Sequelize connect success');
+  return;
+})();
 
 app.set('port', normalizePort(process.env.PORT || '3000'));
 app.use(cors());
