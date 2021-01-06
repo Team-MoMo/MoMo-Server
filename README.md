@@ -1,4 +1,4 @@
-# MoMo-Server# MOMO SERVER
+# MOMO-SERVER
 
 ### 🌊 당신의 감정 기록을 도와줄 작가의 감정 표현 '**MOMO**' 
 <img src="https://user-images.githubusercontent.com/60434971/103637907-87ab4c00-4f8f-11eb-9007-43d4385e69ad.png" width="200" height="200"> <br>
@@ -17,18 +17,23 @@
 <br> <br>
 ## 📌핵심 기능
 
+
 ### ✔문장 추천
-매일 매일 다른 3개의 문장을 감정별로 제공
+매일 매일 다른 3개의 문장을 감정별로 제공 <br><br>
+<img src="https://user-images.githubusercontent.com/60434971/103647660-fe037a80-4f9e-11eb-9ae0-bb6ff49d7b1f.JPG" height="350"><br><br>
 
 ### ✔일기 작성
-문장을 선택하여 감정의 깊이가 담긴 일기를 기록
+문장을 선택하여 감정의 깊이가 담긴 일기를 기록 <br><br>
+<img src="https://user-images.githubusercontent.com/60434971/103648740-a960ff00-4fa0-11eb-826f-6a911a3ddc17.jpg" height="350"><br><br>
 
 ### ✔일기 조회
 개별 일기 조회<br> 
 **월간 일기 리스트** - **감정 깊이별 조회**, 날짜별 조회 제공<br>
-월간 일기 통계 - 이번 달의 감정을 한 눈에 볼 수 있는 통계 제공 
-
-<br>
+월간 일기 통계 - 이번 달의 감정을 한 눈에 볼 수 있는 통계 제공  <br><br>
+<img src="https://user-images.githubusercontent.com/60434971/103648246-e5e02b00-4f9f-11eb-8a9d-0fd8520a7550.JPG" height="365">
+<img src="https://user-images.githubusercontent.com/60434971/103648730-a6660e80-4fa0-11eb-9723-7c8464bccffd.jpg" height="350">
+<img src="https://user-images.githubusercontent.com/60434971/103648254-e973b200-4f9f-11eb-9d88-b5eedaf5e9ed.JPG" height="345">
+<br><b3>
 
 ## 👨‍👧‍👧 Developer & Role
 <table style="text-align: center;">
@@ -57,6 +62,7 @@
 </br>
 
 ## 🛠 ERD
+<img src="https://user-images.githubusercontent.com/60434971/103767820-a596b080-5064-11eb-9d77-ccc0941206ca.png" height="550">
 
 <br>
 
