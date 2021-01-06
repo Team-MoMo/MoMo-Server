@@ -1,5 +1,6 @@
 import { statusCode, authUtil, resMessage } from '../utils';
 import { Request, Response } from 'express';
+import { usersService } from '../services';
 import { sentencesService } from '../services';
 import Sentence from '../models/sentences_model';
 import dayjs from 'dayjs';
@@ -15,7 +16,14 @@ export const readAll = async (req: Request, res: Response) => {
   if (!emotion || !user) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
-  const now = dayjs(new Date());
+
+  try {
+    const userInfo = await usersService.readOne(userId);
+    if(!userInfo) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
+    }
+
+    const now = dayjs(new Date());
   const before30Day = now.subtract(30, 'day');
   let date;
 
@@ -35,7 +43,7 @@ export const readAll = async (req: Request, res: Response) => {
     recommendSentences = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
     return res
       .status(statusCode.OK)
-      .json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('문장'), recommendSentences));
+      .json(authUtil.successTrue(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
   }
 
   const userSentences: number[] = await sentencesService.readAllDiaries(emotionId, userId, before30Day);
@@ -47,5 +55,9 @@ export const readAll = async (req: Request, res: Response) => {
 
   return res
     .status(statusCode.OK)
-    .json(authUtil.successTrue(resMessage.X_READ_ALL_SUCCESS('문장'), recommendSentences));
+    .json(authUtil.successTrue(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_FAIL('문장')));
+  }
+  
 };
