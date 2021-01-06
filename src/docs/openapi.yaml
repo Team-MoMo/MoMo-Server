@@ -1,0 +1,189 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: MoMo API docs
+  description: MoMo 프로젝트의 API 문서입니다
+  license:
+    name: MIT
+servers:
+  - description: master server
+    url: http://3.36.79.14:3000
+  - description: local server
+    url: http://localhost:3000
+schemas: [http, https]
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+tags:
+  - name: Users
+    description: "Everything about Users"
+  - name: Diaries
+    description: "Everything about Diaries"
+  - name: Emotions
+    description: "Everything about Emotions"
+  - name: Sentences
+    description: "Everything about Sentences"
+paths:
+  $ref: "./paths/_index.yaml"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Authorization
+  schemas:
+    Users:
+      type: object
+      required:
+        - id
+        - email
+        - name
+        - password
+        - passwordSalt
+      properties:
+        id:
+          type: number
+          description: index
+        email:
+          type: string
+          description: 회원 이메일
+        name:
+          type: string
+        password:
+          type: string
+        passwordSalt:
+          type: string
+        isAlarmSet: 
+          type: boolean
+        alarmTime:
+          type: time
+        tempPassword:
+          type: string
+        tempPasswordCreatedAt:
+          type: date-time
+        tempPasswordIssueCount:
+          type: number
+        createdAt:
+          type: date-time
+        updatedAt:
+          type: date-time
+    Emotions:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: number
+          description: index
+        name:
+          type: string
+          description: 감정 이름
+        createdAt:
+          type: date-time
+        updatedAt:
+          type: date-time
+    Sentences:
+      type: object
+      required: ['id', 'contents', 'bookName', 'writer', 'publisher', 'emotionId']
+      properties:
+        id: 
+          type: number
+        contents:
+          type: string
+        bookName:
+          type: string
+        writer:
+          type: string
+        publisher:
+          type: string
+        emotionId:
+          type: number
+        createdAt:
+          type: date-time
+        updatedAt:
+          type: date-time
+    Diaries:
+      type: object
+      required: ['id', 'content', 'position', 'depth', 'userId', 'sentenceId', 'emotionId', 'wroteAt']
+      properties:
+        id:
+          type: number
+        content:
+          type: string
+        position:
+          type: number
+        depth:
+          type: number
+        userId:
+          type: number
+        sentenceId:
+          type: number
+        emotionId:
+          type: number
+        wroteAt:
+          type: date-time
+        createdAt:
+          type: date-time
+        updatedAt:
+          type: date-time
+    Notifications:
+      type: object
+      required: ['id', 'deviceToken', 'userId']
+      properties:
+        id:
+          type: number
+        deviceToken:
+          type: string
+        userId:
+          type: number
+    UsersRecommendedSentences:
+      type: object
+      required: ['id', 'userId', 'sentenceId', 'emotionId']
+      properties:
+        id:
+          type: number
+        userId:
+          type: number
+        sentenceId:
+          type: number
+        emotionId:
+          type: number
+  responses:
+    BadRequest:
+      description: 잘못된 요청
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: 잘못된 요청
+    InternalServerError:
+      description: 서버 에러
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: 서버 내부 오류
+    DBError:
+      description: 데이터베이스 에러
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: 데이터베이스 에러
+    Unauthorized:
+      description: 권한 없음
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: 권한 없음

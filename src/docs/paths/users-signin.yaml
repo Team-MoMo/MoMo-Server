@@ -1,0 +1,39 @@
+post:
+  summary: Login
+  tags:
+    - users
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  getUserInfoResult:
+                    $ref: "../openapi.yaml#/components/schemas/Users"
+                  token:
+                    type: string
+    400:
+      $ref: "../openapi.yaml#/components/responses/BadRequest"
+    500:
+      $ref: "../openapi.yaml#/components/responses/InternalServerError"
+    default:
+      $ref: "../openapi.yaml#/components/responses/InternalServerError"
