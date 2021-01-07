@@ -5,7 +5,7 @@ import Diary from '../models/diaries_model';
 
 const DIARY = '일기';
 
-interface ReadAll {
+interface ReadAllAttributes {
   order?: string;
   userId?: string;
   emotionId?: string;
@@ -15,9 +15,9 @@ interface ReadAll {
 }
 
 export const readAll = async (req: Request, res: Response) => {
-  const { order, userId, emotionId, depth, year, month }: ReadAll = req.query;
+  const { order, userId, emotionId, depth, year, month }: ReadAllAttributes = req.query;
   let diaryList: Diary[];
-  if (!userId || !year || !month || (order === 'filter' && (!emotionId || !depth))) {
+  if (!userId || !year || !month || (order === 'filter' && !emotionId && !depth)) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
 
