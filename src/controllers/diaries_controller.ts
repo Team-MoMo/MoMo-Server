@@ -98,8 +98,29 @@ export const readOne = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
+  const {
+    contents,
+    depth,
+    userId,
+    sentenceId,
+    emotionId,
+    wroteAt,
+  }: {
+    contents: number;
+    depth: number;
+    userId: number;
+    sentenceId: number;
+    emotionId: number;
+    wroteAt: string;
+  } = req.body;
+
+  if (!contents || !depth || !userId || !sentenceId || !emotionId || !wroteAt) {
+    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+  }
+
   try {
     const diaryInfo = await diariesService.create(req.body);
+
     return res.status(statusCode.CREATED).json(authUtil.successTrue(resMessage.X_CREATE_SUCCESS(DIARY), diaryInfo));
   } catch (err) {
     return res
