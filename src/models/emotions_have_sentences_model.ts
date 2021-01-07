@@ -1,49 +1,40 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from './index';
 
-interface UsersRecommendedSentencesAttributes {
+interface EmotionsHaveSentencesAttributes {
   id?: number;
-  userId: number;
   sentenceId: number;
   emotionId: number;
-  createdAt?: string;
 }
 
-class UsersRecommendedSentences
-  extends Model<UsersRecommendedSentencesAttributes>
-  implements UsersRecommendedSentencesAttributes {
+class EmotionsHaveSentences extends Model<EmotionsHaveSentencesAttributes> implements EmotionsHaveSentencesAttributes {
   public id!: number;
-  public userId!: number;
   public sentenceId!: number;
   public emotionId!: number;
-  readonly createdAt!: string;
+  readonly createdAt!: Date;
   readonly updatedAt!: Date;
 }
 
-UsersRecommendedSentences.init(
+EmotionsHaveSentences.init(
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     sentenceId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    emotion: {
+    emotionId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'UsersRecommendedSentences',
+    tableName: 'EmotionsHaveSentences',
   }
 );
 
-export default UsersRecommendedSentences;
+export default EmotionsHaveSentences;

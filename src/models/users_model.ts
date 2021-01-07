@@ -25,8 +25,6 @@ class User extends Model<UserAttributes> implements UserAttributes {
   public tempPassword!: string | null;
   public tempPasswordCreatedAt!: Date | null;
   public tempPasswordIssueCount!: number;
-
-  // timestamps!
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 

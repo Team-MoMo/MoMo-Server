@@ -11,7 +11,6 @@ class Notification extends Model<NotificationAttributes> implements Notification
   public id!: number;
   public deviceToken!: string;
   public userId!: number;
-
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 }
