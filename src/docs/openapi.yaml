@@ -25,21 +25,893 @@ tags:
   - name: Sentences
     description: "Everything about Sentences"
 paths:
-  /users :
-    get: 
-      summary: '회원 전체 조회'
+  /users/signin:
+    post:
+      summary: '로그인'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
       responses:
-        '200': 
-          description: '회원 정보'
-          content: 
+        '200':
+          description: 'SUCCESS : 로그인 성공'
+          content:
             application/json:
               schema:
                 type: object
                 properties:
-                  id:
+                  message:
+                    type: string
+                    example: '로그인 성공'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          schema:
+                            $ref: '#/components/schemas/Users'
+                      token:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                '아이디 오류':
+                  value:
+                    message: '존재하지 않는 회원'
+                '패스워드 오류':
+                  value:
+                    message: '비밀번호가 일치하지 않습니다'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '로그인 실패'
+  /users/signup:
+    post:
+      summary: '회원가입'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: 'SUCCESS : 회원가입 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '회원가입 성공'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          schema:
+                            $ref: '#/components/schemas/Users'
+                      token:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
+        '400':
+          description: 'FAIL : 중복된 이메일'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '사용 불가능한 ID입니다.'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '회원가입 실패'
+  /users:
+    get:
+      summary: '회원전체조회'
+      responses:
+        '200':
+          description: 'SUCCESS : 회원 전체 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '회원 전체 조회 성공'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Users'
+        
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '회원 전체 조회 실패'
+  /users/:id:
+    get:
+      summary: '회원 조회'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: user 고유 id
+      responses:
+        '200':
+          description: 'SUCCESS: 회원 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '회원 조회 성공'
+                  data:
+                    $ref: '#/components/schemas/Users'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'id값 입력없는 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id값 오류':
+                  value:
+                    message: '존재하지 않는 회원'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '회원 조회 실패'
+    delete:
+      summary: '회원 탈퇴'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: user 고유 id
+      responses:
+        '200':
+          description: 'SUCCESS: 회원 삭제 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '회원 삭제 성공'
+                  data:
+                    $ref: '#/components/schemas/Users'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'id값 입력없는 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id값 오류':
+                  value:
+                    message: '존재하지 않는 회원'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '회원 삭제 실패'
+  /users/:id/alarm:
+    put:
+      summary: '알람 변경'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: user 고유 id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  isAlarmSet:
+                    type: boolean
+                  alarmTime:
+                    type: string
+            examples:
+              알람 on/off:
+                summary: '알람 on/off 변경하는 경우'
+                value:
+                  isAlarmSet: true
+              알람 시간 설정:
+                summary: '알람 시간 설정 및 변경하는 경우'
+                value:
+                  isAlarmSet: true
+                  alarmTime: "06:00"
+      responses:
+        '200':
+          description: 'SUCCESS : 알람 수정 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '알람 수정 성공'
+                  data:
+                    type: object
+                    properties:
+                      isAlarmSet:
+                        type: boolean
+                        example: true
+                      alarmTime:
+                        type: string
+                        example: "06:00"
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'id값 / isAlarmSet 입력없는 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id값 오류':
+                  value:
+                    message: '존재하지 않는 회원'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '알람 수정 실패'
+  /users/:id/password:
+    put:
+      summary: '비밀번호 변경'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: user 고유 id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  newPassword:
+                    type: string
+            example:
+                newPassword: "새로운 비밀번호"
+      responses:
+        '200':
+          description: 'SUCCESS: 비밀번호 수정 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '비밀번호 수정 성공'
+                  data:
+                    $ref: '#/components/schemas/Users'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'id값 / newPassword 입력없는 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id값 오류':
+                  value:
+                    message: '존재하지 않는 회원'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '비밀번호 수정 실패'
+    post:
+      summary: '비밀번호 확인'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: user 고유 id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  newPassword:
+                    type: string
+            example:
+                password: "현재 비밀번호"
+      responses:
+        '200':
+          description: 'SUCCESS: 비밀번호 일치'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '비밀번호가 일치합니다'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'id값 / password 입력없는 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id값 오류':
+                  value:
+                    message: '존재하지 않는 회원'
+                'password 입력 오류':
+                  value:
+                    message: '비밀번호가 일치하지 않습니다'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '서버 내부 오류'
+  /users/password/temp:
+    post:
+      summary: '임시비밀번호 발급'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+            example:
+                email: 'chaeppy108@gmail.com'
+      responses:
+        '200':
+          description: 'SUCCESS: 임시비밀번호 발급 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '임시 비밀번호 발급 성공'
+                  data:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: 'chaeppy108@gmail.com'
+                      tempPasswordIssueCount:
+                        type: integer
+                        example: 1
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'email 입력 오류':
+                  value:
+                    message: '존재하지 않는 이메일'
+                '임시비밀번호 발급 횟수 초과':
+                  value:
+                    message: '임시비밀번호 발급 횟수 초과'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '임시비밀번호 발급 실패'
+  /diaries:
+    post:
+      summary: '다이어리 추가'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  depth:
                     type: integer
-                    format: int64
-                    
+                  contents:
+                    type: string
+                  userId:
+                    type: integer
+                  sentenceId:
+                    type: integer
+                  emotionId:
+                    type: integer
+                  wroteAt:
+                    type: date-time
+            example:
+              depth: 3
+              contents: 'test_contents_0'
+              userId: 8,
+              sentenceId: 40,
+              emotionId: 7,
+              wroteAt: "2020-08-16T00:00:00.000Z"
+      responses:
+        '200':
+          description: 'SUCCESS: 일기 생성 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 생성 성공'
+                  data:
+                    $ref: '#/components/schemas/Diaries'
+        '400':
+          description: 'FAIL : 빈값이 있을 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '필요한 값이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 생성 실패'
+    get:
+      summary: '다이어리 전체 조회'
+      parameters:
+        - in: query
+          name: order
+          schema:
+            type: string
+          required: true
+          examples:
+            date:
+              summary: 날짜로 조회
+              value: date
+            depth:
+              summary: 깊이로 조회
+              value: depth
+            filter:
+              summary: 필터로 조회
+              value: filter
+        - in: query
+          name: userId
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: user 고유 id
+        - in: query
+          name: year
+          schema:
+            type: string
+          required: true
+          example: "2020"
+          description: 조회 할 년도
+        - in: query
+          name: month
+          schema:
+            type: string
+          required: true
+          example: "11"
+          description: 조회 할 월
+        - in: query
+          name: emotionId
+          schema:
+            type: string
+          required: false
+          example: 1
+          description: 감정 고유 id(필터 조회 때 사용)
+        - in: query
+          name: depth
+          schema:
+            type: string
+          required: false
+          example: 1
+          description: 깊이 값(필터 조회 때 사용)
+      responses:
+        '200':
+          description: 'SUCCESS: 다이어리 전체 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 전체 조회 성공'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
+        '400':
+          description: 'FAIL : 빈값이 있을 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '필요한 값이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 전체 조회 실패'
+  /diaries/statics:
+    get:
+      summary: '다이어리 통계 조회'
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: user 고유 id
+        - in: query
+          name: year
+          schema:
+            type: string
+          required: true
+          example: "2020"
+          description: 조회 할 년도
+        - in: query
+          name: month
+          schema:
+            type: string
+          required: true
+          example: "11"
+          description: 조회 할 월
+      responses:
+        '200':
+          description: 'SUCCESS: 다이어리 통계 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 통계 조회 성공'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
+        '400':
+          description: 'FAIL : 빈값이 있을 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '필요한 값이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 통계 조회 실패'
+  /diaries/:id:
+    get:
+      summary: '다이어리 조회'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: 다이어리 고유 id
+      responses:
+        '200':
+          description: 'SUCCESS: 다이어리 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 조회 성공'
+                  data:
+                    $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
+        '400':
+          description: 'FAIL : 빈값이 있을 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '필요한 값이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 조회 실패'
+    put:
+      summary: '다이어리 수정'
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: 다이어리 고유 id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  position:
+                    type: integer
+                  depth:
+                    type: integer
+                  contents:
+                    type: string
+                  userId:
+                    type: integer
+                  sentenceId:
+                    type: integer
+                  emotionId:
+                    type: integer
+                  wroteAt:
+                    type: date-time
+            example:
+              position: 4
+              depth: 3
+              contents: 'test_contents_0'
+              userId: 8,
+              sentenceId: 40,
+              emotionId: 7,
+              wroteAt: "2020-08-16T00:00:00.000Z"
+      responses:
+        '200':
+          description: 'SUCCESS: 일기 수정 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 수정 성공'
+                  data:
+                    $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
+        '400':
+          description: 'FAIL : 빈값이 있을 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '필요한 값이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 수정 실패'
+    delete:
+      summary: '다이어리 삭제'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: 다이어리 고유 id
+      responses:
+        '200':
+          description: 'SUCCESS: 다이어리 삭제 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 삭제 성공'
+                  data:
+                    $ref: '#/components/schemas/Diaries'
+        '400':
+          description: 'FAIL : 빈값이 있을 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '필요한 값이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 삭제 실패'
+  /sentences:
+    get:
+      summary: '문장 조회'
+      parameters:
+        - in: query
+          name: emotion
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: emotion 고유 id
+        - in: query
+          name: user
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: user 고유 id
+      responses:
+        '200':
+          description: 'SUCCESS: 문장 조회 성공(문장 3개)'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '문장 조회 성공'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Sentences'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'user or emotion값 입력없는 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id값 오류':
+                  value:
+                    message: '존재하지 않는 회원'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '문장 조회 실패'
+  /emotions:
+    get:
+      summary: '감정 전체 조회'
+      responses:
+        '200':
+          description: 'SUCCESS: 감정 전체 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '감정 전체 조회 성공'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Emotions'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '감정 전체 조회 실패'
 components:
   securitySchemes:
     BearerAuth:
@@ -164,6 +1036,20 @@ components:
           type: number
         emotionId:
           type: number
+    DiariesWithSentencesAndEmotions:
+      allOf:
+        - $ref: '#/components/schemas/Diaries'
+        - type: object
+          properties:
+            Sentence:
+              $ref: '#/components/schemas/Sentences'
+            Emotion:
+              $ref: '#/components/schemas/Emotions'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
   responses:
     BadRequest:
       description: 잘못된 요청
@@ -172,7 +1058,6 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            success: false
             message: 잘못된 요청
     InternalServerError:
       description: 서버 에러
@@ -181,7 +1066,6 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            success: false
             message: 서버 내부 오류
     DBError:
       description: 데이터베이스 에러
@@ -190,7 +1074,6 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            success: false
             message: 데이터베이스 에러
     Unauthorized:
       description: 권한 없음
@@ -199,5 +1082,4 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            success: false
             message: 권한 없음
