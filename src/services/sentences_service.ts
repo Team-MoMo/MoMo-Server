@@ -92,7 +92,6 @@ export const createUsersRecommendSentences = async (userId: number, recommendSen
     recommendSentences.map((item) => {
       return {
         userId,
-        emotionId: item.emotionId,
         sentenceId: item.id,
       };
     })
