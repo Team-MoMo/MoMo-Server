@@ -2,18 +2,16 @@ import model from '../models';
 import Diary from '../models/diaries_model';
 import { random } from '../utils';
 import sequelize, { Op } from 'sequelize';
+import dayjs from 'dayjs';
 
 interface ReadAllAttributes {
   userId: number;
   year: number;
   month: number;
+  day?: number;
   emotionId?: number;
   depth?: number;
 }
-
-const checkDateRange = (year: number, month: number) => {
-  return month + 1 > 12 ? `${year + 1}-01-01` : `${year}-${month + 1}-01`;
-};
 
 export const readAll = async (userId: number) => {
   const diaryList = await model.Diary.findAll({
@@ -33,12 +31,14 @@ export const readAll = async (userId: number) => {
 };
 
 export const readAllByDepth = async ({ userId, year, month }: ReadAllAttributes) => {
+  const standardTime = dayjs(`${year}-${month}-01`);
+  const addedTime = standardTime.add(1, 'month');
   const diaryListByDepth = await model.Diary.findAll({
     where: {
       userId,
       wroteAt: {
-        [Op.gte]: new Date(`${year}-${month}-01`),
-        [Op.lt]: new Date(checkDateRange(year, month)),
+        [Op.gte]: standardTime.format(),
+        [Op.lt]: addedTime.format(),
       },
     },
     include: [
@@ -59,13 +59,15 @@ export const readAllByDepth = async ({ userId, year, month }: ReadAllAttributes)
   return diaryListByDepth;
 };
 
-export const readAllByDate = async ({ userId, year, month }: ReadAllAttributes) => {
+export const readAllByDate = async ({ userId, year, month, day }: ReadAllAttributes) => {
+  const standardTime = dayjs(`${year}-${month}-${day || '01'}`);
+  const addedTime = day ? standardTime.add(1, 'day') : standardTime.add(1, 'month');
   const diaryListByDate = await model.Diary.findAll({
     where: {
       userId,
       wroteAt: {
-        [Op.gte]: new Date(`${year}-${month}-01`),
-        [Op.lt]: new Date(checkDateRange(year, month)),
+        [Op.gte]: standardTime.format(),
+        [Op.lt]: addedTime.format(),
       },
     },
     include: [
@@ -84,22 +86,28 @@ export const readAllByDate = async ({ userId, year, month }: ReadAllAttributes) 
 };
 
 export const readAllByFilter = async ({ userId, year, month, emotionId, depth }: ReadAllAttributes) => {
+  const standardTime = dayjs(`${year}-${month}-01`);
+  const addedTime = standardTime.add(1, 'month');
   const filteredDiaryList = await model.Diary.findAll({
     where: {
       userId,
-      emotionId: emotionId!,
       depth: depth!,
       wroteAt: {
-        [Op.gte]: new Date(`${year}-${month}-01`),
-        [Op.lt]: new Date(checkDateRange(year, month)),
+        [Op.gte]: standardTime.format(),
+        [Op.lt]: addedTime.format(),
       },
     },
     include: [
       {
         model: model.Sentence,
+        required: true,
         include: [
           {
             model: model.Emotion,
+            required: true,
+            where: {
+              id: emotionId || null,
+            },
           },
         ],
       },
@@ -110,13 +118,15 @@ export const readAllByFilter = async ({ userId, year, month, emotionId, depth }:
 };
 
 export const countByEmotions = async ({ userId, year, month }: ReadAllAttributes) => {
+  const standardTime = dayjs(`${year}-${month}-01`);
+  const addedTime = standardTime.add(1, 'month');
   const emotionCount = await model.Diary.findAll({
     attributes: ['Sentence.Emotions.id', [sequelize.fn('count', sequelize.col('Sentence.Emotions.id')), 'count']],
     where: {
       userId,
       wroteAt: {
-        [Op.gte]: new Date(`${year}-${month}-01`),
-        [Op.lt]: new Date(checkDateRange(year, month)),
+        [Op.gte]: standardTime.format(),
+        [Op.lt]: addedTime.format(),
       },
     },
     include: [
@@ -139,13 +149,15 @@ export const countByEmotions = async ({ userId, year, month }: ReadAllAttributes
 };
 
 export const countByDepth = async ({ userId, year, month }: ReadAllAttributes) => {
+  const standardTime = dayjs(`${year}-${month}-01`);
+  const addedTime = standardTime.add(1, 'month');
   const depthCount = await model.Diary.findAll({
     attributes: ['depth', [sequelize.fn('count', sequelize.col('depth')), 'count']],
     where: {
       userId,
       wroteAt: {
-        [Op.gte]: new Date(`${year}-${month}-01`),
-        [Op.lt]: new Date(checkDateRange(year, month)),
+        [Op.gte]: standardTime.format(),
+        [Op.lt]: addedTime.format(),
       },
     },
     group: ['depth'],
@@ -202,14 +214,16 @@ export const deleteOne = async (diary: Diary) => {
 
 export const readSameDepthDiary = async (diary: Diary) => {
   const [year, month] = diary.wroteAt.split('-');
+  const standardTime = dayjs(`${year}-${month}-01`);
+  const addedTime = standardTime.add(1, 'month');
   const sameDepthDiary = await model.Diary.findAll({
     attributes: ['position', [sequelize.fn('count', sequelize.col('position')), 'count']],
     where: {
       userId: diary.userId,
       depth: diary.depth,
       wroteAt: {
-        [Op.gte]: new Date(`${year}-${month}-01`),
-        [Op.lt]: new Date(checkDateRange(parseInt(year), parseInt(month))),
+        [Op.gte]: standardTime.format(),
+        [Op.lt]: addedTime.format(),
       },
     },
     group: ['position'],
