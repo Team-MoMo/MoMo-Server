@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production ts-node ./src/server.ts",
-    "reset": "cross-env NODE_ENV=production DATABASE_INIT=true ts-node ./src/server.ts",
+    "reset:prod": "cross-env NODE_ENV=production DATABASE_INIT=true ts-node ./src/server.ts",
+    "reset:dev": "cross-env NODE_ENV=development DATABASE_INIT=true ts-node ./src/server.ts",
     "dev": "cross-env NODE_ENV=development nodemon --exec ts-node ./src/server.ts",
     "build": "tsc ./src"
   },
