@@ -12,10 +12,11 @@ interface ReadAllAttributes {
   depth?: string;
   year?: string;
   month?: string;
+  day?: string;
 }
 
 export const readAll = async (req: Request, res: Response) => {
-  const { order, userId, emotionId, depth, year, month }: ReadAllAttributes = req.query;
+  const { order, userId, emotionId, depth, year, month, day }: ReadAllAttributes = req.query;
   let diaryList: Diary[];
   if (!userId || !year || !month || (order === 'filter' && !emotionId && !depth)) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
@@ -25,6 +26,7 @@ export const readAll = async (req: Request, res: Response) => {
     userId: parseInt(userId),
     year: parseInt(year),
     month: parseInt(month),
+    day: day ? parseInt(day) : undefined,
     emotionId: emotionId ? parseInt(emotionId) : undefined,
     depth: depth ? parseInt(depth) : undefined,
   };
