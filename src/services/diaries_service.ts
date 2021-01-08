@@ -13,6 +13,12 @@ interface ReadAllAttributes {
   depth?: number;
 }
 
+const calculateTime = (year: number, month: number, day?: number) => {
+  const standardTime = dayjs(`${year}-${month}-${day || '01'}`);
+  const addedTime = day ? standardTime.add(1, 'day') : standardTime.add(1, 'month');
+  return { standardTime, addedTime };
+};
+
 export const readAll = async (userId: number) => {
   const diaryList = await model.Diary.findAll({
     where: { userId },
@@ -31,8 +37,7 @@ export const readAll = async (userId: number) => {
 };
 
 export const readAllByDepth = async ({ userId, year, month }: ReadAllAttributes) => {
-  const standardTime = dayjs(`${year}-${month}-01`);
-  const addedTime = standardTime.add(1, 'month');
+  const { standardTime, addedTime } = calculateTime(year, month);
   const diaryListByDepth = await model.Diary.findAll({
     where: {
       userId,
@@ -60,8 +65,7 @@ export const readAllByDepth = async ({ userId, year, month }: ReadAllAttributes)
 };
 
 export const readAllByDate = async ({ userId, year, month, day }: ReadAllAttributes) => {
-  const standardTime = dayjs(`${year}-${month}-${day || '01'}`);
-  const addedTime = day ? standardTime.add(1, 'day') : standardTime.add(1, 'month');
+  const { standardTime, addedTime } = calculateTime(year, month, day);
   const diaryListByDate = await model.Diary.findAll({
     where: {
       userId,
@@ -86,8 +90,7 @@ export const readAllByDate = async ({ userId, year, month, day }: ReadAllAttribu
 };
 
 export const readAllByFilter = async ({ userId, year, month, emotionId, depth }: ReadAllAttributes) => {
-  const standardTime = dayjs(`${year}-${month}-01`);
-  const addedTime = standardTime.add(1, 'month');
+  const { standardTime, addedTime } = calculateTime(year, month);
   const filteredDiaryList = await model.Diary.findAll({
     where: {
       userId,
@@ -118,8 +121,7 @@ export const readAllByFilter = async ({ userId, year, month, emotionId, depth }:
 };
 
 export const countByEmotions = async ({ userId, year, month }: ReadAllAttributes) => {
-  const standardTime = dayjs(`${year}-${month}-01`);
-  const addedTime = standardTime.add(1, 'month');
+  const { standardTime, addedTime } = calculateTime(year, month);
   const emotionCount = await model.Diary.findAll({
     attributes: ['Sentence.Emotions.id', [sequelize.fn('count', sequelize.col('Sentence.Emotions.id')), 'count']],
     where: {
@@ -149,8 +151,7 @@ export const countByEmotions = async ({ userId, year, month }: ReadAllAttributes
 };
 
 export const countByDepth = async ({ userId, year, month }: ReadAllAttributes) => {
-  const standardTime = dayjs(`${year}-${month}-01`);
-  const addedTime = standardTime.add(1, 'month');
+  const { standardTime, addedTime } = calculateTime(year, month);
   const depthCount = await model.Diary.findAll({
     attributes: ['depth', [sequelize.fn('count', sequelize.col('depth')), 'count']],
     where: {
@@ -214,8 +215,7 @@ export const deleteOne = async (diary: Diary) => {
 
 export const readSameDepthDiary = async (diary: Diary) => {
   const [year, month] = diary.wroteAt.split('-');
-  const standardTime = dayjs(`${year}-${month}-01`);
-  const addedTime = standardTime.add(1, 'month');
+  const { standardTime, addedTime } = calculateTime(parseInt(year), parseInt(month));
   const sameDepthDiary = await model.Diary.findAll({
     attributes: ['position', [sequelize.fn('count', sequelize.col('position')), 'count']],
     where: {
