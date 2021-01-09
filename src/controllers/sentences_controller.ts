@@ -79,7 +79,7 @@ export const create = async (req: Request, res: Response) => {
   }
 
   try {
-    const emotionIds = await sentencesService.readAllEmotionId(emotion);
+    const emotionIds = await sentencesService.readAllEmotionIds(emotion);
     if (emotionIds.length != emotion.length) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.X_READ_FAIL('감정')));
     }
