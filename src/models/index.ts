@@ -5,6 +5,13 @@ export const sequelize = new Sequelize(database.database, database.username, dat
   host: database.host,
   dialect: 'mysql',
   logging: false,
+  timezone: '+09:00',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
   define: {
     charset: 'utf8mb4',
     collate: 'utf8mb4_unicode_ci',
@@ -18,30 +25,35 @@ import Diary from './diaries_model';
 import Notification from './notifications_model';
 import UsersRecommendedSentences from './users_recommended_sentences_model';
 
+Diary.belongsTo(User, { targetKey: 'id' });
 User.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'userId',
   as: 'diaries',
 });
 
+Notification.belongsTo(User, { targetKey: 'id' });
 User.hasMany(Notification, {
   sourceKey: 'id',
   foreignKey: 'userId',
   as: 'notifications',
 });
 
+Diary.belongsTo(Sentence, { targetKey: 'id' });
 Sentence.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'sentenceId',
   as: 'diaries',
 });
 
+Sentence.belongsTo(Emotion, { targetKey: 'id' });
 Emotion.hasMany(Sentence, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
   as: 'sentences',
 });
 
+Diary.belongsTo(Emotion, { targetKey: 'id' });
 Emotion.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
@@ -58,11 +70,13 @@ Sentence.belongsToMany(User, {
   foreignKey: 'sentenceId',
 });
 
+UsersRecommendedSentences.belongsTo(Emotion, { targetKey: 'id' });
 Emotion.hasMany(UsersRecommendedSentences, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
   as: 'usersRecommendedSentences',
 });
+
 const db = { User, Diary, Emotion, Sentence, Notification, UsersRecommendedSentences };
 
 export default db;

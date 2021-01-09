@@ -3,6 +3,7 @@ import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import Emotion from '../models/emotions_model';
 import Notification from '../models/notifications_model';
+import { random } from '../utils';
 
 interface Models {
   User: typeof User;
@@ -12,15 +13,6 @@ interface Models {
   Notification: typeof Notification;
 }
 
-const getRandomInt = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-const getRandomDate = () => {
-  const year = getRandomInt(2020, 2020);
-  const month = getRandomInt(1, 12);
-  const date = getRandomInt(1, 28);
-  return `${year}-${month < 10 ? `0${month}` : `${month}`}-${date < 10 ? `0${date}` : `${date}`}`;
-};
 const insertDummy = async (db: Models) => {
   try {
     const userList = await db.User.bulkCreate(
@@ -32,8 +24,6 @@ const insertDummy = async (db: Models) => {
             name: `test_name_${index}`,
             password: `test_password_${index}`,
             passwordSalt: `test_passwordSalt_${index}`,
-            // isAlarmSet: null,
-            // alarmTime: null,
           };
         })
     );
@@ -51,8 +41,9 @@ const insertDummy = async (db: Models) => {
           return {
             contents: `test_contents_${index}`,
             writer: `test_writer_${index}`,
+            bookName: `test_bookName_${index}`,
             publisher: `test_publisher_${index}`,
-            emotionId: getRandomInt(1, emotionList.length),
+            emotionId: random.getInt(1, emotionList.length),
           };
         })
     );
@@ -61,15 +52,15 @@ const insertDummy = async (db: Models) => {
       Array(5000)
         .fill({})
         .map((data, index) => {
-          const sentenceId = getRandomInt(1, sentenceList.length);
+          const sentenceId = random.getInt(1, sentenceList.length);
           return {
-            position: getRandomInt(0, 9),
-            depth: getRandomInt(0, 6),
+            position: random.getInt(0, 9),
+            depth: random.getInt(0, 6),
             contents: `test_contents_${index}`,
-            userId: getRandomInt(1, userList.length),
+            userId: random.getInt(1, userList.length),
             sentenceId: sentenceId,
-            emotionId: sentenceList[sentenceId]?.emotionId,
-            createdAt: getRandomDate(),
+            emotionId: sentenceList[sentenceId + 1]?.emotionId,
+            wroteAt: random.getDate(),
           };
         })
     );

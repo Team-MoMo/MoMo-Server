@@ -1,16 +1,15 @@
-import { Model, DataTypes, HasManyGetAssociationsMixin, Association, Optional } from 'sequelize';
+import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from './index';
 import Sentence from './sentences_model';
 import Diary from './diaries_model';
+import UsersRecommendedSentences from './users_recommended_sentences_model';
 
 interface EmotionAttributes {
-  id: number;
-  name: string;
+  id?: number;
+  name?: string;
 }
 
-interface EmotionCreationAttributes extends Optional<EmotionAttributes, 'id'> {}
-
-class Emotion extends Model<EmotionAttributes, EmotionCreationAttributes> implements EmotionAttributes {
+class Emotion extends Model<EmotionAttributes> implements EmotionAttributes {
   public id!: number;
   public name!: string;
 
@@ -20,6 +19,7 @@ class Emotion extends Model<EmotionAttributes, EmotionCreationAttributes> implem
   static associations: {
     sentences: Association<Emotion, Sentence>;
     diaries: Association<Emotion, Diary>;
+    usersRecommendedSentences: Association<Emotion, UsersRecommendedSentences>;
   };
 }
 
