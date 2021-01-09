@@ -28,6 +28,8 @@ paths:
   /users/signin:
     post:
       summary: '로그인'
+      tags:
+        - Users
       requestBody:
         required: true
         content:
@@ -85,6 +87,8 @@ paths:
   /users/signup:
     post:
       summary: '회원가입'
+      tags:
+        - Users
       requestBody:
         required: true
         content:
@@ -139,6 +143,8 @@ paths:
   /users:
     get:
       summary: '회원전체조회'
+      tags:
+        - Users
       responses:
         '200':
           description: 'SUCCESS : 회원 전체 조회 성공'
@@ -166,6 +172,8 @@ paths:
   /users/:id:
     get:
       summary: '회원 조회'
+      tags:
+        - Users
       parameters:
         - in: path
           name: id
@@ -209,6 +217,8 @@ paths:
                 message: '회원 조회 실패'
     delete:
       summary: '회원 탈퇴'
+      tags:
+        - Users
       parameters:
         - in: path
           name: id
@@ -253,6 +263,8 @@ paths:
   /users/:id/alarm:
     put:
       summary: '알람 변경'
+      tags:
+        - Users
       parameters:
         - in: path
           name: id
@@ -325,6 +337,8 @@ paths:
   /users/:id/password:
     put:
       summary: '비밀번호 변경'
+      tags:
+        - Users
       parameters:
         - in: path
           name: id
@@ -379,6 +393,8 @@ paths:
                 message: '비밀번호 수정 실패'
     post:
       summary: '비밀번호 확인'
+      tags:
+        - Users
       parameters:
         - in: path
           name: id
@@ -435,6 +451,8 @@ paths:
   /users/password/temp:
     post:
       summary: '임시비밀번호 발급'
+      tags:
+        - Users
       requestBody:
         required: true
         content:
@@ -490,6 +508,8 @@ paths:
   /diaries:
     post:
       summary: '다이어리 추가'
+      tags:
+        - Diaries
       requestBody:
         required: true
         content:
@@ -547,6 +567,8 @@ paths:
                 message: '일기 생성 실패'
     get:
       summary: '다이어리 전체 조회'
+      tags:
+        - Diaries
       parameters:
         - in: query
           name: order
@@ -632,6 +654,8 @@ paths:
   /diaries/statics:
     get:
       summary: '다이어리 통계 조회'
+      tags:
+        - Diaries
       parameters:
         - in: query
           name: userId
@@ -688,6 +712,8 @@ paths:
   /diaries/:id:
     get:
       summary: '다이어리 조회'
+      tags:
+        - Diaries
       parameters:
         - in: path
           name: id
@@ -727,6 +753,8 @@ paths:
                 message: '일기 조회 실패'
     put:
       summary: '다이어리 수정'
+      tags:
+        - Diaries
       parameters:
         - in: query
           name: id
@@ -795,6 +823,8 @@ paths:
                 message: '일기 수정 실패'
     delete:
       summary: '다이어리 삭제'
+      tags:
+        - Diaries
       parameters:
         - in: path
           name: id
@@ -835,6 +865,8 @@ paths:
   /sentences:
     get:
       summary: '문장 조회'
+      tags:
+        - Sentences
       parameters:
         - in: query
           name: emotion
@@ -889,6 +921,8 @@ paths:
   /emotions:
     get:
       summary: '감정 전체 조회'
+      tags:
+        - Emotions
       responses:
         '200':
           description: 'SUCCESS: 감정 전체 조회 성공'
