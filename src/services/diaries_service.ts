@@ -46,59 +46,25 @@ export const readAllByDepth = async ({ userId, year, month }: ReadAllAttributes)
         [Op.lt]: addedTime.format(),
       },
     },
-    include: [
-      {
-        model: model.Sentence,
-        include: [
-          {
-            model: model.Emotion,
-          },
-        ],
-      },
-    ],
+    include: [model.Sentence, model.Emotion],
     order: [
       ['depth', 'ASC'],
-      ['id', 'ASC'],
+      ['wroteAt', 'ASC'],
     ],
   });
   return diaryListByDepth;
 };
 
-export const readAllByDate = async ({ userId, year, month, day }: ReadAllAttributes) => {
+export const readAllByFilter = async ({ userId, year, month, day, emotionId, depth }: ReadAllAttributes) => {
   const { standardTime, addedTime } = calculateTime(year, month, day);
-  const diaryListByDate = await model.Diary.findAll({
-    where: {
-      userId,
-      wroteAt: {
-        [Op.gte]: standardTime.format(),
-        [Op.lt]: addedTime.format(),
-      },
-    },
-    include: [
-      {
-        model: model.Sentence,
-        include: [
-          {
-            model: model.Emotion,
-          },
-        ],
-      },
-    ],
-    order: [['id', 'ASC']],
-  });
-  return diaryListByDate;
-};
-
-export const readAllByFilter = async ({ userId, year, month, emotionId, depth }: ReadAllAttributes) => {
-  const { standardTime, addedTime } = calculateTime(year, month);
   const filteredDiaryList = await model.Diary.findAll({
     where: {
       userId,
-      depth: depth!,
       wroteAt: {
         [Op.gte]: standardTime.format(),
         [Op.lt]: addedTime.format(),
       },
+      [Op.and]: [!!depth && { depth }],
     },
     include: [
       {
@@ -109,13 +75,13 @@ export const readAllByFilter = async ({ userId, year, month, emotionId, depth }:
             model: model.Emotion,
             required: true,
             where: {
-              id: emotionId || null,
+              [Op.and]: [!!emotionId && { id: emotionId }],
             },
           },
         ],
       },
     ],
-    order: [['id', 'ASC']],
+    order: [['wroteAt', 'ASC']],
   });
   return filteredDiaryList;
 };
@@ -223,20 +189,40 @@ export const deleteOne = async (diary: Diary) => {
   return diary;
 };
 
-export const readSameDepthDiary = async (diary: Diary) => {
-  const [year, month] = diary.wroteAt.split('-');
-  const { standardTime, addedTime } = calculateTime(parseInt(year), parseInt(month));
-  const sameDepthDiary = await model.Diary.findAll({
-    attributes: ['position', [sequelize.fn('count', sequelize.col('position')), 'count']],
+export const createRandomPosition = async (diary: Diary) => {
+  const [year, month, day] = diary.wroteAt.split('-');
+  const { standardTime, addedTime } = calculateTime(parseInt(year), parseInt(month), parseInt(day));
+  let randomPosition;
+
+  const beforeDiaryInfo = await model.Diary.findOne({
     where: {
       userId: diary.userId,
       depth: diary.depth,
       wroteAt: {
-        [Op.gte]: standardTime.format(),
-        [Op.lt]: addedTime.format(),
+        [Op.lt]: standardTime.format(),
       },
     },
-    group: ['position'],
+    order: [['wroteAt', 'DESC']],
   });
-  return sameDepthDiary;
+
+  const afterDiaryInfo = await model.Diary.findOne({
+    where: {
+      userId: diary.userId,
+      depth: diary.depth,
+      wroteAt: {
+        [Op.gte]: addedTime.format(),
+      },
+    },
+    order: [['wroteAt', 'ASC']],
+  });
+
+  while (true) {
+    randomPosition = random.getInt(0, 9);
+    if ([beforeDiaryInfo?.position, afterDiaryInfo?.position].includes(randomPosition)) {
+      continue;
+    }
+    break;
+  }
+
+  return randomPosition;
 };

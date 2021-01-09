@@ -18,7 +18,7 @@ interface ReadAllAttributes {
 export const readAll = async (req: Request, res: Response) => {
   const { order, userId, emotionId, depth, year, month, day }: ReadAllAttributes = req.query;
   let diaryList: Diary[];
-  if (!userId || !year || !month || (order === 'filter' && !emotionId && !depth)) {
+  if (!userId || !year || !month) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
 
@@ -34,8 +34,6 @@ export const readAll = async (req: Request, res: Response) => {
   try {
     if (order === 'depth') {
       diaryList = await diariesService.readAllByDepth(findOption);
-    } else if (order === 'date') {
-      diaryList = await diariesService.readAllByDate(findOption);
     } else if (order === 'filter') {
       diaryList = await diariesService.readAllByFilter(findOption);
     } else {
@@ -125,6 +123,7 @@ export const create = async (req: Request, res: Response) => {
   }
 
   try {
+    req.body.position = await diariesService.createRandomPosition(req.body);
     const diaryInfo = await diariesService.create(req.body);
 
     return res.status(statusCode.CREATED).json(authUtil.successTrue(resMessage.X_CREATE_SUCCESS(DIARY), diaryInfo));
@@ -145,7 +144,9 @@ export const updateOne = async (req: Request, res: Response) => {
     if (!diaryInfo) {
       return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X(DIARY)));
     }
+    req.body.wroteAt && (req.body.position = await diariesService.createRandomPosition(req.body));
     const updatedDiaryInfo = await diariesService.updateOne(diaryInfo, req.body);
+
     return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_UPDATE_SUCCESS(DIARY), updatedDiaryInfo));
   } catch (err) {
     return res
