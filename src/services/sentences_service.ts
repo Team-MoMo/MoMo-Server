@@ -1,5 +1,5 @@
 import model from '../models';
-import sequelize, { Op, Transaction, ValidationErrorItem } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import dayjs from 'dayjs';
 import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';

@@ -1,13 +1,9 @@
 import { statusCode, resJson, resMessage } from '../utils';
 import { Request, Response } from 'express';
-import { emotionsService, usersService } from '../services';
+import { usersService } from '../services';
 import { sentencesService } from '../services';
 import Sentence from '../models/sentences_model';
 import dayjs from 'dayjs';
-import { error } from 'console';
-import bodyParser from 'body-parser';
-import { body } from 'express-validator';
-import Emotion from '../models/emotions_model';
 
 interface createSentence {
   contents: string;
@@ -66,5 +62,25 @@ export const readAll = async (req: Request, res: Response) => {
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL('문장')));
+  }
+};
+
+export const create = async (req: Request, res: Response) => {
+  const { contents, bookName, writer, publisher, emotion }: createSentence = req.body;
+
+  if (!contents || !bookName || !writer || !publisher || !emotion || emotion.length == 0) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+  }
+
+  try {
+    const emotionIds = await sentencesService.readAllEmotionIds(emotion);
+    if (emotionIds.length != emotion.length) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.X_READ_FAIL('감정')));
+    }
+    const sentenceInfo = await sentencesService.create(req.body, emotionIds);
+
+    return res.status(statusCode.CREATED).json(resJson.fail(resMessage.X_CREATE_SUCCESS('문장'), sentenceInfo));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_CREATE_FAIL('문장'), err));
   }
 };
