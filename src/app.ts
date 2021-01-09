@@ -1,52 +1,52 @@
-import createError from "http-errors";
-import express, { Request, Response, NextFunction } from "express";
-import path from "path";
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import logger from "morgan";
-import cors from "cors";
-import dotenv from "dotenv";
-
-import indexRouter from "./routes/index";
-import { normalizePort } from "./middleWares/index";
-
-const app: express.Application = express();
+import express from 'express';
+import path from 'path';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import yaml from 'yamljs';
+import swaggerUi from 'swagger-ui-express';
 
 // use env_values
 dotenv.config();
 
-app.set("port", normalizePort(process.env.PORT || "3000"));
+import db, { sequelize } from './models';
+import indexRouter from './routes/index';
+import { normalizePort, handle404Error, handleError } from './middleWares/index';
+import database from './configs/database';
+import { dbDummy } from './utils';
+
+const app: express.Application = express();
+const swaggerSpec = yaml.load(path.join(__dirname, './docs/openapi.yaml'));
+
+// Database Init & Insert DummyData
+(async () => {
+  await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
+  await sequelize.sync({ force: database.init });
+  database.init && dbDummy(db);
+  console.log(`Database Init: ${database.init}`);
+  console.log('Sequelize connect success');
+})();
+
+app.set('port', normalizePort(process.env.PORT || '3000'));
 app.use(cors());
-if (process.env.NODE_ENV === "production") {
-  app.use(logger("combined"));
-} else {
-  app.use(logger("dev"));
-}
+app.use(process.env.NODE_ENV === 'production' ? logger('combined') : logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 // Body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/", indexRouter);
+app.use('/', indexRouter);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // catch 404 and forward to error handler
-app.use((req: Request, res: Response, next: NextFunction) => {
-  next(createError(404));
-});
+app.use(handle404Error);
 
 // error handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
-});
+app.use(handleError);
 
 export default app;
