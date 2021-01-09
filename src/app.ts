@@ -13,7 +13,7 @@ import db, { sequelize } from './models';
 import indexRouter from './routes/index';
 import { normalizePort, handle404Error, handleError } from './middleWares/index';
 import database from './configs/database';
-import { insertDummy } from './utils';
+import { dbDummy } from './utils';
 
 const app: express.Application = express();
 
@@ -21,7 +21,7 @@ const app: express.Application = express();
 (async () => {
   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
   await sequelize.sync({ force: database.init });
-  database.init && insertDummy(db);
+  database.init && dbDummy(db);
   console.log(`Database Init: ${database.init}`);
   console.log('Sequelize connect success');
   return;

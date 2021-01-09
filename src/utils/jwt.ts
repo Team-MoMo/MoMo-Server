@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import randToken from 'rand-token';
-import resJson from './resJson';
-import responseMessage from './resMessage';
-import statusCode from './statusCode';
+import resJson from './res_json';
+import responseMessage from './res_message';
+import statusCode from './status_code';
 import { Response, Request, NextFunction } from 'express';
 
 interface User {
