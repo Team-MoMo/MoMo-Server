@@ -9,10 +9,7 @@ const PASSWORD: string = '비밀번호';
 const TEMP_PASSWORD: string = '임시 비밀번호';
 
 export const signup = async (req: Request, res: Response) => {
-  const { email, password, name } = req.body;
-  if (!email || !password || !name) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
+  const { email, password } = req.body;
 
   try {
     const user = await usersService.readOneByEmail(email);
@@ -31,18 +28,9 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-export const signinByApple = async (req: Request, res: Response) => {
-  const {} = req.body;
-
-  try {
-  } catch (err) {}
-};
-
 export const signinBySocial = async (req: Request, res: Response) => {
-  const { socialName, accessToken }: { socialName: 'kakao' | 'google'; accessToken: string } = req.body;
-  if (!socialName || !accessToken) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
+  const { socialName, accessToken } = req.body;
+
   try {
     let userId;
     if (socialName == 'kakao') {
@@ -71,9 +59,6 @@ export const signinBySocial = async (req: Request, res: Response) => {
 
 export const signin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
 
   try {
     const user = await usersService.readOneByEmail(email);
@@ -110,12 +95,9 @@ export const readAll = async (req: Request, res: Response) => {
 
 export const readOne = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
-  if (!id) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
 
   try {
-    const user = await usersService.readOne(id);
+    const user = await usersService.readOne(id!);
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
@@ -130,12 +112,9 @@ export const readOne = async (req: Request, res: Response) => {
 export const updateAlarm = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
   const { isAlarmSet, alarmTime } = req.body;
-  if (!id || !isAlarmSet) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
 
   try {
-    const user = await usersService.readOne(id);
+    const user = await usersService.readOne(id!);
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
@@ -146,7 +125,7 @@ export const updateAlarm = async (req: Request, res: Response) => {
     } else {
       updatedUser = await usersService.updateAlarmTime(user, isAlarmSet, alarmTime);
     }
-    const alarmInfo = { isAlarmSet: user.isAlarmSet, alarmTime: user.alarmTime };
+    const alarmInfo = { isAlarmSet: updatedUser.isAlarmSet, alarmTime: updatedUser.alarmTime };
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_UPDATE_SUCCESS(ALARM), alarmInfo));
   } catch (err) {
@@ -157,12 +136,9 @@ export const updateAlarm = async (req: Request, res: Response) => {
 export const checkPassword = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
   const { password } = req.body;
-  if (!id || !password) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
 
   try {
-    const user = await usersService.readOne(id);
+    const user = await usersService.readOne(id!);
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
@@ -181,12 +157,9 @@ export const checkPassword = async (req: Request, res: Response) => {
 export const updatePassword = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
   const { newPassword } = req.body;
-  if (!id || !newPassword) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
 
   try {
-    const user = await usersService.readOne(id);
+    const user = await usersService.readOne(id!);
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
@@ -202,12 +175,9 @@ export const updatePassword = async (req: Request, res: Response) => {
 
 export const deleteOne = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
-  if (!id) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
 
   try {
-    const user = await usersService.readOne(id);
+    const user = await usersService.readOne(id!);
     if (!user) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
@@ -223,9 +193,6 @@ export const deleteOne = async (req: Request, res: Response) => {
 
 export const createTempPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
-  if (!email) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
 
   try {
     const user = await usersService.readOneByEmail(email);
@@ -233,10 +200,13 @@ export const createTempPassword = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
 
+    const isNeverIssued = !user.tempPasswordCreatedAt ? true : false;
+    const isIssueToday = user.tempPasswordCreatedAt && user.tempPasswordCreatedAt.getDate() == new Date().getDate();
+
     let tempPasswordIssueCount;
-    if (!user.tempPasswordCreatedAt || user.tempPasswordIssueCount < 3) {
+    if (isNeverIssued || user.tempPasswordIssueCount < 3) {
       tempPasswordIssueCount = user.tempPasswordIssueCount + 1;
-    } else if (user.tempPasswordCreatedAt.getDate() != new Date().getDate()) {
+    } else if (!isIssueToday) {
       tempPasswordIssueCount = 1;
     } else {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.TEMP_PASSWORD_ISSUE_EXCEDDED));
