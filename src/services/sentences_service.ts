@@ -1,9 +1,18 @@
 import model from '../models';
-import sequelize, { Op } from 'sequelize';
+import sequelize, { Op, Transaction, ValidationErrorItem } from 'sequelize';
 import dayjs from 'dayjs';
 import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
+import Emotion from '../models/emotions_model';
+
+interface createSentence {
+  contents: string;
+  bookName: string;
+  writer: string;
+  publisher: string;
+  emotion: string[];
+}
 
 export const readAllNotInUserSentences = async (emotionId: number, cannotRecommendSentence: number[]) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
@@ -92,9 +101,52 @@ export const createUsersRecommendSentences = async (userId: number, recommendSen
     recommendSentences.map((item) => {
       return {
         userId,
-        emotionId: item.emotionId,
         sentenceId: item.id,
       };
     })
   );
+};
+
+export const readAllEmotionIds = async (emotion: string[]) => {
+  let emotionIds: number[] = [];
+  const emotionInfo: Emotion[] = await model.Emotion.findAll({
+    where: {
+      name: { [Op.in]: emotion },
+    },
+  });
+
+  emotionIds = emotionInfo.map((element) => {
+    return element.id;
+  });
+  return emotionIds;
+};
+
+export const create = async (body: createSentence, emotionId: number[]) => {
+  try {
+    const createdSentenceTransaction = await model.sequelize.transaction(async (transaction) => {
+      const sentenceInfo = await model.Sentence.create(
+        {
+          contents: body.contents,
+          bookName: body.bookName,
+          writer: body.writer,
+          publisher: body.publisher,
+        },
+        { transaction }
+      );
+
+      await model.EmotionsHaveSentences.bulkCreate(
+        emotionId.map((emotionId) => {
+          return {
+            sentenceId: sentenceInfo.id,
+            emotionId,
+          };
+        }),
+        { transaction }
+      );
+      return sentenceInfo;
+    });
+    return createdSentenceTransaction;
+  } catch (err) {
+    throw err;
+  }
 };

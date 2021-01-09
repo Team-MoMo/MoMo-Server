@@ -5,6 +5,13 @@ export const sequelize = new Sequelize(database.database, database.username, dat
   host: database.host,
   dialect: 'mysql',
   logging: false,
+  timezone: '+09:00',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
   define: {
     charset: 'utf8mb4',
     collate: 'utf8mb4_unicode_ci',
@@ -17,11 +24,16 @@ import Sentence from './sentences_model';
 import Diary from './diaries_model';
 import Notification from './notifications_model';
 import UsersRecommendedSentences from './users_recommended_sentences_model';
+import EmotionsHaveSentences from './emotions_have_sentences_model';
 
 User.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'userId',
   as: 'diaries',
+});
+Diary.belongsTo(User, {
+  targetKey: 'id',
+  foreignKey: 'userId',
 });
 
 User.hasMany(Notification, {
@@ -29,32 +41,18 @@ User.hasMany(Notification, {
   foreignKey: 'userId',
   as: 'notifications',
 });
+Notification.belongsTo(User, {
+  targetKey: 'id',
+  foreignKey: 'userId',
+});
 
 Sentence.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'sentenceId',
   as: 'diaries',
 });
-
-Emotion.hasMany(Sentence, {
-  sourceKey: 'id',
-  foreignKey: 'emotionId',
-  as: 'sentences',
-});
-
-Emotion.hasMany(Diary, {
-  sourceKey: 'id',
-  foreignKey: 'emotionId',
-  as: 'diaries',
-});
-
-User.belongsToMany(Sentence, {
-  through: 'UsersRecommendedSentences',
-  foreignKey: 'userId',
-});
-
-Sentence.belongsToMany(User, {
-  through: 'UsersRecommendedSentences',
+Diary.belongsTo(Sentence, {
+  targetKey: 'id',
   foreignKey: 'sentenceId',
 });
 
@@ -63,6 +61,38 @@ Emotion.hasMany(UsersRecommendedSentences, {
   foreignKey: 'emotionId',
   as: 'usersRecommendedSentences',
 });
-const db = { User, Diary, Emotion, Sentence, Notification, UsersRecommendedSentences };
+UsersRecommendedSentences.belongsTo(Emotion, {
+  targetKey: 'id',
+  foreignKey: 'emotionId',
+});
+
+User.belongsToMany(Sentence, {
+  through: UsersRecommendedSentences,
+  foreignKey: 'userId',
+});
+Sentence.belongsToMany(User, {
+  through: UsersRecommendedSentences,
+  foreignKey: 'sentenceId',
+});
+
+Emotion.belongsToMany(Sentence, {
+  through: EmotionsHaveSentences,
+  foreignKey: 'emotionId',
+});
+Sentence.belongsToMany(Emotion, {
+  through: EmotionsHaveSentences,
+  foreignKey: 'sentenceId',
+});
+
+const db = {
+  sequelize,
+  User,
+  Diary,
+  Emotion,
+  Sentence,
+  Notification,
+  UsersRecommendedSentences,
+  EmotionsHaveSentences,
+};
 
 export default db;

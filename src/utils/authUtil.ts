@@ -10,9 +10,10 @@ const authUtil: AuthUtil = {
       data,
     };
   },
-  successFalse: (message: string): object => {
+  successFalse: (message: string, error?: Error): object => {
     return {
       message,
+      error: error && error.message,
     };
   },
 };

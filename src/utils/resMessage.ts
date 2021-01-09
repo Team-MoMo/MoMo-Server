@@ -22,8 +22,8 @@ export default {
   INVALID_TOKEN: '잘못된 토큰',
 
   X_UNAUTHORIZED: (x: string) => `유저의 타입 ${x}`,
-  X_CREATE_SUCCESS: (x: string) => `${x} 작성 성공`,
-  X_CREATE_FAIL: (x: string) => `${x} 작성 실패`,
+  X_CREATE_SUCCESS: (x: string) => `${x} 생성 성공`,
+  X_CREATE_FAIL: (x: string) => `${x} 생성 실패`,
   X_READ_ALL_SUCCESS: (x: string) => `${x} 전체 조회 성공`,
   X_READ_ALL_FAIL: (x: string) => `${x} 전체 조회 실패`,
   X_READ_SUCCESS: (x: string) => `${x} 조회 성공`,
@@ -32,8 +32,8 @@ export default {
   X_UPDATE_FAIL: (x: string) => `${x} 수정 실패`,
   X_DELETE_SUCCESS: (x: string) => `${x} 삭제 성공`,
   X_DELETE_FAIL: (x: string) => `${x} 삭제 실패`,
-  NO_X: (x: string) => `존재하지 않는 ${x}`,
-  ALREADY_X: (x: string) => `존재하는 ${x}`,
   X_SUCCESS: (x: string) => `${x} 성공`,
   X_FAIL: (x: string) => `${x} 실패`,
+  NO_X: (x: string) => `존재하지 않는 ${x}`,
+  ALREADY_X: (x: string) => `이미 존재하는 ${x}`,
 };
