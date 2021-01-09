@@ -1,5 +1,6 @@
 import createError from 'http-errors';
 import { Request, Response, NextFunction } from 'express';
+import * as yup from 'yup';
 
 interface Error {
   syscall: string;
@@ -52,3 +53,25 @@ export function onError(port: string, error: Error) {
       throw error;
   }
 }
+
+export enum RequestType {
+  BODY = 'body',
+  QUREY = 'query',
+  PARAMS = 'params',
+  HEADER = 'header',
+}
+
+interface Required {
+  shape: Record<string, yup.AnySchema<any, any, any>>;
+  path: RequestType;
+}
+
+export const validate = (required: Required) => async (req: Request, res: Response, next: NextFunction) => {
+  const schema = yup.object(required.shape);
+  try {
+    schema.validateSync(req[required.path], { abortEarly: false });
+    return next();
+  } catch (error) {
+    return res.status(400).json({ message: error.errors.join(' and ') });
+  }
+};
