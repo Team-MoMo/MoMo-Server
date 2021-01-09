@@ -1,10 +1,10 @@
-import { Model, DataTypes, Association, Optional } from 'sequelize';
+import { Model, DataTypes, Association } from 'sequelize';
 import Diary from './diaries_model';
 import { sequelize } from './index';
 import Notification from './notifications_model';
 
 interface UserAttributes {
-  id: number;
+  id?: number;
   email: string;
   password: string;
   passwordSalt?: string;
@@ -15,9 +15,7 @@ interface UserAttributes {
   tempPasswordIssueCount?: number;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
-
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+class User extends Model<UserAttributes> implements UserAttributes {
   public id!: number;
   public email!: string;
   public password!: string;
@@ -27,8 +25,6 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public tempPassword!: string | null;
   public tempPasswordCreatedAt!: Date | null;
   public tempPasswordIssueCount!: number;
-
-  // timestamps!
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 

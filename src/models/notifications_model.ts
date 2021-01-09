@@ -1,21 +1,16 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { sequelize } from './index';
 
 interface NotificationAttributes {
-  id: number;
+  id?: number;
   deviceToken: string;
   userId: number;
 }
 
-interface NotificationCreationAttributes extends Optional<NotificationAttributes, 'id'> {}
-
-class Notification
-  extends Model<NotificationAttributes, NotificationCreationAttributes>
-  implements NotificationAttributes {
+class Notification extends Model<NotificationAttributes> implements NotificationAttributes {
   public id!: number;
   public deviceToken!: string;
   public userId!: number;
-
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 }

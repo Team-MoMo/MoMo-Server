@@ -1,28 +1,25 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { sequelize } from './index';
 
 interface DiaryAttributes {
-  id: number;
+  id?: number;
   contents: string;
   position: number;
   depth: number;
   userId: number;
   sentenceId: number;
-  emotionId: number;
   createdAt?: string;
+  wroteAt: string;
 }
 
-interface DiaryCreationAttributes extends Optional<DiaryAttributes, 'id'> {}
-
-class Diary extends Model<DiaryAttributes, DiaryCreationAttributes> implements DiaryAttributes {
+class Diary extends Model<DiaryAttributes> implements DiaryAttributes {
   public id!: number;
   public contents!: string;
   public position!: number;
   public depth!: number;
   public userId!: number;
   public sentenceId!: number;
-  public emotionId!: number;
-
+  public wroteAt!: string;
   readonly createdAt!: string;
   readonly updatedAt!: Date;
 }
@@ -46,15 +43,15 @@ Diary.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    wroteAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
     sentenceId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    emotionId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
