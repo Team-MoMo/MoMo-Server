@@ -1,5 +1,5 @@
 import express from 'express';
-import { diariesController } from '../../controllers';
+import { diariesController } from '../controllers';
 const router = express.Router();
 
 router.get('/statistics', diariesController.readStatistics);
