@@ -4,6 +4,6 @@ import emailUtil from './emailUtil';
 import resMessage from './resMessage';
 import statusCode from './statusCode';
 import insertDummy from './insertDummy';
-import passwordUtil from './passwordUtil';
+import loginUtil from './login_util';
 
-export { authUtil, jwt, emailUtil, resMessage, statusCode, insertDummy, passwordUtil };
+export { authUtil, jwt, emailUtil, resMessage, statusCode, insertDummy, loginUtil };
