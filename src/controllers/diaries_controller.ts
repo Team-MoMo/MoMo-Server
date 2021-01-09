@@ -100,23 +100,9 @@ export const readOne = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-  const {
-    contents,
-    depth,
-    userId,
-    sentenceId,
-    emotionId,
-    wroteAt,
-  }: {
-    contents: number;
-    depth: number;
-    userId: number;
-    sentenceId: number;
-    emotionId: number;
-    wroteAt: string;
-  } = req.body;
+  const { contents, depth, userId, sentenceId, wroteAt }: Diary = req.body;
 
-  if (!contents || !depth || !userId || !sentenceId || !emotionId || !wroteAt) {
+  if (!contents || !depth || !userId || !sentenceId || !wroteAt) {
     return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
   }
 
