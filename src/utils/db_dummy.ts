@@ -3,7 +3,7 @@ import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import Emotion from '../models/emotions_model';
 import Notification from '../models/notifications_model';
-import { random } from '../utils';
+import { random } from '.';
 import EmotionsHaveSentences from '../models/emotions_have_sentences_model';
 import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 
@@ -17,7 +17,7 @@ interface Models {
   UsersRecommendedSentences: typeof UsersRecommendedSentences;
 }
 
-const insertDummy = async (db: Models) => {
+const dbDummy = async (db: Models) => {
   try {
     const userList = await db.User.bulkCreate(
       Array(10)
@@ -85,4 +85,4 @@ const insertDummy = async (db: Models) => {
   }
 };
 
-export default insertDummy;
+export default dbDummy;

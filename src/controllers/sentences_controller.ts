@@ -1,4 +1,4 @@
-import { statusCode, authUtil, resMessage } from '../utils';
+import { statusCode, resJson, resMessage } from '../utils';
 import { Request, Response } from 'express';
 import { emotionsService, usersService } from '../services';
 import { sentencesService } from '../services';
@@ -26,13 +26,13 @@ export const readAll = async (req: Request, res: Response) => {
   let recommendSentences: Sentence[];
 
   if (!emotion || !user) {
-    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
   try {
     const userInfo = await usersService.readOne(userId);
     if (!userInfo) {
-      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X('회원')));
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X('회원')));
     }
 
     const now = dayjs(new Date());
@@ -53,9 +53,7 @@ export const readAll = async (req: Request, res: Response) => {
 
     if (userRecommendSentenceIds.length > 0) {
       recommendSentences = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
-      return res
-        .status(statusCode.OK)
-        .json(authUtil.successTrue(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
+      return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
     }
 
     const userSentences: number[] = await sentencesService.readAllDiaries(emotionId, userId, before30Day);
@@ -65,30 +63,8 @@ export const readAll = async (req: Request, res: Response) => {
     recommendSentences = await sentencesService.readAllNotInUserSentences(emotionId, cannotRecommendSentence);
     await sentencesService.createUsersRecommendSentences(userId, recommendSentences);
 
-    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
+    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_FAIL('문장')));
-  }
-};
-
-export const create = async (req: Request, res: Response) => {
-  const { contents, bookName, writer, publisher, emotion }: createSentence = req.body;
-
-  if (!contents || !bookName || !writer || !publisher || !emotion || emotion.length == 0) {
-    return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
-  }
-
-  try {
-    const emotionIds = await sentencesService.readAllEmotionIds(emotion);
-    if (emotionIds.length != emotion.length) {
-      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.X_READ_FAIL('감정')));
-    }
-    const sentenceInfo = await sentencesService.create(req.body, emotionIds);
-
-    return res.status(statusCode.CREATED).json(authUtil.successTrue(resMessage.X_CREATE_SUCCESS('문장'), sentenceInfo));
-  } catch (err) {
-    return res
-      .status(statusCode.INTERNAL_SERVER_ERROR)
-      .json(authUtil.successFalse(resMessage.X_CREATE_FAIL('문장'), err));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL('문장')));
   }
 };

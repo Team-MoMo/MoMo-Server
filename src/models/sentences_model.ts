@@ -1,6 +1,7 @@
 import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from './index';
 import Diary from './diaries_model';
+import UsersRecommendedSentences from './users_recommended_sentences_model';
 
 interface SentenceAttributes {
   id?: number;
@@ -21,6 +22,7 @@ class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
 
   public static associations: {
     diaries: Association<Sentence, Diary>;
+    usersRecommendedSentences: Association<Sentence, UsersRecommendedSentences>;
   };
 }
 

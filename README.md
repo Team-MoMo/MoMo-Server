@@ -1,33 +1,40 @@
 # MOMO-SERVER
 
-### 🌊 당신의 감정 기록을 도와줄 작가의 감정 표현 '**MOMO**' 
+### 🌊 당신의 감정 기록을 도와줄 작가의 감정 표현 '**MOMO**'
+
 <img src="https://user-images.githubusercontent.com/60434971/103637907-87ab4c00-4f8f-11eb-9007-43d4385e69ad.png" width="200" height="200"> <br>
+
 * SOPT 27th APPJAM
 * 2020.12.28 ~ 2021.01.16
 
 <br>
 
 ## 📜프로젝트 설명
+
 ### 책 속의 문장을 제공함으로써, 보다 깊이 있는 감정 기록을 도와주는 일기 앱 서비스
+
 <img src="https://user-images.githubusercontent.com/60434971/103638821-c8579500-4f90-11eb-9f73-a74c00150eeb.png" width="2000" height="450" > <br>
 
 감정 카테고리를 선택하면, 감정과 어울리는 **3개의 문장**이 제공됩니다. 하나의 문장을 선택하여 그날의 일기를 기록하고, 2M에서 심해까지 **감정의 깊이**를 선택하여 저장합니다. 저장된 일기는 해당 깊이의 바다를 떠다니는 물방울이 됩니다.
 
 사용자는 문장을 통해 **감수성을 자극**받으므로, 감정을 보다 섬세하고 구체적으로 기록할 수 있습니다. 따라서 평소에 일기를 쓰면서 **표현력**의 한계를 느꼈던 사람들에게 MOMO가 해결책이 되어줄 것입니다.
 <br> <br>
+
 ## 📌핵심 기능
 
-
 ### ✔문장 추천
+
 매일 매일 다른 3개의 문장을 감정별로 제공 <br><br>
 <img src="https://user-images.githubusercontent.com/60434971/103647660-fe037a80-4f9e-11eb-9ae0-bb6ff49d7b1f.JPG" height="350"><br><br>
 
 ### ✔일기 작성
+
 문장을 선택하여 감정의 깊이가 담긴 일기를 기록 <br><br>
 <img src="https://user-images.githubusercontent.com/60434971/103648740-a960ff00-4fa0-11eb-826f-6a911a3ddc17.jpg" height="350"><br><br>
 
 ### ✔일기 조회
-개별 일기 조회<br> 
+
+개별 일기 조회<br>
 **월간 일기 리스트** - **감정 깊이별 조회**, 날짜별 조회 제공<br>
 월간 일기 통계 - 이번 달의 감정을 한 눈에 볼 수 있는 통계 제공  <br><br>
 <img src="https://user-images.githubusercontent.com/60434971/103648246-e5e02b00-4f9f-11eb-8a9d-0fd8520a7550.JPG" height="365">
@@ -36,6 +43,7 @@
 <br><b3>
 
 ## 👨‍👧‍👧 Developer & Role
+
 <table style="text-align: center;">
    <tr>
     <td><img src="https://user-images.githubusercontent.com/60434971/103637487-e7552780-4f8e-11eb-8f2d-229fe6cdf165.jpg" width="200" height="180"></th>
@@ -62,6 +70,7 @@
 </br>
 
 ## 🛠 ERD
+
 <img src="https://user-images.githubusercontent.com/60434971/103767820-a596b080-5064-11eb-9d77-ccc0941206ca.png" height="550">
 
 <br>
@@ -70,12 +79,12 @@
 
 <br>
 
-
 ## ⚙ Dependencies
-* sequelize : ORM 
-* typescript : 타입 스크립트 
+
+* sequelize : ORM
+* typescript : 타입 스크립트
 * crypto : 비밀번호 암호화 및 인증
-* cross-env : 환경변수 
+* cross-env : 환경변수
 * @types/jsonwebtoken : Token 생성 및 인증
 * @types/nodemailer : 이메일 발송
 
@@ -132,6 +141,7 @@
 ## 🙏 Rule
 
 ### 1️⃣ Code convention
+
 1. 변수명: camel case
 2. fommating: prettier
 3. lint: eslint
@@ -151,25 +161,27 @@
     - 데이터를 담는 변수: 동사 포함 금지
     - 함수: 동사가 제일 앞에 위치
     - 메소드: READ(찾기) CREATE(만들기) UPDATE(수정하기) DELETE(삭제하기)
-    - 통신 API 응답을 위한 변수: data로 통일 
+    - 통신 API 응답을 위한 변수: data로 통일
+
         ```jsx
         {
-        	message: "",
-        	data: {},
+         message: "",
+         data: {},
         }
-        res.status(200).json(authUtile~~~)
+        res.status(200).json(resJsone~~~)
         
         ```
-        
+
 <br>
 
-### 2️⃣ Git 
+### 2️⃣ Git
+
 1. 브랜치 중심 운영
     - master - 배포용
     - develop - 테스트용
     - feat/ - 새로운 기능 개발
     - fix/ - 오류가 난 기능 수정
-    
+
 2. **커밋 메세지**
     - Feat: 새기능
     - Refactor: 원래있던 코드의 수정(기능 변경O)
@@ -179,24 +191,24 @@
     - Etc: 애매한거
     - 한글로 커밋
     - 커밋은 이해하기 편한 단위로 잘게 쪼개기
-    
+
 3. 머지 규칙
     - Pull request
     - 작성자 외 1명 이상이 리뷰(develop),  
     - squash and merge 사용
-    
+
 4. 브랜치 시나리오
     - 새 기능 개발
         - master, develop (branch따기) → feat/users(개발완료) → develop 머지(develop 문제 없음) → master로 머지
-    - 오류 발생 
+    - 오류 발생
         - master (branch따기) → fix/users(수정완료) → develop 머지(develop 문제 없음) → master머지
-   
+
 <br>
 
 ### 3️⃣ Communication
+
 * Gather Town
 * Slack
 * Notion
 * GitHub - Issue & Projects
 * Zoom
-
