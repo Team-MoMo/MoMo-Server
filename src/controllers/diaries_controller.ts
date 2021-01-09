@@ -53,6 +53,24 @@ export const readAll = async (req: Request, res: Response) => {
   }
 };
 
+export const readRecentOne = async (req: Request, res: Response) => {
+  try {
+    const { userId }: { userId?: string } = req.query;
+
+    if (!userId) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NULL_VALUE));
+    }
+    const recentDiaryInfo = await diariesService.readRecentOne(parseInt(userId));
+
+    if (!recentDiaryInfo) {
+      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(resMessage.NO_X(DIARY)));
+    }
+    return res.status(statusCode.OK).json(authUtil.successTrue(resMessage.X_READ_SUCCESS(DIARY), recentDiaryInfo));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(authUtil.successFalse(resMessage.X_READ_FAIL(DIARY), err));
+  }
+};
+
 export const readStatistics = async (req: Request, res: Response) => {
   const { year, month, userId }: { year?: string; month?: string; userId?: string } = req.query;
 

@@ -168,6 +168,16 @@ export const countByDepth = async ({ userId, year, month }: ReadAllAttributes) =
   return depthCount;
 };
 
+export const readRecentOne = async (userId: number) => {
+  const diaryInfo = await model.Diary.findOne({
+    where: { userId },
+    limit: 1,
+    order: [['wroteAt', 'DESC']],
+  });
+
+  return diaryInfo;
+};
+
 export const readOne = async (id: number) => {
   const diaryInfo = await model.Diary.findOne({
     where: { id },

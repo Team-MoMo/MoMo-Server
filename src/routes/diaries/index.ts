@@ -3,6 +3,7 @@ import { diariesController } from '../../controllers';
 const router = express.Router();
 
 router.get('/statistics', diariesController.readStatistics);
+router.get('/recent', diariesController.readRecentOne);
 router.get('/:id', diariesController.readOne);
 router.get('/', diariesController.readAll);
 router.post('/', diariesController.create);
