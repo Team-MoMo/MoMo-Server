@@ -4,7 +4,6 @@ import diaries from './diaries';
 import sentences from './sentences';
 import emotions from './emotions';
 import { statusCode } from '../utils';
-import resMessage from '../utils/res_message';
 import { schedulerController } from '../controllers';
 
 const router = express.Router();
