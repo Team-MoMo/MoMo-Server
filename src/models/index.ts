@@ -24,59 +24,75 @@ import Sentence from './sentences_model';
 import Diary from './diaries_model';
 import Notification from './notifications_model';
 import UsersRecommendedSentences from './users_recommended_sentences_model';
+import EmotionsHaveSentences from './emotions_have_sentences_model';
 
-Diary.belongsTo(User, { targetKey: 'id' });
 User.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'userId',
   as: 'diaries',
 });
+Diary.belongsTo(User, {
+  targetKey: 'id',
+  foreignKey: 'userId',
+});
 
-Notification.belongsTo(User, { targetKey: 'id' });
 User.hasMany(Notification, {
   sourceKey: 'id',
   foreignKey: 'userId',
   as: 'notifications',
 });
+Notification.belongsTo(User, {
+  targetKey: 'id',
+  foreignKey: 'userId',
+});
 
-Diary.belongsTo(Sentence, { targetKey: 'id' });
 Sentence.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'sentenceId',
   as: 'diaries',
 });
-
-Sentence.belongsTo(Emotion, { targetKey: 'id' });
-Emotion.hasMany(Sentence, {
-  sourceKey: 'id',
-  foreignKey: 'emotionId',
-  as: 'sentences',
-});
-
-Diary.belongsTo(Emotion, { targetKey: 'id' });
-Emotion.hasMany(Diary, {
-  sourceKey: 'id',
-  foreignKey: 'emotionId',
-  as: 'diaries',
-});
-
-User.belongsToMany(Sentence, {
-  through: 'UsersRecommendedSentences',
-  foreignKey: 'userId',
-});
-
-Sentence.belongsToMany(User, {
-  through: 'UsersRecommendedSentences',
+Diary.belongsTo(Sentence, {
+  targetKey: 'id',
   foreignKey: 'sentenceId',
 });
 
-UsersRecommendedSentences.belongsTo(Emotion, { targetKey: 'id' });
 Emotion.hasMany(UsersRecommendedSentences, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
   as: 'usersRecommendedSentences',
 });
+UsersRecommendedSentences.belongsTo(Emotion, {
+  targetKey: 'id',
+  foreignKey: 'emotionId',
+});
 
-const db = { User, Diary, Emotion, Sentence, Notification, UsersRecommendedSentences };
+User.belongsToMany(Sentence, {
+  through: UsersRecommendedSentences,
+  foreignKey: 'userId',
+});
+Sentence.belongsToMany(User, {
+  through: UsersRecommendedSentences,
+  foreignKey: 'sentenceId',
+});
+
+Emotion.belongsToMany(Sentence, {
+  through: EmotionsHaveSentences,
+  foreignKey: 'emotionId',
+});
+Sentence.belongsToMany(Emotion, {
+  through: EmotionsHaveSentences,
+  foreignKey: 'sentenceId',
+});
+
+const db = {
+  sequelize,
+  User,
+  Diary,
+  Emotion,
+  Sentence,
+  Notification,
+  UsersRecommendedSentences,
+  EmotionsHaveSentences,
+};
 
 export default db;

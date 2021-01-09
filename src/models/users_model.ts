@@ -8,7 +8,6 @@ interface UserAttributes {
   email: string;
   password: string;
   passwordSalt?: string;
-  name: string;
   isAlarmSet?: boolean;
   alarmTime?: Date | null;
   tempPassword?: string | null;
@@ -21,14 +20,11 @@ class User extends Model<UserAttributes> implements UserAttributes {
   public email!: string;
   public password!: string;
   public passwordSalt!: string;
-  public name!: string;
   public isAlarmSet!: boolean;
   public alarmTime!: Date | null;
   public tempPassword!: string | null;
   public tempPasswordCreatedAt!: Date | null;
   public tempPasswordIssueCount!: number;
-
-  // timestamps!
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
@@ -48,10 +44,6 @@ User.init(
     email: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
     password: {

@@ -3,7 +3,9 @@ import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import Emotion from '../models/emotions_model';
 import Notification from '../models/notifications_model';
-import { random } from '../utils';
+import { random } from '.';
+import EmotionsHaveSentences from '../models/emotions_have_sentences_model';
+import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 
 interface Models {
   User: typeof User;
@@ -11,9 +13,11 @@ interface Models {
   Sentence: typeof Sentence;
   Emotion: typeof Emotion;
   Notification: typeof Notification;
+  EmotionsHaveSentences: typeof EmotionsHaveSentences;
+  UsersRecommendedSentences: typeof UsersRecommendedSentences;
 }
 
-const insertDummy = async (db: Models) => {
+const dbDummy = async (db: Models) => {
   try {
     const userList = await db.User.bulkCreate(
       Array(10)
@@ -59,16 +63,26 @@ const insertDummy = async (db: Models) => {
             contents: `test_contents_${index}`,
             userId: random.getInt(1, userList.length),
             sentenceId: sentenceId,
-            emotionId: sentenceList[sentenceId + 1]?.emotionId,
             wroteAt: random.getDate(),
+          };
+        })
+    );
+
+    const emotionsHaveSentences = await db.EmotionsHaveSentences.bulkCreate(
+      Array(80)
+        .fill({})
+        .map((data, index) => {
+          return {
+            sentenceId: sentenceList[index % sentenceList.length]?.id,
+            emotionId: random.getInt(1, emotionList.length),
           };
         })
     );
     console.log('insertDummy success');
     process.exit();
   } catch (error) {
-    console.log('insertDummy failed', error && error.message);
+    console.log('insertDummy failed', error);
   }
 };
 
-export default insertDummy;
+export default dbDummy;

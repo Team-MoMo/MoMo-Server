@@ -9,7 +9,6 @@ interface SentenceAttributes {
   bookName: string;
   writer: string;
   publisher: string;
-  emotionId: number;
 }
 
 class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
@@ -18,12 +17,10 @@ class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
   public bookName!: string;
   public writer!: string;
   public publisher!: string;
-  public emotionId!: number;
-
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
-  static associations: {
+  public static associations: {
     diaries: Association<Sentence, Diary>;
     usersRecommendedSentences: Association<Sentence, UsersRecommendedSentences>;
   };
@@ -48,12 +45,12 @@ Sentence.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    publisher: {
+    writer: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    emotionId: {
-      type: DataTypes.INTEGER,
+    publisher: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
