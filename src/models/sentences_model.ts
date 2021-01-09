@@ -43,10 +43,6 @@ Sentence.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    writer: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     publisher: {
       type: DataTypes.STRING,
       allowNull: false,
