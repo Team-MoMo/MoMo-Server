@@ -2,12 +2,11 @@ import crypto from 'crypto';
 import model from '../models';
 import User from '../models/users_model';
 
-export const create = async (email: string, name: string, password: string) => {
+export const create = async (email: string, password: string) => {
   const salt = crypto.randomBytes(64).toString('base64');
   const hashedPassword = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
   const user = await model.User.create({
     email,
-    name,
     password: hashedPassword,
     passwordSalt: salt,
   });

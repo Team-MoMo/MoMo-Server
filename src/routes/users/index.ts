@@ -3,8 +3,8 @@ import { usersController } from '../../controllers';
 const router = express.Router();
 
 router.post('/signup', usersController.signup);
-router.post('/signup/apple', usersController.signupByApple);
-router.post('/signup/kakao', usersController.signupByKakao);
+router.post('/signin/apple', usersController.signinByApple);
+router.post('/signin/social', usersController.signinBySocial);
 router.post('/signin', usersController.signin);
 router.post('/:id/password', usersController.checkPassword);
 router.get('/', usersController.readAll);
