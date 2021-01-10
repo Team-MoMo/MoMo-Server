@@ -9,12 +9,13 @@ export default {
   SIGN_IN_SUCCESS: '로그인 성공',
   SIGN_UP_FAIL: '회원가입 실패',
   SIGN_IN_FAIL: '로그인 실패',
-  POSSIBLE_ID: '사용 가능한 ID입니다.',
-  DUPLICATE_ID: '사용 불가능한 ID입니다.',
+  POSSIBLE_EMAIL: '사용 가능한 이메일입니다.',
+  DUPLICATE_EMAIL: '사용 불가능한 이메일입니다.',
   MISS_MATCH_USER_INFO: 'ID 또는 비밀번호가 일치하지 않습니다',
   MISS_MATCH_PASSWORD: '비밀번호가 일치하지 않습니다',
   MATCH_PASSWORD: '비밀번호가 일치합니다',
   TEMP_PASSWORD_ISSUE_EXCEDDED: '임시 비밀번호 발급 횟수 초과',
+  UNAUTHORIZED: '권한이 없습니다',
   SAME_PASSWORD_AND_NEW_PASSWORD: '현재 비밀번호와 새로운 비밀번호가 동일합니다.',
 
   DB_ERROR: '데이터베이스 에러',
@@ -22,7 +23,6 @@ export default {
   EXPIRED_TOKEN: '유효기간이 지난 토큰',
   INVALID_TOKEN: '잘못된 토큰',
 
-  X_UNAUTHORIZED: (x: string) => `유저의 타입 ${x}`,
   X_CREATE_SUCCESS: (x: string) => `${x} 생성 성공`,
   X_CREATE_FAIL: (x: string) => `${x} 생성 실패`,
   X_READ_ALL_SUCCESS: (x: string) => `${x} 전체 조회 성공`,

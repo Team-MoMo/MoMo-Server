@@ -62,6 +62,7 @@ User.init(
     alarmTime: {
       type: DataTypes.TIME,
       allowNull: true,
+      defaultValue: '22:00',
     },
     tempPassword: {
       type: DataTypes.STRING,

@@ -5,30 +5,23 @@ import { sentencesService } from '../services';
 import Sentence from '../models/sentences_model';
 import dayjs from 'dayjs';
 
-interface createSentence {
-  contents: string;
-  bookName: string;
-  writer: string;
-  publisher: string;
-  emotion: string[];
-}
+const USER = '회원';
+const SENTENCE = '문장';
 
 export const readAll = async (req: Request, res: Response) => {
-  const { emotion, user }: { emotion?: string; user?: string } = req.query;
+  const decodedUserId = req.decoded?.userId;
+  const { emotionId, userId }: { emotionId?: number; userId?: number } = req.query;
 
-  const emotionId = parseInt(emotion!);
-  const userId = parseInt(user!);
-
-  let recommendSentences: Sentence[];
-
-  if (!emotion || !user) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+  if (userId !== decodedUserId) {
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
+  let recommendSentenceList: Sentence[];
+
   try {
-    const userInfo = await usersService.readOne(userId);
+    const userInfo = await usersService.readOne(userId!);
     if (!userInfo) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X('회원')));
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
 
     const now = dayjs(new Date());
@@ -42,45 +35,43 @@ export const readAll = async (req: Request, res: Response) => {
     }
 
     const userRecommendSentenceIds: number[] = await sentencesService.readAllUsersRecommendSentencesAfter6(
-      emotionId,
-      userId,
+      emotionId!,
+      userId!,
       date
     );
 
     if (userRecommendSentenceIds.length > 0) {
-      recommendSentences = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
-      return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
+      recommendSentenceList = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
+      return res
+        .status(statusCode.OK)
+        .json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
     }
 
-    const userSentences: number[] = await sentencesService.readAllDiaries(emotionId, userId, before30Day);
-    const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(emotionId, userId);
+    const userSentences: number[] = await sentencesService.readAllDiaries(emotionId!, userId!, before30Day);
+    const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(
+      emotionId!,
+      userId!
+    );
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
-    recommendSentences = await sentencesService.readAllNotInUserSentences(emotionId, cannotRecommendSentence);
-    await sentencesService.createUsersRecommendSentences(userId, recommendSentences);
+    recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
+    await sentencesService.createUsersRecommendSentences(userId!, recommendSentenceList);
 
-    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS('문장'), recommendSentences));
+    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL('문장')));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE), err));
   }
 };
 
 export const create = async (req: Request, res: Response) => {
-  const { contents, bookName, writer, publisher, emotion }: createSentence = req.body;
-
-  if (!contents || !bookName || !writer || !publisher || !emotion || emotion.length == 0) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
+  const { emotion } = req.body;
 
   try {
     const emotionIds = await sentencesService.readAllEmotionIds(emotion);
-    if (emotionIds.length != emotion.length) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.X_READ_FAIL('감정')));
-    }
     const sentenceInfo = await sentencesService.create(req.body, emotionIds);
 
-    return res.status(statusCode.CREATED).json(resJson.success(resMessage.X_CREATE_SUCCESS('문장'), sentenceInfo));
+    return res.status(statusCode.CREATED).json(resJson.success(resMessage.X_CREATE_SUCCESS(SENTENCE), sentenceInfo));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_CREATE_FAIL('문장'), err));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_CREATE_FAIL(SENTENCE), err));
   }
 };

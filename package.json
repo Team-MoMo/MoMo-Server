@@ -18,6 +18,8 @@
     "@types/cors": "^2.8.9",
     "@types/http-errors": "^1.8.0",
     "@types/morgan": "^1.9.2",
+    "@types/validator": "^13.1.2",
+    "@types/yup": "^0.29.11",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
@@ -41,7 +43,8 @@
     "swagger-cli": "^4.0.4",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^4.1.6",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "yup": "^0.32.8"
   },
   "devDependencies": {
     "@types/errorhandler": "^1.5.0",
