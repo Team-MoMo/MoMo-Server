@@ -192,13 +192,14 @@ export const updatePassword = async (req: Request, res: Response) => {
     }
 
     const checkPasswordResult = await usersService.checkPassword(user, newPassword);
-    if (!checkPasswordResult) {
-      const updatedUser = await usersService.updatePassword(user, newPassword);
-      loginUtil.blindPassword(updatedUser);
-
-      return res.status(statusCode.OK).json(resJson.success(resMessage.X_UPDATE_SUCCESS(PASSWORD), user));
+    if (checkPasswordResult) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SAME_PASSWORD_AND_NEW_PASSWORD));
     }
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SAME_PASSWORD_AND_NEW_PASSWORD));
+
+    const updatedUser = await usersService.updatePassword(user, newPassword);
+    loginUtil.blindPassword(updatedUser);
+
+    return res.status(statusCode.OK).json(resJson.success(resMessage.X_UPDATE_SUCCESS(PASSWORD), user));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_UPDATE_FAIL(PASSWORD)));
   }
