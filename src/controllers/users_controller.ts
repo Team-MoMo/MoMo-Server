@@ -93,7 +93,12 @@ export const readAll = async (req: Request, res: Response) => {
 };
 
 export const readOne = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
+
+  if (id != decodedUserId) {
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
+  }
 
   try {
     const user = await usersService.readOne(id!);
@@ -152,7 +157,7 @@ export const checkPassword = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
 
-    const checkPasswordResult = await usersService.checkPassword(user, password);
+    const checkPasswordResult = usersService.checkPassword(user, password);
     if (!checkPasswordResult) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.MISS_MATCH_PASSWORD));
     }
