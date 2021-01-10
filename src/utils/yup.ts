@@ -78,7 +78,7 @@ export const user = {
     shape: { id: validation.number },
     path: RequestType.PARAMS,
   },
-  createTempPasswordBody: {
+  updateTempPasswordBody: {
     shape: { email: validation.email },
     path: RequestType.BODY,
   },

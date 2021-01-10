@@ -32,6 +32,6 @@ router.put(
   usersController.updatePassword
 );
 router.delete('/:id', jwt.isLoggedIn, validate(yup.user.deleteOneBody), usersController.deleteOne);
-router.post('/password/temp', validate(yup.user.createTempPasswordBody), usersController.createTempPassword);
+router.post('/password/temp', validate(yup.user.updateTempPasswordBody), usersController.updateTempPassword);
 
 export default router;
