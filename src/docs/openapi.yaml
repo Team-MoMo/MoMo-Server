@@ -134,16 +134,11 @@ paths:
                 message: '회원가입 실패'
   /users:
     get:
+      security:
+        - api_key: []
       summary: '회원전체조회(영현)'
       tags:
         - Users
-      parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
       responses:
         '200':
           description: 'SUCCESS : 회원 전체 조회 성공'
@@ -168,18 +163,14 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '회원 전체 조회 실패'
-  /users/:id:
+  /users/{id}:
     get:
+      security:
+        - api_key: []
       summary: '회원 조회(영현)'
       tags:
         - Users
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: path
           name: id
           schema:
@@ -221,16 +212,12 @@ paths:
               example:
                 message: '회원 조회 실패'
     delete:
+      security:
+        - api_key: []
       summary: '회원 탈퇴(영현)'
       tags:
         - Users
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: path
           name: id
           schema:
@@ -271,18 +258,14 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '회원 삭제 실패'
-  /users/:id/alarm:
+  /users/{id}/alarm:
     put:
+      security:
+        - api_key: []
       summary: '알람 변경(영현)'
       tags:
         - Users
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: path
           name: id
           schema:
@@ -351,18 +334,14 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '알람 수정 실패'
-  /users/:id/password:
+  /users/{id}/password:
     put:
+      security:
+        - api_key: []
       summary: '비밀번호 변경(영현)'
       tags:
         - Users
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: path
           name: id
           schema:
@@ -418,16 +397,12 @@ paths:
               example:
                 message: '비밀번호 수정 실패'
     post:
+      security:
+        - api_key: []
       summary: '비밀번호 확인(영현)'
       tags:
         - Users
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: path
           name: id
           schema:
@@ -482,16 +457,11 @@ paths:
                 message: '서버 내부 오류'
   /users/password/temp:
     post:
+      security:
+        - api_key: []
       summary: '임시비밀번호 발급(채원)'
       tags:
         - Users
-      parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
       requestBody:
         required: true
         content:
@@ -546,16 +516,11 @@ paths:
                 message: '임시비밀번호 생성 실패'
   /diaries:
     post:
+      security:
+        - api_key: []
       summary: '일기 생성(영우)'
       tags:
         - Diaries
-      parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
       requestBody:
         required: true
         content:
@@ -612,16 +577,12 @@ paths:
               example:
                 message: '일기 생성 실패'
     get:
+      security:
+        - api_key: []
       summary: '일기 전체 조회 및  날짜 / 깊이 / 필터별 조회(영우)'
       tags:
         - Diaries
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: query
           name: userId
           schema:
@@ -705,16 +666,12 @@ paths:
                 message: '일기 전체 조회 실패'
   /diaries/statics:
     get:
+      security:
+        - api_key: []
       summary: '다이어리 통계 조회(영우)'
       tags:
         - Diaries
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: query
           name: userId
           schema:
@@ -767,18 +724,14 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기 통계 조회 실패'
-  /diaries/:id:
+  /diaries/{id}:
     get:
+      security:
+        - api_key: []
       summary: '다이어리 조회(영우)'
       tags:
         - Diaries
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: path
           name: id
           schema:
@@ -816,16 +769,12 @@ paths:
               example:
                 message: '일기 조회 실패'
     put:
+      security:
+        - api_key: []
       summary: '다이어리 수정(영우)'
       tags:
         - Diaries
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: query
           name: id
           schema:
@@ -889,16 +838,12 @@ paths:
               example:
                 message: '일기 수정 실패'
     delete:
+      security:
+        - api_key: []
       summary: '다이어리 삭제(영우)'
       tags:
         - Diaries
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: path
           name: id
           schema:
@@ -998,16 +943,12 @@ paths:
               example:
                 message: '문장 생성 실패'
     get:
+      security:
+        - api_key: []
       summary: '문장 조회(영현)'
       tags:
         - Sentences
       parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
         - in: query
           name: emotionId
           schema:
@@ -1060,16 +1001,11 @@ paths:
                 message: '문장 조회 실패'
   /emotions:
     get:
+      security:
+        - api_key: []
       summary: '감정 전체 조회(영현)'
       tags:
         - Emotions
-      parameters:
-        - in: header
-          name: authorization
-          schema:
-            type: string
-          required: true
-          description: user token
       responses:
         '200':
           description: 'SUCCESS: 감정 전체 조회 성공'
@@ -1095,10 +1031,10 @@ paths:
                 message: '감정 전체 조회 실패'
 components:
   securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: Authorization
+    api_key:
+      type: apiKey
+      name: authorization
+      in: header
   schemas:
     Users:
       type: object
@@ -1259,3 +1195,4 @@ components:
             $ref: "#/components/schemas/Error"
           example:
             message: 권한 없음
+
