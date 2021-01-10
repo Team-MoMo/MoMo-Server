@@ -1,3 +1,7 @@
+export interface DecodedInfo {
+  userId: number;
+}
+
 declare global {
   namespace NodeJS {
     export interface ProcessEnv {
@@ -13,7 +17,7 @@ declare global {
   }
   namespace Express {
     export interface Request {
-      decoded?: string | object;
+      decoded?: DecodedInfo;
     }
   }
 }

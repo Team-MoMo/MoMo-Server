@@ -387,7 +387,7 @@ paths:
                     message: '존재하지 않는 회원'
                 '현재 비밀번호와 같은 값을 입력한 경우':
                   value:
-                    message: '현재 비밀번호와 동일한 비밀번호입니다'
+                    message: '현재 비밀번호와 새로운 비밀번호가 동일합니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -1195,4 +1195,3 @@ components:
             $ref: "#/components/schemas/Error"
           example:
             message: 권한 없음
-
