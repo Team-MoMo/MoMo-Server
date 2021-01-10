@@ -116,9 +116,9 @@ export const readOne = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
-  const { contents, depth, userId, sentenceId, wroteAt }: Diary = req.body;
+  const { contents, depth, userId, sentenceId, wroteAt, emotionId }: Diary = req.body;
 
-  if (!contents || !depth || !userId || !sentenceId || !wroteAt) {
+  if (!contents || !depth || !userId || !sentenceId || !wroteAt || !emotionId) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
