@@ -24,9 +24,12 @@ const swaggerSpec = yaml.load(path.join(__dirname, './docs/openapi.yaml'));
 (async () => {
   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
   await sequelize.sync({ force: database.init });
-  database.init && dbDummy(db);
+  database.init && process.env.NODE_ENV === 'development' && dbDummy(db);
+
   console.log(`Database Init: ${database.init}`);
   console.log('Sequelize connect success');
+
+  process.exit();
 })();
 
 app.set('port', normalizePort(process.env.PORT || '3000'));

@@ -81,7 +81,6 @@ const dbDummy = async (db: Models) => {
     );
 
     console.log('insertDummy success');
-    process.exit();
   } catch (error) {
     console.log('insertDummy failed', error);
   }
