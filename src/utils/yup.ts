@@ -1,68 +1,149 @@
 import * as yup from 'yup';
 import { RequestType } from '../middleWares';
 
-const inputValidation = {
-  id: yup.number().required(),
+const socialType = ['kakao', 'google', 'apple'];
+const orderType = ['depth', 'filter'];
+
+//default : required
+const validation = {
+  number: yup.number().required(),
+  optionalNumber: yup.number().notRequired(),
   email: yup.string().required().email(),
+  string: yup.string().required(),
+  boolean: yup.boolean().required(),
+  date: yup.date().required(),
+
+  //user
   password: yup
     .string()
     .required()
     .matches(/^[a-zA-Z0-9]{6,}$/),
-  socialName: yup.string().required().oneOf(['kakao', 'google', 'apple']),
-  accessToken: yup.string().required(),
-  isAlarmSet: yup.boolean().required(),
-  alarmTime: yup.string().notRequired(),
+  socialName: yup.string().required().oneOf(socialType),
+  time: yup
+    .string()
+    .notRequired()
+    .matches(/^\d\d:\d\d$/),
+
+  //diary
+  order: yup.string().notRequired().oneOf(orderType),
 };
 
-export const yupUtil = {
+export const user = {
   signupBody: {
-    shape: { email: inputValidation.email, password: inputValidation.password },
+    shape: { email: validation.email, password: validation.password },
     path: RequestType.BODY,
   },
   signinBySocialBody: {
-    shape: { socialName: inputValidation.socialName, accessToken: inputValidation.accessToken },
+    shape: { socialName: validation.socialName, accessToken: validation.string },
     path: RequestType.BODY,
   },
   signinBody: {
-    shape: { email: inputValidation.email, password: inputValidation.password },
+    shape: { email: validation.email, password: validation.password },
     path: RequestType.BODY,
   },
   checkPasswordParams: {
-    shape: { id: inputValidation.id },
+    shape: { id: validation.number },
     path: RequestType.PARAMS,
   },
   checkPasswordBody: {
-    shape: { password: inputValidation.password },
+    shape: { password: validation.password },
     path: RequestType.BODY,
   },
   readOneParams: {
-    shape: { id: inputValidation.id },
+    shape: { id: validation.number },
     path: RequestType.PARAMS,
   },
   updateAlarmParams: {
-    shape: { id: inputValidation.id },
+    shape: { id: validation.number },
     path: RequestType.PARAMS,
   },
   updatdAlarmBody: {
-    shape: { isAlarmSet: inputValidation.isAlarmSet, alarmTime: inputValidation.alarmTime },
+    shape: { isAlarmSet: validation.boolean, alarmTime: validation.time },
     path: RequestType.BODY,
   },
   updatePasswordParams: {
-    shape: { id: inputValidation.id },
+    shape: { id: validation.number },
     path: RequestType.PARAMS,
   },
   updatePasswordBody: {
-    shape: { newPassword: inputValidation.password },
+    shape: { newPassword: validation.password },
     path: RequestType.BODY,
   },
   deleteOneBody: {
-    shape: { id: inputValidation.id },
+    shape: { id: validation.number },
     path: RequestType.PARAMS,
   },
   createTempPasswordBody: {
-    shape: { email: inputValidation.email },
+    shape: { email: validation.email },
     path: RequestType.BODY,
   },
 };
 
-export default yupUtil;
+const diary = {
+  readAllQuery: {
+    shape: {
+      order: validation.order,
+      userId: validation.number,
+      emotionId: validation.optionalNumber,
+      depth: validation.optionalNumber,
+      year: validation.number,
+      month: validation.number,
+      day: validation.optionalNumber,
+    },
+    path: RequestType.QUREY,
+  },
+  readRecentOneQuery: {
+    shape: {
+      userId: validation.number,
+    },
+    path: RequestType.QUREY,
+  },
+  readStatisticsQuery: {
+    shape: {
+      userId: validation.number,
+      year: validation.number,
+      month: validation.number,
+    },
+    path: RequestType.QUREY,
+  },
+  readOneParams: {
+    shape: {
+      id: validation.number,
+    },
+    path: RequestType.PARAMS,
+  },
+  createBody: {
+    shape: {
+      contents: validation.string,
+      depth: validation.number,
+      userId: validation.number,
+      sentenceId: validation.number,
+      wroteAt: validation.string,
+    },
+    path: RequestType.BODY,
+  },
+  updateOneParams: {
+    shape: {
+      id: validation.number,
+    },
+    path: RequestType.PARAMS,
+  },
+  updateOneBody: {
+    shape: {
+      wroteAt: validation.string,
+      userId: validation.number,
+      depth: validation.number,
+      contents: validation.string,
+      sentenceId: validation.number,
+    },
+    path: RequestType.BODY,
+  },
+  deleteOneParams: {
+    shape: {
+      id: validation.number,
+    },
+    path: RequestType.PARAMS,
+  },
+};
+
+export default { user, diary };
