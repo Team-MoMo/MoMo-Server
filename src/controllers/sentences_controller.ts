@@ -59,7 +59,7 @@ export const readAll = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE)));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE), err));
   }
 };
 

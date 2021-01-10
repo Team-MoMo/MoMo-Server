@@ -10,6 +10,6 @@ export const readAll = async (req: Request, res: Response) => {
     const emotionList: Emotion[] = await emotionsService.readAll();
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_ALL_SUCCESS(EMOTION), emotionList));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).send(resJson.fail(resMessage.X_READ_ALL_FAIL(EMOTION)));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).send(resJson.fail(resMessage.X_READ_ALL_FAIL(EMOTION), err));
   }
 };
