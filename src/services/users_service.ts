@@ -10,7 +10,7 @@ export const create = async (email: string, password: string) => {
     password: hashedPassword,
     passwordSalt: salt,
   });
-  return user;
+  return await model.User.findByPk(user.id);
 };
 
 export const signupByApple = async () => {

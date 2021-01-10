@@ -24,7 +24,7 @@ export const readAllNotInUserSentences = async (emotionId: number, cannotRecomme
     limit: 3,
   });
   return sentences.sort((a, b) => {
-    if (a.id == b.id) {
+    if (a.id === b.id) {
       return 0;
     }
     return a.id > b.id ? 1 : -1;
