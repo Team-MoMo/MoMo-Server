@@ -55,18 +55,9 @@ export const readAllByFilter = async ({ userId, year, month, day, emotionId, dep
         [Op.gte]: standardTime.format(),
         [Op.lt]: addedTime.format(),
       },
-      [Op.and]: [!!depth && { depth }],
+      [Op.and]: [!!depth && { depth }, !!emotionId && { emotionId }],
     },
-    include: [
-      model.Sentence,
-      {
-        model: model.Emotion,
-        required: true,
-        where: {
-          [Op.and]: [!!emotionId && { id: emotionId }],
-        },
-      },
-    ],
+    include: [model.Sentence, model.Emotion],
     order: [['wroteAt', 'ASC']],
   });
   return filteredDiaryList;
