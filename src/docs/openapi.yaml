@@ -625,17 +625,17 @@ paths:
             type: string
           required: false
           example: 1
-          description: 감정 고유 id(필터 조회 때 사용)
+          description: 감정 고유 id(필터별 조회 때 사용)
         - in: query
           name: depth
           schema:
             type: string
           required: false
           example: 1
-          description: 깊이 값(필터 조회 때 사용)
+          description: 깊이 값(필터별 조회 때 사용)
       responses:
         '200':
-          description: 'SUCCESS: 다이어리 전체 조회 성공'
+          description: 'SUCCESS: 일기 전체 조회 성공'
           content:
             application/json:
               schema:
@@ -649,13 +649,18 @@ paths:
                     items:
                       $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
         '400':
-          description: 'FAIL : 빈값이 있을 경우'
+          description: 'FAIL : 잘못된 요청'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-              example:
-                message: '필요한 값이 없습니다'
+              examples:
+                'FAIL : 빈값이 있을 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                '입력 값 오류':
+                  value:
+                    message: 'Body 타입이 잘못 되었습니다.'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -664,11 +669,11 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기 전체 조회 실패'
-  /diaries/statics:
+  /diaries/statistics:
     get:
       security:
         - api_key: []
-      summary: '다이어리 통계 조회(영우)'
+      summary: '일기통계 조회(영우)'
       tags:
         - Diaries
       parameters:
@@ -695,7 +700,7 @@ paths:
           description: 조회 할 월
       responses:
         '200':
-          description: 'SUCCESS: 다이어리 통계 조회 성공'
+          description: 'SUCCESS: 일기통계 조회 성공'
           content:
             application/json:
               schema:
@@ -703,19 +708,55 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: '일기 통계 조회 성공'
+                    example: '일기통계 조회 성공'
                   data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
+                    type: object
+                    properties:
+                      emotionCounts: 
+                        type: array
+                        items:
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            count:
+                              type: integer
+                              example: 5
+                            Emotion.id:
+                              type: integer
+                              example: 1
+                            Emotion.name:
+                              type: string
+                              example: '행복'
+                            Emotion.createdAt:
+                              type: date-time
+                              example: '2021-01-10T14:39:10.000Z'
+                            Emotion.updatedAt:
+                              type: date-time
+                              example: '2021-01-10T14:39:10.000Z'
+                      depthCounts:
+                        type: array
+                        items: 
+                          properties:
+                            depth:
+                              type: integer
+                              example: 0
+                            count:
+                              type: integer
+                              example: 4
         '400':
-          description: 'FAIL : 빈값이 있을 경우'
+          description: 'FAIL : 잘못된 요청'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-              example:
-                message: '필요한 값이 없습니다'
+              examples:
+                'FAIL : 빈값이 있을 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                '입력 값 오류':
+                  value:
+                    message: 'Body 타입이 잘못 되었습니다.'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -723,12 +764,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                message: '일기 통계 조회 실패'
+                message: '일기통계 조회 실패'
   /diaries/{id}:
     get:
       security:
         - api_key: []
-      summary: '다이어리 조회(영우)'
+      summary: '일기 조회(영우)'
       tags:
         - Diaries
       parameters:
@@ -738,10 +779,10 @@ paths:
             type: string
           required: true
           example: 1
-          description: 다이어리 고유 id
+          description: 일기 고유 id
       responses:
         '200':
-          description: 'SUCCESS: 다이어리 조회 성공'
+          description: 'SUCCESS: 일기 조회 성공'
           content:
             application/json:
               schema:
@@ -753,13 +794,18 @@ paths:
                   data:
                     $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
         '400':
-          description: 'FAIL : 빈값이 있을 경우'
+          description: 'FAIL : 잘못된 요청'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-              example:
-                message: '필요한 값이 없습니다'
+              examples:
+                'FAIL : 빈값이 있을 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id 값 오류':
+                  value:
+                    message: '존재하지 않는 diary'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -771,18 +817,19 @@ paths:
     put:
       security:
         - api_key: []
-      summary: '다이어리 수정(영우)'
+      summary: '일기 수정(영우)'
       tags:
         - Diaries
       parameters:
-        - in: query
+        - in: path
           name: id
           schema:
             type: string
           required: true
           example: 1
-          description: 다이어리 고유 id
+          description: 일기 고유 id
       requestBody:
+        description: '변경된 속성만 넣어주면 됩니다!'
         required: true
         content:
           application/json:
@@ -822,13 +869,18 @@ paths:
                   data:
                     $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
         '400':
-          description: 'FAIL : 빈값이 있을 경우'
+          description: 'FAIL : 잘못된 요청'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-              example:
-                message: '필요한 값이 없습니다'
+              examples:
+                'FAIL : 빈값이 있을 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id 값 오류':
+                  value:
+                    message: '존재하지 않는 diary'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -863,15 +915,20 @@ paths:
                     type: string
                     example: '일기 삭제 성공'
                   data:
-                    $ref: '#/components/schemas/Diaries'
+                    $ref: '#/components/schemas/DiariesWithSentencesAndEmotions'
         '400':
-          description: 'FAIL : 빈값이 있을 경우'
+          description: 'FAIL : 잘못된 요청'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-              example:
-                message: '필요한 값이 없습니다'
+              examples:
+                'FAIL : 빈값이 있을 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'id 값 오류':
+                  value:
+                    message: '존재하지 않는 diary'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -1046,28 +1103,37 @@ components:
       properties:
         id:
           type: number
-          description: index
+          description: user 고유 id
         email:
           type: string
-          description: 회원 이메일
+          description: 이메일
         password:
           type: string
+          description: 비밀번호
         passwordSalt:
           type: string
+          description: 비밀번호 salt 값
         isAlarmSet: 
           type: boolean
+          description: 알람 설정 값
         alarmTime:
           type: time
+          description: 알람 설정 시간
         tempPassword:
           type: string
+          description: 임시 비밀번호
         tempPasswordCreatedAt:
           type: date-time
+          description: 임시 비밀번호가 생성된 시점
         tempPasswordIssueCount:
           type: number
+          description: 임시 비밀번호 시도 횟수
         createdAt:
           type: date-time
+          description: user 데이터가 생성된 시점
         updatedAt:
           type: date-time
+          description: user 데이터가 변경된 시점
     Emotions:
       type: object
       required:
@@ -1076,78 +1142,104 @@ components:
       properties:
         id:
           type: number
-          description: index
+          description: emotion 고유 id
         name:
           type: string
           description: 감정 이름
         createdAt:
           type: date-time
+          description: emotion 데이터가 생성된 시점
         updatedAt:
           type: date-time
+          description: emotion 데이터가 변경된 시점
     Sentences:
       type: object
       required: ['id', 'contents', 'bookName', 'writer', 'publisher']
       properties:
         id: 
           type: number
+          description: sentence 고유 id
         contents:
           type: string
+          description: 문장 내용
         bookName:
           type: string
+          description: 책 이름
         writer:
           type: string
+          description: 저자명
         publisher:
           type: string
+          description: 출판사
         createdAt:
           type: date-time
+          description: sentence 데이터가 생성된 시점
         updatedAt:
           type: date-time
+          description: sentence 데이터가 변경된 시점
     Diaries:
       type: object
       required: ['id', 'contents', 'position', 'depth', 'userId', 'sentenceId', 'emotionId', 'wroteAt']
       properties:
         id:
           type: number
+          description: diary 고유 id
         contents:
           type: string
-        position:
-          type: number
+          description: 일기 내용
         depth:
           type: number
+          description: 일기 깊이
         userId:
           type: number
+          description: 일기를 작성한 user 고유 id
         sentenceId:
           type: number
+          description: 일기에 사용된 sentence 고유 id
         emotionId:
           type: number
+          description: 일기의 감정에 해당하는 emotion 고유 id
         wroteAt:
           type: date-time
+          description: 일기 날짜
+        position:
+          type: number
+          description: x 위치 값
         createdAt:
           type: date-time
+          description: diary 데이터가 생성된 시점
         updatedAt:
           type: date-time
+          description: diary 데이터가 변경된 시점
     Notifications:
       type: object
       required: ['id', 'deviceToken', 'userId']
       properties:
         id:
           type: number
+          description: notification 고유 id
         deviceToken:
           type: string
+          description: 기기 토큰 값 
         userId:
           type: number
+          description: user 고유 id
     UsersRecommendedSentences:
       type: object
       required: ['id', 'userId', 'sentenceId', 'emotionId']
       properties:
         id:
           type: number
+          description: usersRecommendedSentences 고유 id
         userId:
           type: number
+          description: user 고유 id
         sentenceId:
           type: number
+          description: sentence 고유 id
         emotionId:
           type: number
+          description: emotion 고유 id
     DiariesWithSentencesAndEmotions:
       allOf:
         - $ref: '#/components/schemas/Diaries'
