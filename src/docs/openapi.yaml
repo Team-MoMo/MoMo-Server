@@ -27,7 +27,7 @@ tags:
 paths:
   /users/signin:
     post:
-      summary: '로그인'
+      summary: '로그인(채원)'
       tags:
         - Users
       requestBody:
@@ -56,10 +56,7 @@ paths:
                     type: object
                     properties:
                       user:
-                        type: object
-                        properties:
-                          schema:
-                            $ref: '#/components/schemas/Users'
+                        $ref: '#/components/schemas/Users'
                       token:
                         type: string
                         example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
@@ -86,7 +83,7 @@ paths:
                 message: '로그인 실패'
   /users/signup:
     post:
-      summary: '회원가입'
+      summary: '회원가입(채원)'
       tags:
         - Users
       requestBody:
@@ -97,8 +94,6 @@ paths:
               type: object
               properties:
                 email:
-                  type: string
-                name:
                   type: string
                 password:
                   type: string
@@ -117,10 +112,7 @@ paths:
                     type: object
                     properties:
                       user:
-                        type: object
-                        properties:
-                          schema:
-                            $ref: '#/components/schemas/Users'
+                        $ref: '#/components/schemas/Users'
                       token:
                         type: string
                         example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
@@ -142,9 +134,16 @@ paths:
                 message: '회원가입 실패'
   /users:
     get:
-      summary: '회원전체조회'
+      summary: '회원전체조회(영현)'
       tags:
         - Users
+      parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
       responses:
         '200':
           description: 'SUCCESS : 회원 전체 조회 성공'
@@ -171,10 +170,16 @@ paths:
                 message: '회원 전체 조회 실패'
   /users/:id:
     get:
-      summary: '회원 조회'
+      summary: '회원 조회(영현)'
       tags:
         - Users
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: path
           name: id
           schema:
@@ -216,10 +221,16 @@ paths:
               example:
                 message: '회원 조회 실패'
     delete:
-      summary: '회원 탈퇴'
+      summary: '회원 탈퇴(영현)'
       tags:
         - Users
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: path
           name: id
           schema:
@@ -262,10 +273,16 @@ paths:
                 message: '회원 삭제 실패'
   /users/:id/alarm:
     put:
-      summary: '알람 변경'
+      summary: '알람 변경(영현)'
       tags:
         - Users
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: path
           name: id
           schema:
@@ -312,7 +329,7 @@ paths:
                         example: true
                       alarmTime:
                         type: string
-                        example: "06:00"
+                        example: null
         '400':
           description: 'FAIL : 잘못된 요청'
           content:
@@ -336,10 +353,16 @@ paths:
                 message: '알람 수정 실패'
   /users/:id/password:
     put:
-      summary: '비밀번호 변경'
+      summary: '비밀번호 변경(영현)'
       tags:
         - Users
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: path
           name: id
           schema:
@@ -383,6 +406,9 @@ paths:
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+                '현재 비밀번호와 같은 값을 입력한 경우':
+                  value:
+                    message: '현재 비밀번호와 동일한 비밀번호입니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -392,10 +418,16 @@ paths:
               example:
                 message: '비밀번호 수정 실패'
     post:
-      summary: '비밀번호 확인'
+      summary: '비밀번호 확인(영현)'
       tags:
         - Users
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: path
           name: id
           schema:
@@ -450,9 +482,16 @@ paths:
                 message: '서버 내부 오류'
   /users/password/temp:
     post:
-      summary: '임시비밀번호 발급'
+      summary: '임시비밀번호 발급(채원)'
       tags:
         - Users
+      parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
       requestBody:
         required: true
         content:
@@ -466,7 +505,7 @@ paths:
                 email: 'chaeppy108@gmail.com'
       responses:
         '200':
-          description: 'SUCCESS: 임시비밀번호 발급 성공'
+          description: 'SUCCESS: 임시비밀번호 생성 성공'
           content:
             application/json:
               schema:
@@ -474,7 +513,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: '임시 비밀번호 발급 성공'
+                    example: '임시 비밀번호 생성 성공'
                   data:
                     type: object
                     properties:
@@ -493,7 +532,7 @@ paths:
               examples:
                 'email 입력 오류':
                   value:
-                    message: '존재하지 않는 이메일'
+                    message: '존재하지 않는 회원'
                 '임시비밀번호 발급 횟수 초과':
                   value:
                     message: '임시비밀번호 발급 횟수 초과'
@@ -504,12 +543,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                message: '임시비밀번호 발급 실패'
+                message: '임시비밀번호 생성 실패'
   /diaries:
     post:
-      summary: '다이어리 추가'
+      summary: '일기 생성(영우)'
       tags:
         - Diaries
+      parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
       requestBody:
         required: true
         content:
@@ -530,14 +576,14 @@ paths:
                   wroteAt:
                     type: date-time
             example:
-              depth: 3
               contents: 'test_contents_0'
+              depth: 3
               userId: 8,
               sentenceId: 40,
-              emotionId: 7,
-              wroteAt: "2020-08-16T00:00:00.000Z"
+              emotionId: 3,
+              wroteAt: "2020-08-16"
       responses:
-        '200':
+        '201':
           description: 'SUCCESS: 일기 생성 성공'
           content:
             application/json:
@@ -566,25 +612,16 @@ paths:
               example:
                 message: '일기 생성 실패'
     get:
-      summary: '다이어리 전체 조회'
+      summary: '일기 전체 조회 및  날짜 / 깊이 / 필터별 조회(영우)'
       tags:
         - Diaries
       parameters:
-        - in: query
-          name: order
+        - in: header
+          name: authorization
           schema:
             type: string
           required: true
-          examples:
-            date:
-              summary: 날짜로 조회
-              value: date
-            depth:
-              summary: 깊이로 조회
-              value: depth
-            filter:
-              summary: 필터로 조회
-              value: filter
+          description: user token
         - in: query
           name: userId
           schema:
@@ -606,6 +643,21 @@ paths:
           required: true
           example: "11"
           description: 조회 할 월
+        - in: query
+          name: order
+          schema:
+            type: string
+          examples:
+            date:
+              summary: 날짜별 조회
+              value: date
+            depth:
+              summary: 깊이별 조회
+              value: depth
+            filter:
+              summary: 필터별 조회
+              value: filter
+          description: 조회 기준(날짜 / 깊이 / 필터별 조회 때 사용)
         - in: query
           name: emotionId
           schema:
@@ -653,10 +705,16 @@ paths:
                 message: '일기 전체 조회 실패'
   /diaries/statics:
     get:
-      summary: '다이어리 통계 조회'
+      summary: '다이어리 통계 조회(영우)'
       tags:
         - Diaries
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: query
           name: userId
           schema:
@@ -711,10 +769,16 @@ paths:
                 message: '일기 통계 조회 실패'
   /diaries/:id:
     get:
-      summary: '다이어리 조회'
+      summary: '다이어리 조회(영우)'
       tags:
         - Diaries
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: path
           name: id
           schema:
@@ -752,10 +816,16 @@ paths:
               example:
                 message: '일기 조회 실패'
     put:
-      summary: '다이어리 수정'
+      summary: '다이어리 수정(영우)'
       tags:
         - Diaries
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: query
           name: id
           schema:
@@ -770,8 +840,6 @@ paths:
             schema:
                 type: object
                 properties:
-                  position:
-                    type: integer
                   depth:
                     type: integer
                   contents:
@@ -785,13 +853,12 @@ paths:
                   wroteAt:
                     type: date-time
             example:
-              position: 4
               depth: 3
               contents: 'test_contents_0'
               userId: 8,
               sentenceId: 40,
               emotionId: 7,
-              wroteAt: "2020-08-16T00:00:00.000Z"
+              wroteAt: "2020-08-16"
       responses:
         '200':
           description: 'SUCCESS: 일기 수정 성공'
@@ -822,10 +889,16 @@ paths:
               example:
                 message: '일기 수정 실패'
     delete:
-      summary: '다이어리 삭제'
+      summary: '다이어리 삭제(영우)'
       tags:
         - Diaries
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: path
           name: id
           schema:
@@ -863,20 +936,87 @@ paths:
               example:
                 message: '일기 삭제 실패'
   /sentences:
+    post:
+      summary: '문장 등록(영현)'
+      tags:
+        - Sentences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  contents:
+                    type: string
+                  bookName:
+                    type: string
+                  writer:
+                    type: string
+                  publisher:
+                    type: string
+                  emotion:
+                    type: array
+            example:
+              contents: '문장 내용'
+              bookName: '책 이름'
+              writer: '저자명'
+              publisher: "출판사명"
+              emotion: ['사랑', '행복']
+      responses:
+        '201':
+          description: 'SUCCESS: 문장 생성 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '문장 생성 성공'
+                  data:
+                    $ref: '#/components/schemas/Sentences'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'requestBody값 입력없는 경우':
+                  value:
+                    message: '필요한 값이 없습니다'
+                'emotion값 오류':
+                  value:
+                    message: '감정 조회 실패'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '문장 생성 실패'
     get:
-      summary: '문장 조회'
+      summary: '문장 조회(영현)'
       tags:
         - Sentences
       parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
         - in: query
-          name: emotion
+          name: emotionId
           schema:
             type: string
           required: true
           example: 1
           description: emotion 고유 id
         - in: query
-          name: user
+          name: userId
           schema:
             type: string
           required: true
@@ -904,7 +1044,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'user or emotion값 입력없는 경우':
+                'userId or emotionId값 입력없는 경우':
                   value:
                     message: '필요한 값이 없습니다'
                 'id값 오류':
@@ -920,9 +1060,16 @@ paths:
                 message: '문장 조회 실패'
   /emotions:
     get:
-      summary: '감정 전체 조회'
+      summary: '감정 전체 조회(영현)'
       tags:
         - Emotions
+      parameters:
+        - in: header
+          name: authorization
+          schema:
+            type: string
+          required: true
+          description: user token
       responses:
         '200':
           description: 'SUCCESS: 감정 전체 조회 성공'
@@ -958,7 +1105,6 @@ components:
       required:
         - id
         - email
-        - name
         - password
         - passwordSalt
       properties:
@@ -968,8 +1114,6 @@ components:
         email:
           type: string
           description: 회원 이메일
-        name:
-          type: string
         password:
           type: string
         passwordSalt:
@@ -1006,7 +1150,7 @@ components:
           type: date-time
     Sentences:
       type: object
-      required: ['id', 'contents', 'bookName', 'writer', 'publisher', 'emotionId']
+      required: ['id', 'contents', 'bookName', 'writer', 'publisher']
       properties:
         id: 
           type: number
@@ -1018,19 +1162,17 @@ components:
           type: string
         publisher:
           type: string
-        emotionId:
-          type: number
         createdAt:
           type: date-time
         updatedAt:
           type: date-time
     Diaries:
       type: object
-      required: ['id', 'content', 'position', 'depth', 'userId', 'sentenceId', 'emotionId', 'wroteAt']
+      required: ['id', 'contents', 'position', 'depth', 'userId', 'sentenceId', 'emotionId', 'wroteAt']
       properties:
         id:
           type: number
-        content:
+        contents:
           type: string
         position:
           type: number
