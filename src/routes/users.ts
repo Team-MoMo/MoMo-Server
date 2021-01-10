@@ -5,7 +5,7 @@ import { validate } from '../middleWares';
 import yup from '../utils/yup';
 const router = express.Router();
 
-router.post('/email', validate(yup.user.checkDuplicateEmailBody), usersController.checkDuplicateEmail);
+router.get('/signup', validate(yup.user.checkDuplicateEmailQuery), usersController.checkDuplicateEmail);
 router.post('/signup', validate(yup.user.signupBody), usersController.signup);
 router.post('/signin/social', validate(yup.user.signinBySocialBody), usersController.signinBySocial);
 router.post('/signin', validate(yup.user.signinBody), usersController.signin);
