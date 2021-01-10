@@ -12,7 +12,7 @@ export const readAll = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { emotionId, userId }: { emotionId?: number; userId?: number } = req.query;
 
-  if (userId != decodedUserId) {
+  if (userId !== decodedUserId) {
     return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 

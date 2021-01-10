@@ -18,7 +18,7 @@ export const readAll = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { order, userId, emotionId, depth, year, month, day }: ReadAllAttributes = req.query;
 
-  if (userId != decodedUserId) {
+  if (userId !== decodedUserId) {
     return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
@@ -47,7 +47,7 @@ export const readRecentOne = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { userId }: { userId?: number } = req.query;
 
-  if (userId != decodedUserId) {
+  if (userId !== decodedUserId) {
     return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
@@ -66,7 +66,7 @@ export const readStatistics = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { year, month, userId }: { year?: number; month?: number; userId?: number } = req.query;
 
-  if (userId != decodedUserId) {
+  if (userId !== decodedUserId) {
     return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
@@ -97,7 +97,7 @@ export const readOne = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
 
-    if (diaryInfo.userId != decodedUserId) {
+    if (diaryInfo.userId !== decodedUserId) {
       return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
     }
 
@@ -111,7 +111,7 @@ export const create = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { userId }: { userId?: number } = req.body;
 
-  if (userId != decodedUserId) {
+  if (userId !== decodedUserId) {
     return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
@@ -135,7 +135,7 @@ export const updateOne = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
 
-    if (diaryInfo.userId != decodedUserId) {
+    if (diaryInfo.userId !== decodedUserId) {
       return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
     }
 
@@ -158,7 +158,7 @@ export const deleteOne = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
 
-    if (diaryInfo.userId != decodedUserId) {
+    if (diaryInfo.userId !== decodedUserId) {
       return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
     }
 

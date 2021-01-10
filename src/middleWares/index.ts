@@ -1,6 +1,7 @@
 import createError from 'http-errors';
 import { Request, Response, NextFunction } from 'express';
 import * as yup from 'yup';
+import { statusCode, resJson } from '../utils';
 
 interface Error {
   syscall: string;
@@ -73,6 +74,6 @@ export const validate = (required: Required) => async (req: Request, res: Respon
     req[required.path] = validated;
     return next();
   } catch (error) {
-    return res.status(400).json({ message: error.errors.join(' and ') });
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(error.errors.join(' and ')));
   }
 };
