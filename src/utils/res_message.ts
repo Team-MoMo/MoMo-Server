@@ -15,13 +15,13 @@ export default {
   MISS_MATCH_PASSWORD: '비밀번호가 일치하지 않습니다',
   MATCH_PASSWORD: '비밀번호가 일치합니다',
   TEMP_PASSWORD_ISSUE_EXCEDDED: '임시 비밀번호 발급 횟수 초과',
+  UNAUTHORIZED: '권한이 없습니다',
 
   DB_ERROR: '데이터베이스 에러',
   EMPTY_TOKEN: '헤더에 토큰이 없음',
   EXPIRED_TOKEN: '유효기간이 지난 토큰',
   INVALID_TOKEN: '잘못된 토큰',
 
-  X_UNAUTHORIZED: (x: string) => `유저의 타입 ${x}`,
   X_CREATE_SUCCESS: (x: string) => `${x} 생성 성공`,
   X_CREATE_FAIL: (x: string) => `${x} 생성 실패`,
   X_READ_ALL_SUCCESS: (x: string) => `${x} 전체 조회 성공`,
