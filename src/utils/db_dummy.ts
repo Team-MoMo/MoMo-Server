@@ -3,6 +3,9 @@ import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import Emotion from '../models/emotions_model';
 import Notification from '../models/notifications_model';
+import { random } from '.';
+import EmotionsHaveSentences from '../models/emotions_have_sentences_model';
+import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 
 interface Models {
   User: typeof User;
@@ -10,18 +13,11 @@ interface Models {
   Sentence: typeof Sentence;
   Emotion: typeof Emotion;
   Notification: typeof Notification;
+  EmotionsHaveSentences: typeof EmotionsHaveSentences;
+  UsersRecommendedSentences: typeof UsersRecommendedSentences;
 }
 
-const getRandomInt = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-const getRandomDate = () => {
-  const year = getRandomInt(2020, 2020);
-  const month = getRandomInt(1, 12);
-  const date = getRandomInt(1, 28);
-  return `${year}-${month < 10 ? `0${month}` : `${month}`}-${date < 10 ? `0${date}` : `${date}`}`;
-};
-const insertDummy = async (db: Models) => {
+const dbDummy = async (db: Models) => {
   try {
     const userList = await db.User.bulkCreate(
       Array(10)
@@ -32,8 +28,6 @@ const insertDummy = async (db: Models) => {
             name: `test_name_${index}`,
             password: `test_password_${index}`,
             passwordSalt: `test_passwordSalt_${index}`,
-            // isAlarmSet: null,
-            // alarmTime: null,
           };
         })
     );
@@ -51,8 +45,9 @@ const insertDummy = async (db: Models) => {
           return {
             contents: `test_contents_${index}`,
             writer: `test_writer_${index}`,
+            bookName: `test_bookName_${index}`,
             publisher: `test_publisher_${index}`,
-            emotionId: getRandomInt(1, emotionList.length),
+            emotionId: random.getInt(1, emotionList.length),
           };
         })
     );
@@ -61,23 +56,33 @@ const insertDummy = async (db: Models) => {
       Array(5000)
         .fill({})
         .map((data, index) => {
-          const sentenceId = getRandomInt(1, sentenceList.length);
+          const sentenceId = random.getInt(1, sentenceList.length);
           return {
-            position: getRandomInt(0, 9),
-            depth: getRandomInt(0, 6),
+            position: random.getInt(0, 9),
+            depth: random.getInt(0, 6),
             contents: `test_contents_${index}`,
-            userId: getRandomInt(1, userList.length),
+            userId: random.getInt(1, userList.length),
             sentenceId: sentenceId,
-            emotionId: sentenceList[sentenceId]?.emotionId,
-            createdAt: getRandomDate(),
+            wroteAt: random.getDate(),
+          };
+        })
+    );
+
+    const emotionsHaveSentences = await db.EmotionsHaveSentences.bulkCreate(
+      Array(80)
+        .fill({})
+        .map((data, index) => {
+          return {
+            sentenceId: sentenceList[index % sentenceList.length]?.id,
+            emotionId: random.getInt(1, emotionList.length),
           };
         })
     );
     console.log('insertDummy success');
     process.exit();
   } catch (error) {
-    console.log('insertDummy failed', error && error.message);
+    console.log('insertDummy failed', error);
   }
 };
 
-export default insertDummy;
+export default dbDummy;

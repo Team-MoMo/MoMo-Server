@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import randToken from 'rand-token';
-import authUtil from './authUtil';
-import responseMessage from './resMessage';
-import statusCode from './statusCode';
+import resJson from './res_json';
+import responseMessage from './res_message';
+import statusCode from './status_code';
 import { Response, Request, NextFunction } from 'express';
 
 interface User {
@@ -74,15 +74,15 @@ const crypto = {
     const token = req.headers.authorization;
 
     if (!token) {
-      return res.status(statusCode.BAD_REQUEST).json(authUtil.successFalse(responseMessage.EMPTY_TOKEN));
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(responseMessage.EMPTY_TOKEN));
     }
     const user = crypto.verify(token);
 
     if (user === -3) {
-      return res.status(statusCode.UNAUTHORIZED).json(authUtil.successFalse(responseMessage.EXPIRED_TOKEN));
+      return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(responseMessage.EXPIRED_TOKEN));
     }
     if (user === -2) {
-      return res.status(statusCode.UNAUTHORIZED).json(authUtil.successFalse(responseMessage.INVALID_TOKEN));
+      return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(responseMessage.INVALID_TOKEN));
     }
     req.decoded = user;
     next();

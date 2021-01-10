@@ -17,6 +17,14 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".d.ts", ".ts", ".tsx"]
+      }
+    }
+  },
   "plugins": ["prettier/@typescript-eslint"],
   "ignorePatterns": ["build/", "node_modules/"],
   "rules": { "import/no-unresolved": "off" }

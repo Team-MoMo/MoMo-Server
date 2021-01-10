@@ -1,30 +1,28 @@
-import { Model, DataTypes, Association, Optional } from 'sequelize';
-
+import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from './index';
 import Diary from './diaries_model';
+import UsersRecommendedSentences from './users_recommended_sentences_model';
 
 interface SentenceAttributes {
-  id: number;
+  id?: number;
   contents: string;
+  bookName: string;
   writer: string;
   publisher: string;
-  emotionId: number;
 }
 
-interface SentenceCreationAttributes extends Optional<SentenceAttributes, 'id'> {}
-
-class Sentence extends Model<SentenceAttributes, SentenceCreationAttributes> implements SentenceAttributes {
+class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
   public id!: number;
   public contents!: string;
+  public bookName!: string;
   public writer!: string;
   public publisher!: string;
-  public emotionId!: number;
-
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
-  static associations: {
+  public static associations: {
     diaries: Association<Sentence, Diary>;
+    usersRecommendedSentences: Association<Sentence, UsersRecommendedSentences>;
   };
 }
 
@@ -39,16 +37,16 @@ Sentence.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    bookName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     writer: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     publisher: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    emotionId: {
-      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
