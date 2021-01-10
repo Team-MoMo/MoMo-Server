@@ -29,7 +29,7 @@ const swaggerSpec = yaml.load(path.join(__dirname, './docs/openapi.yaml'));
   console.log(`Database Init: ${database.init}`);
   console.log('Sequelize connect success');
 
-  process.exit();
+  database.init && process.exit();
 })();
 
 app.set('port', normalizePort(process.env.PORT || '3000'));
