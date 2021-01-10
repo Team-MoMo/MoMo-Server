@@ -7,6 +7,23 @@ const USER: string = '회원';
 const ALARM: string = '알람';
 const PASSWORD: string = '비밀번호';
 const TEMP_PASSWORD: string = '임시 비밀번호';
+const CHECK_DUPLICATE_EMAIL: string = '이메일 중복 확인';
+
+export const checkDuplicateEmail = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  try {
+    const user = await usersService.readOneByEmail(email);
+    if (user) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.DUPLICATE_EMAIL));
+    }
+    return res.status(statusCode.OK).json(resJson.success(resMessage.POSSIBLE_EMAIL));
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .json(resJson.fail(resMessage.X_FAIL(CHECK_DUPLICATE_EMAIL), err));
+  }
+};
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -14,7 +31,7 @@ export const signup = async (req: Request, res: Response) => {
   try {
     const user = await usersService.readOneByEmail(email);
     if (user) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.DUPLICATE_ID));
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.DUPLICATE_EMAIL));
     }
 
     const newUser = await usersService.create(email, password);

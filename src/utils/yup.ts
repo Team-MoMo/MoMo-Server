@@ -33,6 +33,10 @@ const validation = {
 };
 
 export const user = {
+  checkDuplicateEmailBody: {
+    shape: { email: validation.email },
+    path: RequestType.BODY,
+  },
   signupBody: {
     shape: { email: validation.email, password: validation.password },
     path: RequestType.BODY,
