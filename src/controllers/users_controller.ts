@@ -10,9 +10,9 @@ const TEMP_PASSWORD: string = '임시 비밀번호';
 const CHECK_DUPLICATE_EMAIL: string = '이메일 중복 확인';
 
 export const checkDuplicateEmail = async (req: Request, res: Response) => {
-  const { email } = req.body;
+  const { email }: { email?: string } = req.query;
   try {
-    const user = await usersService.readOneByEmail(email);
+    const user = await usersService.readOneByEmail(email!);
     if (user) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.DUPLICATE_EMAIL));
     }
