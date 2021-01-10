@@ -52,6 +52,17 @@ const dbDummy = async (db: Models) => {
         })
     );
 
+    const emotionsHaveSentencesList = await db.EmotionsHaveSentences.bulkCreate(
+      Array(80)
+        .fill({})
+        .map((data, index) => {
+          return {
+            sentenceId: sentenceList[index % sentenceList.length]?.id,
+            emotionId: random.getInt(1, emotionList.length),
+          };
+        })
+    );
+
     const diaryList = await db.Diary.bulkCreate(
       Array(5000)
         .fill({})
@@ -63,21 +74,12 @@ const dbDummy = async (db: Models) => {
             contents: `test_contents_${index}`,
             userId: random.getInt(1, userList.length),
             sentenceId: sentenceId,
+            emotionId: random.getInt(1, emotionList.length),
             wroteAt: random.getDate(),
           };
         })
     );
 
-    const emotionsHaveSentences = await db.EmotionsHaveSentences.bulkCreate(
-      Array(80)
-        .fill({})
-        .map((data, index) => {
-          return {
-            sentenceId: sentenceList[index % sentenceList.length]?.id,
-            emotionId: random.getInt(1, emotionList.length),
-          };
-        })
-    );
     console.log('insertDummy success');
     process.exit();
   } catch (error) {
