@@ -32,7 +32,7 @@ export const signinBySocial = async (req: Request, res: Response) => {
 
   try {
     let userId;
-    if (socialName == 'kakao') {
+    if (socialName === 'kakao') {
       userId = await loginUtil.kakao(accessToken);
     } else {
       userId = await loginUtil.google(accessToken);
