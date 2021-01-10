@@ -11,6 +11,7 @@ const validation = {
   optionalNumber: yup.number().notRequired(),
   email: yup.string().required().email(),
   string: yup.string().required(),
+  optionalString: yup.string().notRequired(),
   boolean: yup.boolean().required(),
   date: yup.date().required(),
 
@@ -118,6 +119,7 @@ const diary = {
   },
   createBody: {
     shape: {
+      emotionId: validation.number,
       contents: validation.string,
       depth: validation.number,
       userId: validation.number,
@@ -134,11 +136,12 @@ const diary = {
   },
   updateOneBody: {
     shape: {
-      wroteAt: validation.string,
-      userId: validation.number,
-      depth: validation.number,
-      contents: validation.string,
-      sentenceId: validation.number,
+      wroteAt: validation.optionalString,
+      userId: validation.optionalNumber,
+      depth: validation.optionalNumber,
+      contents: validation.optionalString,
+      sentenceId: validation.optionalNumber,
+      emotionId: validation.optionalNumber,
     },
     path: RequestType.BODY,
   },
