@@ -69,7 +69,8 @@ interface Required {
 export const validate = (required: Required) => async (req: Request, res: Response, next: NextFunction) => {
   const schema = yup.object(required.shape);
   try {
-    schema.validateSync(req[required.path], { abortEarly: false });
+    const validated = schema.validateSync(req[required.path], { abortEarly: false });
+    req[required.path] = validated;
     return next();
   } catch (error) {
     return res.status(400).json({ message: error.errors.join(' and ') });
