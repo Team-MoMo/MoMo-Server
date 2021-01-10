@@ -114,7 +114,7 @@ export const updateAlarm = async (req: Request, res: Response) => {
   const { isAlarmSet, alarmTime } = req.body;
 
   if (id != decodedUserId) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
   try {
@@ -143,7 +143,7 @@ export const checkPassword = async (req: Request, res: Response) => {
   const { password } = req.body;
 
   if (id != decodedUserId) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
   try {
@@ -169,7 +169,7 @@ export const updatePassword = async (req: Request, res: Response) => {
   const { newPassword } = req.body;
 
   if (id != decodedUserId) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
   try {
@@ -192,7 +192,7 @@ export const deleteOne = async (req: Request, res: Response) => {
   const { id }: { id?: number } = req.params;
 
   if (id != decodedUserId) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
   try {
