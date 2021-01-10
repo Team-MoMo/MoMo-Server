@@ -230,7 +230,7 @@ export const updateTempPassword = async (req: Request, res: Response) => {
     }
 
     const isNeverIssued = !user.tempPasswordCreatedAt ? true : false;
-    const isIssueToday = user.tempPasswordCreatedAt && user.tempPasswordCreatedAt.getDate() == new Date().getDate();
+    const isIssueToday = user.tempPasswordCreatedAt?.getDate() === new Date().getDate();
 
     let tempPasswordIssueCount;
     if (isNeverIssued || user.tempPasswordIssueCount < 3) {
