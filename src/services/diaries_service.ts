@@ -46,7 +46,16 @@ export const readAllByDepth = async ({ userId, year, month }: ReadAllAttributes)
         [Op.lt]: addedTime.format(),
       },
     },
-    include: [model.Sentence, model.Emotion],
+    include: [
+      {
+        model: model.Sentence,
+        include: [
+          {
+            model: model.Emotion,
+          },
+        ],
+      },
+    ],
     order: [
       ['depth', 'ASC'],
       ['wroteAt', 'ASC'],

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "pm2": "cross-env NODE_ENV=production pm2 start ./src/server.ts --watch",
     "start": "cross-env NODE_ENV=production ts-node ./src/server.ts",
     "reset:prod": "cross-env NODE_ENV=production DATABASE_INIT=true ts-node ./src/server.ts",
     "reset:dev": "cross-env NODE_ENV=development DATABASE_INIT=true ts-node ./src/server.ts",
