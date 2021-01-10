@@ -4,33 +4,26 @@ import { resJson, resMessage, statusCode } from '../utils';
 import Diary from '../models/diaries_model';
 
 const DIARY = '일기';
-
 interface ReadAllAttributes {
   order?: string;
-  userId?: string;
-  emotionId?: string;
-  depth?: string;
-  year?: string;
-  month?: string;
-  day?: string;
+  userId?: number;
+  emotionId?: number;
+  depth?: number;
+  year?: number;
+  month?: number;
+  day?: number;
 }
 
 export const readAll = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { order, userId, emotionId, depth, year, month, day }: ReadAllAttributes = req.query;
-  let diaryList: Diary[];
-  if (!userId || !year || !month) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+
+  if (userId != decodedUserId) {
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
-  const findOption = {
-    userId: parseInt(userId),
-    year: parseInt(year),
-    month: parseInt(month),
-    day: day ? parseInt(day) : undefined,
-    emotionId: emotionId ? parseInt(emotionId) : undefined,
-    depth: depth ? parseInt(depth) : undefined,
-  };
+  let diaryList: Diary[];
+  const findOption = { userId: userId!, year: year!, month: month!, day, emotionId, depth };
 
   try {
     if (order === 'depth') {
@@ -38,7 +31,7 @@ export const readAll = async (req: Request, res: Response) => {
     } else if (order === 'filter') {
       diaryList = await diariesService.readAllByFilter(findOption);
     } else {
-      diaryList = await diariesService.readAll(parseInt(userId));
+      diaryList = await diariesService.readAll(userId!);
     }
 
     if (!diaryList) {
@@ -52,14 +45,14 @@ export const readAll = async (req: Request, res: Response) => {
 
 export const readRecentOne = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
+  const { userId }: { userId?: number } = req.query;
+
+  if (userId != decodedUserId) {
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
+  }
+
   try {
-    const { userId }: { userId?: string } = req.query;
-
-    if (!userId) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-    }
-    const recentDiaryInfo = await diariesService.readRecentOne(parseInt(userId));
-
+    const recentDiaryInfo = await diariesService.readRecentOne(userId!);
     if (!recentDiaryInfo) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
@@ -71,17 +64,13 @@ export const readRecentOne = async (req: Request, res: Response) => {
 
 export const readStatistics = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
-  const { year, month, userId }: { year?: string; month?: string; userId?: string } = req.query;
+  const { year, month, userId }: { year?: number; month?: number; userId?: number } = req.query;
 
-  if (!year || !month || !userId) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+  if (userId != decodedUserId) {
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
-  const findOption = {
-    userId: parseInt(userId),
-    year: parseInt(year),
-    month: parseInt(month),
-  };
+  const findOption = { userId: userId!, year: year!, month: month! };
 
   try {
     const emotionCounts = await diariesService.countByEmotions(findOption);
@@ -99,15 +88,19 @@ export const readStatistics = async (req: Request, res: Response) => {
 };
 
 export const readOne = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
-  if (!id) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
+
   try {
-    const diaryInfo = await diariesService.readOne(id);
+    const diaryInfo = await diariesService.readOne(id!);
     if (!diaryInfo) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X('diary')));
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
+
+    if (diaryInfo.userId != decodedUserId) {
+      return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
+    }
+
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(DIARY), diaryInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(DIARY), err));
@@ -116,10 +109,10 @@ export const readOne = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
-  const { contents, depth, userId, sentenceId, wroteAt }: Diary = req.body;
+  const { userId }: { userId?: number } = req.body;
 
-  if (!contents || !depth || !userId || !sentenceId || !wroteAt) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+  if (userId != decodedUserId) {
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
 
   try {
@@ -135,14 +128,17 @@ export const create = async (req: Request, res: Response) => {
 export const updateOne = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
-  if (!id) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
+
   try {
-    const diaryInfo = await diariesService.readOne(id);
+    const diaryInfo = await diariesService.readOne(id!);
     if (!diaryInfo) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
+
+    if (diaryInfo.userId != decodedUserId) {
+      return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
+    }
+
     req.body.wroteAt && (req.body.position = await diariesService.createRandomPosition(req.body));
     const updatedDiaryInfo = await diariesService.updateOne(diaryInfo, req.body);
 
@@ -155,14 +151,17 @@ export const updateOne = async (req: Request, res: Response) => {
 export const deleteOne = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
-  if (!id) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
-  }
+
   try {
-    const diaryInfo = await diariesService.readOne(id);
+    const diaryInfo = await diariesService.readOne(id!);
     if (!diaryInfo) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
+
+    if (diaryInfo.userId != decodedUserId) {
+      return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
+    }
+
     const deletedDiaryInfo = await diariesService.deleteOne(diaryInfo);
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(DIARY), deletedDiaryInfo));
   } catch (err) {
