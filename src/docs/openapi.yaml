@@ -20,11 +20,108 @@ tags:
     description: "Everything about Users"
   - name: Diaries
     description: "Everything about Diaries"
-  - name: Emotions
-    description: "Everything about Emotions"
   - name: Sentences
     description: "Everything about Sentences"
+  - name: Emotions
+    description: "Everything about Emotions"
 paths:
+  /users/signup:
+    get:
+      summary: '이메일 중복확인(채원)'
+      tags:
+        - Users
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          required: true
+          description: 중복 확인 할 이메일
+      responses:
+        '200':
+          description: 'SUCCESS : 사용 가능한 이메일인 경우'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '사용 가능한 이메일입니다.'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/Users'
+                      token:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
+        '400':
+          description: 'FAIL : 중복된 이메일인 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '사용 불가능한 이메일입니다.'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '이메일 중복 확인 실패'
+    post:
+      summary: '회원가입(채원)'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: 'SUCCESS : 회원가입 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '회원가입 성공'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/Users'
+                      token:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
+        '400':
+          description: 'FAIL : 중복된 이메일'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '사용 불가능한 ID입니다.'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '회원가입 실패'
   /users/signin:
     post:
       summary: '로그인(채원)'
@@ -81,57 +178,6 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '로그인 실패'
-  /users/signup:
-    post:
-      summary: '회원가입(채원)'
-      tags:
-        - Users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                password:
-                  type: string
-      responses:
-        '200':
-          description: 'SUCCESS : 회원가입 성공'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: '회원가입 성공'
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        $ref: '#/components/schemas/Users'
-                      token:
-                        type: string
-                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
-        '400':
-          description: 'FAIL : 중복된 이메일'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: '사용 불가능한 ID입니다.'
-        '500' :
-          description: 'FAIL : 서버 내부 에러'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                message: '회원가입 실패'
   /users:
     get:
       security:
@@ -1130,10 +1176,10 @@ components:
           description: 임시 비밀번호 시도 횟수
         createdAt:
           type: date-time
-          description: user 데이터가 생성된 시점
+          description: 해당 데이터가 생성된 시점
         updatedAt:
           type: date-time
-          description: user 데이터가 변경된 시점
+          description: 해당 데이터가 변경된 시점
     Emotions:
       type: object
       required:
@@ -1148,10 +1194,10 @@ components:
           description: 감정 이름
         createdAt:
           type: date-time
-          description: emotion 데이터가 생성된 시점
+          description: 해당 데이터가 생성된 시점
         updatedAt:
           type: date-time
-          description: emotion 데이터가 변경된 시점
+          description: 해당 데이터가 변경된 시점
     Sentences:
       type: object
       required: ['id', 'contents', 'bookName', 'writer', 'publisher']
@@ -1173,10 +1219,10 @@ components:
           description: 출판사
         createdAt:
           type: date-time
-          description: sentence 데이터가 생성된 시점
+          description: 해당 데이터가 생성된 시점
         updatedAt:
           type: date-time
-          description: sentence 데이터가 변경된 시점
+          description: 해당 데이터가 변경된 시점
     Diaries:
       type: object
       required: ['id', 'contents', 'position', 'depth', 'userId', 'sentenceId', 'emotionId', 'wroteAt']
@@ -1207,10 +1253,10 @@ components:
           description: x 위치 값
         createdAt:
           type: date-time
-          description: diary 데이터가 생성된 시점
+          description: 해당 데이터가 생성된 시점
         updatedAt:
           type: date-time
-          description: diary 데이터가 변경된 시점
+          description: 해당 데이터가 변경된 시점
     Notifications:
       type: object
       required: ['id', 'deviceToken', 'userId']
@@ -1224,6 +1270,12 @@ components:
         userId:
           type: number
           description: user 고유 id
+        createdAt:
+          type: date-time
+          description: 해당 데이터가 생성된 시점
+        updatedAt:
+          type: date-time
+          description: 해당 데이터가 변경된 시점
     UsersRecommendedSentences:
       type: object
       required: ['id', 'userId', 'sentenceId', 'emotionId']
@@ -1240,6 +1292,31 @@ components:
         emotionId:
           type: number
           description: emotion 고유 id
+        createdAt:
+          type: date-time
+          description: 해당 데이터가 생성된 시점
+        updatedAt:
+          type: date-time
+          description: 해당 데이터가 변경된 시점
+    EmotionsHaveSentences:
+      type: object
+      required: ['id', 'userId', 'sentenceId', 'emotionId']
+      properties:
+        id:
+          type: number
+          description: usersRecommendedSentences 고유 id
+        sentenceId:
+          type: number
+          description: sentence 고유 id
+        emotionId:
+          type: number
+          description: emotion 고유 id
+        createdAt:
+          type: date-time
+          description: 해당 데이터가 생성된 시점
+        updatedAt:
+          type: date-time
+          description: 해당 데이터가 변경된 시점
     DiariesWithSentencesAndEmotions:
       allOf:
         - $ref: '#/components/schemas/Diaries'
