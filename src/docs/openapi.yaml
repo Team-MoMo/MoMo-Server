@@ -6,6 +6,8 @@ info:
   license:
     name: MIT
 servers:
+  - description: production server
+    url: https://momodiary.ga
   - description: master server
     url: http://3.36.79.14:3000
   - description: local server
@@ -48,14 +50,6 @@ paths:
                   message:
                     type: string
                     example: '사용 가능한 이메일입니다.'
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        $ref: '#/components/schemas/Users'
-                      token:
-                        type: string
-                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
         '400':
           description: 'FAIL : 중복된 이메일인 경우'
           content:
