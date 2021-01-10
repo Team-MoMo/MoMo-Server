@@ -9,12 +9,15 @@ const USER = '회원';
 const SENTENCE = '문장';
 
 export const readAll = async (req: Request, res: Response) => {
-  const { emotionId, userId }: { emotionId?: number; userId?: number } = req.query;
   const decodedUserId = req.decoded?.userId;
+  const { emotionId, userId }: { emotionId?: number; userId?: number } = req.query;
 
   if (userId != decodedUserId) {
-    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
   }
+
+  let recommendSentenceList: Sentence[];
+
   try {
     const userInfo = await usersService.readOne(userId!);
     if (!userInfo) {
@@ -37,10 +40,11 @@ export const readAll = async (req: Request, res: Response) => {
       date
     );
 
-    let recommendSentences: Sentence[];
     if (userRecommendSentenceIds.length > 0) {
-      recommendSentences = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
-      return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentences));
+      recommendSentenceList = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
+      return res
+        .status(statusCode.OK)
+        .json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
     }
 
     const userSentences: number[] = await sentencesService.readAllDiaries(emotionId!, userId!, before30Day);
@@ -50,10 +54,10 @@ export const readAll = async (req: Request, res: Response) => {
     );
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
-    recommendSentences = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
-    await sentencesService.createUsersRecommendSentences(userId!, recommendSentences);
+    recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
+    await sentencesService.createUsersRecommendSentences(userId!, recommendSentenceList);
 
-    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentences));
+    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE)));
   }
