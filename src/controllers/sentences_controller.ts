@@ -79,7 +79,7 @@ export const create = async (req: Request, res: Response) => {
     }
     const sentenceInfo = await sentencesService.create(req.body, emotionIds);
 
-    return res.status(statusCode.CREATED).json(resJson.fail(resMessage.X_CREATE_SUCCESS('문장'), sentenceInfo));
+    return res.status(statusCode.CREATED).json(resJson.success(resMessage.X_CREATE_SUCCESS('문장'), sentenceInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_CREATE_FAIL('문장'), err));
   }
