@@ -28,7 +28,7 @@ export const handleError = (err: Error, req: Request, res: Response, next: NextF
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json({ error: err && err.message });
 };
 
 export function onError(port: string, error: Error) {

@@ -15,6 +15,7 @@ export default {
   MISS_MATCH_PASSWORD: '비밀번호가 일치하지 않습니다',
   MATCH_PASSWORD: '비밀번호가 일치합니다',
   TEMP_PASSWORD_ISSUE_EXCEDDED: '임시 비밀번호 발급 횟수 초과',
+  SAME_PASSWORD_AND_NEW_PASSWORD: '현재 비밀번호와 새로운 비밀번호가 동일합니다.',
 
   DB_ERROR: '데이터베이스 에러',
   EMPTY_TOKEN: '헤더에 토큰이 없음',

@@ -191,6 +191,11 @@ export const updatePassword = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
 
+    const checkPasswordResult = await usersService.checkPassword(user, newPassword);
+    if (checkPasswordResult) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SAME_PASSWORD_AND_NEW_PASSWORD));
+    }
+
     const updatedUser = await usersService.updatePassword(user, newPassword);
     loginUtil.blindPassword(updatedUser);
 

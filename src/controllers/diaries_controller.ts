@@ -16,6 +16,7 @@ interface ReadAllAttributes {
 }
 
 export const readAll = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { order, userId, emotionId, depth, year, month, day }: ReadAllAttributes = req.query;
   let diaryList: Diary[];
   if (!userId || !year || !month) {
@@ -50,6 +51,7 @@ export const readAll = async (req: Request, res: Response) => {
 };
 
 export const readRecentOne = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   try {
     const { userId }: { userId?: string } = req.query;
 
@@ -68,6 +70,7 @@ export const readRecentOne = async (req: Request, res: Response) => {
 };
 
 export const readStatistics = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { year, month, userId }: { year?: string; month?: string; userId?: string } = req.query;
 
   if (!year || !month || !userId) {
@@ -112,9 +115,10 @@ export const readOne = async (req: Request, res: Response) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-  const { contents, depth, userId, sentenceId, wroteAt }: Diary = req.body;
+  const decodedUserId = req.decoded?.userId;
+  const { contents, depth, userId, sentenceId, wroteAt, emotionId }: Diary = req.body;
 
-  if (!contents || !depth || !userId || !sentenceId || !wroteAt) {
+  if (!contents || !depth || !userId || !sentenceId || !wroteAt || !emotionId) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
@@ -129,6 +133,7 @@ export const create = async (req: Request, res: Response) => {
 };
 
 export const updateOne = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
   if (!id) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
@@ -148,6 +153,7 @@ export const updateOne = async (req: Request, res: Response) => {
 };
 
 export const deleteOne = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
   if (!id) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));

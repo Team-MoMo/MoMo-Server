@@ -9,6 +9,10 @@ interface User {
   id: number;
 }
 
+interface DecodedUser {
+  userId: number;
+}
+
 const options: object = {
   algorithm: 'HS256',
   expiresIn: '90d',
@@ -49,9 +53,9 @@ const crypto = {
   },
   verify: (token: string) => {
     // 토큰 식별기
-    let decoded;
+    let decoded: DecodedUser;
     try {
-      decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
+      decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY) as DecodedUser;
     } catch (err) {
       if (err.message === 'jwt expired') {
         return -3;
