@@ -21,10 +21,9 @@ export const signup = async (req: Request, res: Response) => {
     const { token } = jwt.sign(newUser);
     loginUtil.blindPassword(newUser);
 
-    return res.status(statusCode.OK).json(resJson.success(resMessage.SIGN_UP_SUCCESS, { user: newUser, token }));
+    return res.status(statusCode.CREATED).json(resJson.success(resMessage.SIGN_UP_SUCCESS, { user: newUser, token }));
   } catch (err) {
-    console.log(err);
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.SIGN_UP_FAIL));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.SIGN_UP_FAIL, err));
   }
 };
 
@@ -53,7 +52,7 @@ export const signinBySocial = async (req: Request, res: Response) => {
     return res.status(statusCode.OK).json(resJson.success(resMessage.SIGN_IN_SUCCESS, { user, token }));
   } catch (err) {
     console.log(err);
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.SIGN_IN_FAIL));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.SIGN_IN_FAIL, err));
   }
 };
 
@@ -75,7 +74,7 @@ export const signin = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.SIGN_IN_SUCCESS, { user, token }));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.SIGN_IN_FAIL));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.SIGN_IN_FAIL, err));
   }
 };
 
@@ -105,13 +104,18 @@ export const readOne = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(USER), user));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(USER)));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(USER), err));
   }
 };
 
 export const updateAlarm = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
   const { isAlarmSet, alarmTime } = req.body;
+
+  if (id != decodedUserId) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+  }
 
   try {
     const user = await usersService.readOne(id!);
@@ -129,13 +133,18 @@ export const updateAlarm = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_UPDATE_SUCCESS(ALARM), alarmInfo));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_UPDATE_FAIL(ALARM)));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_UPDATE_FAIL(ALARM), err));
   }
 };
 
 export const checkPassword = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
   const { password } = req.body;
+
+  if (id != decodedUserId) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+  }
 
   try {
     const user = await usersService.readOne(id!);
@@ -150,13 +159,18 @@ export const checkPassword = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.MATCH_PASSWORD));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.INTERNAL_SERVER_ERROR));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.INTERNAL_SERVER_ERROR, err));
   }
 };
 
 export const updatePassword = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
   const { newPassword } = req.body;
+
+  if (id != decodedUserId) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+  }
 
   try {
     const user = await usersService.readOne(id!);
@@ -169,12 +183,17 @@ export const updatePassword = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_UPDATE_SUCCESS(PASSWORD), user));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_UPDATE_FAIL(PASSWORD)));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_UPDATE_FAIL(PASSWORD), err));
   }
 };
 
 export const deleteOne = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
   const { id }: { id?: number } = req.params;
+
+  if (id != decodedUserId) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.OUT_OF_VALUE));
+  }
 
   try {
     const user = await usersService.readOne(id!);
@@ -187,11 +206,11 @@ export const deleteOne = async (req: Request, res: Response) => {
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(USER), user));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_DELETE_FAIL(USER)));
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_DELETE_FAIL(USER), err));
   }
 };
 
-export const createTempPassword = async (req: Request, res: Response) => {
+export const updateTempPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
@@ -222,9 +241,11 @@ export const createTempPassword = async (req: Request, res: Response) => {
 
     return res
       .status(statusCode.OK)
-      .json(resJson.success(resMessage.X_CREATE_SUCCESS(TEMP_PASSWORD), tempPasswordInfo));
+      .json(resJson.success(resMessage.X_UPDATE_SUCCESS(TEMP_PASSWORD), tempPasswordInfo));
   } catch (err) {
     console.log(err);
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_CREATE_FAIL(TEMP_PASSWORD)));
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .json(resJson.fail(resMessage.X_UPDATE_FAIL(TEMP_PASSWORD), err));
   }
 };
