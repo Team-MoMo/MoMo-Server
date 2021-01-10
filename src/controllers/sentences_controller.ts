@@ -14,14 +14,11 @@ interface createSentence {
 }
 
 export const readAll = async (req: Request, res: Response) => {
-  const { emotion, user }: { emotion?: string; user?: string } = req.query;
-
-  const emotionId = parseInt(emotion!);
-  const userId = parseInt(user!);
+  const { emotionId, userId }: { emotionId?: number; userId?: number } = req.query;
 
   let recommendSentences: Sentence[];
 
-  if (!emotion || !user) {
+  if (!emotionId || !userId) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
