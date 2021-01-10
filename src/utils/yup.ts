@@ -3,6 +3,7 @@ import { RequestType } from '../middleWares';
 
 const socialType = ['kakao', 'google', 'apple'];
 const orderType = ['depth', 'filter'];
+const emotionType = ['사랑', '행복', '슬픔', '화남', '위로', '권태', '추억', '일상'];
 
 //default : required
 const validation = {
@@ -26,6 +27,9 @@ const validation = {
 
   //diary
   order: yup.string().notRequired().oneOf(orderType),
+
+  //sentences
+  emotionList: yup.array().required().of(yup.string().oneOf(emotionType)),
 };
 
 export const user = {
@@ -146,4 +150,24 @@ const diary = {
   },
 };
 
-export default { user, diary };
+const sentence = {
+  readAllQuery: {
+    shape: {
+      emotionId: validation.number,
+      userId: validation.number,
+    },
+    path: RequestType.QUREY,
+  },
+  create: {
+    shape: {
+      contents: validation.string,
+      bookName: validation.string,
+      writer: validation.string,
+      publisher: validation.string,
+      emotion: validation.emotionList,
+    },
+    path: RequestType.BODY,
+  },
+};
+
+export default { user, diary, sentence };
