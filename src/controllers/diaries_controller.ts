@@ -139,7 +139,8 @@ export const updateOne = async (req: Request, res: Response) => {
       return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
     }
 
-    req.body.wroteAt && (req.body.position = await diariesService.createRandomPosition(req.body));
+    req.body.wroteAt &&
+      (req.body.position = await diariesService.createRandomPosition({ userId: decodedUserId, ...req.body }));
     const updatedDiaryInfo = await diariesService.updateOne(diaryInfo, req.body);
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_UPDATE_SUCCESS(DIARY), updatedDiaryInfo));
