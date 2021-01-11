@@ -39,7 +39,6 @@ export const readAll = async (req: Request, res: Response) => {
       userId!,
       date
     );
-
     if (userRecommendSentenceIds.length > 0) {
       recommendSentenceList = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
       return res
@@ -48,15 +47,14 @@ export const readAll = async (req: Request, res: Response) => {
     }
 
     const userSentences: number[] = await sentencesService.readAllDiaries(emotionId!, userId!, before30Day);
-    const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(
-      emotionId!,
-      userId!
-    );
+    const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(userId!);
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
     recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
-    await sentencesService.createUsersRecommendSentences(userId!, recommendSentenceList);
-
+    if (!recommendSentenceList) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SENTENCES_NOT_EXIST));
+    }
+    await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE), err));

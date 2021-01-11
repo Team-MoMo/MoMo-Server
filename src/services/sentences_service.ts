@@ -17,9 +17,9 @@ interface createSentence {
 export const readAllNotInUserSentences = async (emotionId: number, cannotRecommendSentence: number[]) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
     where: {
-      emotionId,
       id: { [Op.notIn]: cannotRecommendSentence },
     },
+    include: [{ model: model.Emotion, where: { id: emotionId }, attributes: [] }],
     order: [sequelize.fn('RAND'), ['id', 'DESC']],
     limit: 3,
   });
@@ -60,12 +60,11 @@ export const readAllUsersRecommendSentencesAfter6 = async (emotionId: number, us
   return userRecommendedSentenceIds;
 };
 
-export const readAllUsersRecommendSentences = async (emotionId: number, userId: number) => {
+export const readAllUsersRecommendSentences = async (userId: number) => {
   let userRecommendedSentenceIds: number[] = [];
   const usersRecommendedSentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
     attributes: ['sentenceId'],
     where: {
-      emotionId,
       userId,
     },
   });
@@ -96,12 +95,17 @@ export const readAllDiaries = async (emotionId: number, userId: number, before30
   return userDiarySentenceIds;
 };
 
-export const createUsersRecommendSentences = async (userId: number, recommendSentences: Sentence[]) => {
+export const createUsersRecommendSentences = async (
+  userId: number,
+  emotionId: number,
+  recommendSentences: Sentence[]
+) => {
   await model.UsersRecommendedSentences.bulkCreate(
     recommendSentences.map((item) => {
       return {
         userId,
         sentenceId: item.id,
+        emotionId,
       };
     })
   );
