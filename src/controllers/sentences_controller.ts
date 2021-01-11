@@ -54,7 +54,11 @@ export const readAll = async (req: Request, res: Response) => {
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
     recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
+<<<<<<< HEAD
     await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
+=======
+    await sentencesService.createUsersRecommendSentences(userId!, recommendSentenceList);
+>>>>>>> c3efd66e74939760d33ae7d9c74e6f15b758a22a
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
   } catch (err) {
