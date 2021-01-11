@@ -82,7 +82,7 @@ paths:
                 password:
                   type: string
       responses:
-        '200':
+        '201':
           description: 'SUCCESS : 회원가입 성공'
           content:
             application/json:
@@ -164,6 +164,61 @@ paths:
                 '패스워드 오류':
                   value:
                     message: '비밀번호가 일치하지 않습니다'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '로그인 실패'
+  /users/signin/social:
+    post:
+      summary: '소셜로그인(채원)'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                socialName:
+                  type: string
+                  description: 소셜 로그인 종류
+                  example: kakao || google
+                accessToken:
+                  type: string
+                  description: accessToken 값
+                  
+      responses:
+        '200':
+          description: 'SUCCESS : 로그인 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '로그인 성공'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/Users'
+                      token:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
+        '400':
+          description: 'FAIL : accessToken값 오류'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '잘못된 토큰'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -619,7 +674,7 @@ paths:
     get:
       security:
         - api_key: []
-      summary: '일기 전체 조회 및  날짜 / 깊이 / 필터별 조회(영우)'
+      summary: '일기 전체 조회 및  깊이 / 필터별 조회(영우)'
       tags:
         - Diaries
       parameters:
@@ -649,16 +704,19 @@ paths:
           schema:
             type: string
           examples:
-            date:
-              summary: 날짜별 조회
-              value: date
             depth:
               summary: 깊이별 조회
               value: depth
             filter:
               summary: 필터별 조회
               value: filter
-          description: 조회 기준(날짜 / 깊이 / 필터별 조회 때 사용)
+          description: 조회 기준(깊이 / 필터별 조회 때 사용)
+        - in: query
+          name: day
+          schema:
+            type: string
+          required: false
+          description: 조회 할 일(필터별 조회 때 사용)
         - in: query
           name: emotionId
           schema:
