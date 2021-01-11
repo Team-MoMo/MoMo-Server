@@ -57,7 +57,7 @@ export function onError(port: string, error: Error) {
 
 export enum RequestType {
   BODY = 'body',
-  QUREY = 'query',
+  QUERY = 'query',
   PARAMS = 'params',
   HEADER = 'header',
 }
