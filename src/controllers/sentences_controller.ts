@@ -39,7 +39,6 @@ export const readAll = async (req: Request, res: Response) => {
       userId!,
       date
     );
-
     if (userRecommendSentenceIds.length > 0) {
       recommendSentenceList = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
       return res
@@ -55,7 +54,7 @@ export const readAll = async (req: Request, res: Response) => {
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
     recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
-    await sentencesService.createUsersRecommendSentences(userId!, recommendSentenceList);
+    await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
 
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
   } catch (err) {

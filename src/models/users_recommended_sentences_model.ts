@@ -35,7 +35,7 @@ UsersRecommendedSentences.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    emotion: {
+    emotionId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
