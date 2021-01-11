@@ -60,12 +60,11 @@ export const readAllUsersRecommendSentencesAfter6 = async (emotionId: number, us
   return userRecommendedSentenceIds;
 };
 
-export const readAllUsersRecommendSentences = async (emotionId: number, userId: number) => {
+export const readAllUsersRecommendSentences = async (userId: number) => {
   let userRecommendedSentenceIds: number[] = [];
   const usersRecommendedSentences: UsersRecommendedSentences[] = await model.UsersRecommendedSentences.findAll({
     attributes: ['sentenceId'],
     where: {
-      emotionId,
       userId,
     },
   });
