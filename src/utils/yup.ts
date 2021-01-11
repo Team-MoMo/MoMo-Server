@@ -3,7 +3,11 @@ import { RequestType } from '../middleWares';
 
 const socialType = ['kakao', 'google', 'apple'];
 const orderType = ['depth', 'filter'];
+<<<<<<< HEAD
 const emotionType = ['사랑', '행복', '위로', '화남', '슬픔', '우울', '추억', '일상'];
+=======
+const emotionType = ['사랑', '행복', '슬픔', '화남', '위로', '권태', '추억', '일상'];
+>>>>>>> origin/main
 
 const validation = {
   number: yup.number().required(),
