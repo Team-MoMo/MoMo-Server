@@ -164,6 +164,12 @@ const sentence = {
     },
     path: RequestType.QUREY,
   },
+  readAllOnboarding: {
+    shape: {
+      emotionId: validation.number,
+    },
+    path: RequestType.QUREY,
+  },
   create: {
     shape: {
       contents: validation.string,

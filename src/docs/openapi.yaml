@@ -1096,6 +1096,89 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '문장 조회 실패'
+  /sentences/onboarding:
+    get:
+      summary: '온보딩 문장 조회(영현)'
+      tags:
+        - Sentences
+      parameters:
+        - in: query
+          name: emotionId
+          schema:
+            type: string
+          required: true
+          example: 1
+          description: emotion 고유 id
+      responses:
+        '200':
+          description: 'SUCCESS: 온보딩문장 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '온보딩문장 조회 성공'
+                  data:
+                    type: object
+                    properties:
+                      emotionId:
+                        type: integer
+                        example: 1
+                      sentence_01:
+                        type: object
+                        properties:
+                          contents:
+                            type: string
+                            example: '문장 내용'
+                          bookName:
+                            type: string
+                            example: '책 제목'
+                          writer:
+                            type: string
+                            example: '저자명'
+                          publisher:
+                            type: string
+                            example: '출판사'
+                      sentence_02:
+                        type: object
+                        properties:
+                          contents:
+                            type: string
+                            example: '문장 내용'
+                          bookName:
+                            type: string
+                            example: '책 제목'
+                          writer:
+                            type: string
+                            example: '저자명'
+                          publisher:
+                            type: string
+                            example: '출판사'
+                      sentence_03:
+                        type: object
+                        properties:
+                          contents:
+                            type: string
+                            example: '문장 내용'
+                          bookName:
+                            type: string
+                            example: '책 제목'
+                          writer:
+                            type: string
+                            example: '저자명'
+                          publisher:
+                            type: string
+                            example: '출판사'
+        '400':
+          description: 'FAIL : emotionId 값 입력없는 경우'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'emotionId must be a `number` type, but the final value was: `NaN` (cast from the value `\"\"`).'
   /emotions:
     get:
       security:
