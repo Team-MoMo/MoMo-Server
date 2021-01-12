@@ -66,6 +66,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '이메일 중복 확인 실패'
+                error: 'error && error.message'
     post:
       summary: '회원가입(채원)'
       tags:
@@ -82,7 +83,7 @@ paths:
                 password:
                   type: string
       responses:
-        '200':
+        '201':
           description: 'SUCCESS : 회원가입 성공'
           content:
             application/json:
@@ -116,6 +117,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '회원가입 실패'
+                error: 'error && error.message'                
   /users/signin:
     post:
       summary: '로그인(채원)'
@@ -172,6 +174,63 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '로그인 실패'
+                error: 'error && error.message'
+  /users/signin/social:
+    post:
+      summary: '소셜로그인(채원)'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                socialName:
+                  type: string
+                  description: 소셜 로그인 종류
+                  example: kakao || google
+                accessToken:
+                  type: string
+                  description: accessToken 값
+                  
+      responses:
+        '200':
+          description: 'SUCCESS : 로그인 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '로그인 성공'
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/Users'
+                      token:
+                        type: string
+                        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJpYXQiOjE2MDk5MzcwMzgsImV4cCI6MTYxNzcxMzAzOCwiaXNzIjoibW9tbyJ9.Dp_5KpJ2wzCH4j-hBVgDAGmJDiS43RUKep6HjlQY6Ro'
+        '400':
+          description: 'FAIL : accessToken값 오류'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '잘못된 토큰'
+        '500' :
+          description: 'FAIL : 서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '로그인 실패'
+                error: 'error && error.message'
   /users:
     get:
       security:
@@ -194,7 +253,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Users'
-        
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -203,6 +261,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '회원 전체 조회 실패'
+                error: 'error && error.message'
   /users/{id}:
     get:
       security:
@@ -251,6 +310,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '회원 조회 실패'
+                error: 'error && error.message'
     delete:
       security:
         - api_key: []
@@ -298,6 +358,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '회원 삭제 실패'
+                error: 'error && error.message'
   /users/{id}/alarm:
     put:
       security:
@@ -374,6 +435,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '알람 수정 실패'
+                error: 'error && error.message'
   /users/{id}/password:
     put:
       security:
@@ -436,6 +498,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '비밀번호 수정 실패'
+                error: 'error && error.message'
     post:
       security:
         - api_key: []
@@ -495,6 +558,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '서버 내부 오류'
+                error: 'error && error.message'
   /users/password/temp:
     post:
       security:
@@ -554,6 +618,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '임시비밀번호 생성 실패'
+                error: 'error && error.message'
   /diaries:
     post:
       security:
@@ -616,10 +681,11 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기 생성 실패'
+                error: 'error && error.message'
     get:
       security:
         - api_key: []
-      summary: '일기 전체 조회 및  날짜 / 깊이 / 필터별 조회(영우)'
+      summary: '일기 전체 조회 및  깊이 / 필터별 조회(영우)'
       tags:
         - Diaries
       parameters:
@@ -649,16 +715,19 @@ paths:
           schema:
             type: string
           examples:
-            date:
-              summary: 날짜별 조회
-              value: date
             depth:
               summary: 깊이별 조회
               value: depth
             filter:
               summary: 필터별 조회
               value: filter
-          description: 조회 기준(날짜 / 깊이 / 필터별 조회 때 사용)
+          description: 조회 기준(깊이 / 필터별 조회 때 사용)
+        - in: query
+          name: day
+          schema:
+            type: string
+          required: false
+          description: 조회 할 일(필터별 조회 때 사용)
         - in: query
           name: emotionId
           schema:
@@ -709,6 +778,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기 전체 조회 실패'
+                error: 'error && error.message'
   /diaries/statistics:
     get:
       security:
@@ -805,6 +875,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기통계 조회 실패'
+                error: 'error && error.message'
   /diaries/{id}:
     get:
       security:
@@ -854,6 +925,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기 조회 실패'
+                error: 'error && error.message'
     put:
       security:
         - api_key: []
@@ -929,6 +1001,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기 수정 실패'
+                error: 'error && error.message'
     delete:
       security:
         - api_key: []
@@ -977,6 +1050,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기 삭제 실패'
+                error: 'error && error.message'
   /sentences:
     post:
       summary: '문장 등록(영현)'
@@ -1039,6 +1113,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '문장 생성 실패'
+                error: 'error && error.message'
     get:
       security:
         - api_key: []
@@ -1096,6 +1171,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '문장 조회 실패'
+                error: 'error && error.message'
   /sentences/onboarding:
     get:
       summary: '온보딩 문장 조회(영현)'
@@ -1209,6 +1285,7 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '감정 전체 조회 실패'
+                error: 'error && error.message'
 components:
   securitySchemes:
     api_key:
@@ -1407,6 +1484,8 @@ components:
       type: object
       properties:
         message:
+          type: string
+        error:
           type: string
   responses:
     BadRequest:
