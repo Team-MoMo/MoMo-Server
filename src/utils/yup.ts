@@ -35,7 +35,7 @@ const validation = {
 export const user = {
   checkDuplicateEmailQuery: {
     shape: { email: validation.email },
-    path: RequestType.QUREY,
+    path: RequestType.QUERY,
   },
   signupBody: {
     shape: { email: validation.email, password: validation.password },
@@ -98,13 +98,13 @@ const diary = {
       month: validation.number,
       day: validation.optionalNumber,
     },
-    path: RequestType.QUREY,
+    path: RequestType.QUERY,
   },
   readRecentOneQuery: {
     shape: {
       userId: validation.number,
     },
-    path: RequestType.QUREY,
+    path: RequestType.QUERY,
   },
   readStatisticsQuery: {
     shape: {
@@ -112,7 +112,7 @@ const diary = {
       year: validation.number,
       month: validation.number,
     },
-    path: RequestType.QUREY,
+    path: RequestType.QUERY,
   },
   readOneParams: {
     shape: {
@@ -162,7 +162,7 @@ const sentence = {
       emotionId: validation.number,
       userId: validation.number,
     },
-    path: RequestType.QUREY,
+    path: RequestType.QUERY,
   },
   readAllOnboarding: {
     shape: {

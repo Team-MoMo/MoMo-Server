@@ -5,7 +5,7 @@ export interface DecodedInfo {
 declare global {
   namespace NodeJS {
     export interface ProcessEnv {
-      NODE_ENV: 'development' | 'production';
+      NODE_ENV: 'development' | 'production' | 'test';
       TOKEN_SECRET_KEY: string;
       // DATABASE
       DATABASE_NAME: string;

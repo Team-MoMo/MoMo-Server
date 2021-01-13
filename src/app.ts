@@ -24,17 +24,19 @@ const swaggerSpec = yaml.load(path.join(__dirname, './docs/openapi.yaml'));
 (async () => {
   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true });
   await sequelize.sync({ force: database.init });
-  database.init && process.env.NODE_ENV === 'development' && dbDummy(db);
+  database.init && process.env.NODE_ENV === 'development' && (await dbDummy(db));
 
-  console.log(`Database Init: ${database.init}`);
-  console.log('Sequelize connect success');
+  if (process.env.NODE_ENV !== 'test') {
+    console.log(`Database Init: ${database.init}`);
+    console.log('Sequelize connect success');
+  }
 
   database.init && process.exit();
 })();
 
 app.set('port', normalizePort(process.env.PORT || '3000'));
 app.use(cors());
-app.use(process.env.NODE_ENV === 'production' ? logger('combined') : logger('dev'));
+process.env.NODE_ENV !== 'test' && app.use(logger(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
