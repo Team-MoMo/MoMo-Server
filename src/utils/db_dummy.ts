@@ -24,8 +24,7 @@ const dbDummy = async (db: Models) => {
         .fill({})
         .map((data: object, index: number) => {
           return {
-            email: `test_email_${index}`,
-            name: `test_name_${index}`,
+            email: `test${index}@gmail.com`,
             password: `test_password_${index}`,
             passwordSalt: `test_passwordSalt_${index}`,
           };
