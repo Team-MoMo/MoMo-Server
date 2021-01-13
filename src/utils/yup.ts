@@ -168,7 +168,7 @@ const sentence = {
     shape: {
       emotionId: validation.number,
     },
-    path: RequestType.QUREY,
+    path: RequestType.QUERY,
   },
   create: {
     shape: {
