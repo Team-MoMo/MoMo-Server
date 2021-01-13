@@ -27,8 +27,8 @@ const validation = {
 
   //diary
   order: yup.string().notRequired().oneOf(orderType),
-
-  //sentences
+  depth: yup.number().notRequired().max(6),
+  day: yup.number().notRequired().max(31),
   emotionList: yup.array().required().of(yup.string().oneOf(emotionType)),
 };
 
@@ -77,7 +77,7 @@ export const user = {
     shape: { newPassword: validation.password },
     path: RequestType.BODY,
   },
-  deleteOneBody: {
+  deleteOneParams: {
     shape: { id: validation.number },
     path: RequestType.PARAMS,
   },
@@ -93,10 +93,10 @@ const diary = {
       order: validation.order,
       userId: validation.number,
       emotionId: validation.optionalNumber,
-      depth: validation.optionalNumber,
+      depth: validation.depth,
       year: validation.number,
       month: validation.number,
-      day: validation.optionalNumber,
+      day: validation.day,
     },
     path: RequestType.QUERY,
   },
@@ -124,7 +124,7 @@ const diary = {
     shape: {
       emotionId: validation.number,
       contents: validation.string,
-      depth: validation.number,
+      depth: validation.depth,
       userId: validation.number,
       sentenceId: validation.number,
       wroteAt: validation.string,
@@ -141,7 +141,7 @@ const diary = {
     shape: {
       wroteAt: validation.optionalString,
       userId: validation.optionalNumber,
-      depth: validation.optionalNumber,
+      depth: validation.depth,
       contents: validation.optionalString,
       sentenceId: validation.optionalNumber,
       emotionId: validation.optionalNumber,
@@ -168,7 +168,7 @@ const sentence = {
     shape: {
       emotionId: validation.number,
     },
-    path: RequestType.QUREY,
+    path: RequestType.QUERY,
   },
   create: {
     shape: {
