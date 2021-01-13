@@ -164,6 +164,12 @@ const sentence = {
     },
     path: RequestType.QUERY,
   },
+  readAllOnboarding: {
+    shape: {
+      emotionId: validation.number,
+    },
+    path: RequestType.QUERY,
+  },
   create: {
     shape: {
       contents: validation.string,
