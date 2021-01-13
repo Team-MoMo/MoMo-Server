@@ -32,7 +32,7 @@ router.put(
   validate(yup.user.updatePasswordBody),
   usersController.updatePassword
 );
-router.delete('/:id', jwt.isLoggedIn, validate(yup.user.deleteOneBody), usersController.deleteOne);
+router.delete('/:id', jwt.isLoggedIn, validate(yup.user.deleteOneParams), usersController.deleteOne);
 router.post('/password/temp', validate(yup.user.updateTempPasswordBody), usersController.updateTempPassword);
 
 export default router;
