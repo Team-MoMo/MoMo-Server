@@ -48,6 +48,7 @@ export const readAllByDepth = async ({ userId, year, month }: ReadAllAttributes)
 
 export const readAllByFilter = async ({ userId, year, month, day, emotionId, depth }: ReadAllAttributes) => {
   const { standardTime, addedTime } = calculateTime(year, month, day);
+
   const filteredDiaryList = await model.Diary.findAll({
     where: {
       userId,
@@ -55,7 +56,7 @@ export const readAllByFilter = async ({ userId, year, month, day, emotionId, dep
         [Op.gte]: standardTime.format(),
         [Op.lt]: addedTime.format(),
       },
-      [Op.and]: [!!depth && { depth }, !!emotionId && { emotionId }],
+      [Op.and]: [depth === undefined ? false : { depth }, !!emotionId && { emotionId }],
     },
     include: [model.Sentence, model.Emotion],
     order: [['wroteAt', 'ASC']],

@@ -3,10 +3,12 @@ import { Request, Response } from 'express';
 import { usersService } from '../services';
 import { sentencesService } from '../services';
 import Sentence from '../models/sentences_model';
+import { onboardingSentences } from '../utils/onboarding_sentences';
 import dayjs from 'dayjs';
 
 const USER = '회원';
 const SENTENCE = '문장';
+const ONBOARDING = '온보딩';
 
 export const readAll = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
@@ -59,6 +61,18 @@ export const readAll = async (req: Request, res: Response) => {
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE), err));
   }
+};
+
+export const readAllOnboarding = async (req: Request, res: Response) => {
+  const { emotionId }: { emotionId?: number } = req.query;
+
+  const onboardingSentenceInfo: object[] = onboardingSentences.filter((item) => {
+    return item.emotionId === emotionId;
+  });
+
+  return res
+    .status(statusCode.OK)
+    .json(resJson.success(resMessage.X_READ_SUCCESS(ONBOARDING + SENTENCE), onboardingSentenceInfo[0]));
 };
 
 export const create = async (req: Request, res: Response) => {
