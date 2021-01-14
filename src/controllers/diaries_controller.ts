@@ -56,9 +56,13 @@ export const readRecentOne = async (req: Request, res: Response) => {
     if (!recentDiaryInfo) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
     }
-    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(DIARY), recentDiaryInfo));
+    return res
+      .status(statusCode.OK)
+      .json(resJson.success(resMessage.X_READ_SUCCESS(`${DIARY} 최근 미작성 날짜`), recentDiaryInfo));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(DIARY), err));
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .json(resJson.fail(resMessage.X_READ_FAIL(`${DIARY} 최근 미작성 날짜`), err));
   }
 };
 
