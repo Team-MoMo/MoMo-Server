@@ -71,7 +71,7 @@
 
 ## 🛠 ERD
 
-<img src="https://user-images.githubusercontent.com/60434971/103767820-a596b080-5064-11eb-9d77-ccc0941206ca.png" height="550">
+<img src="https://user-images.githubusercontent.com/60434971/104465337-4b16ca80-55f7-11eb-92bd-17567861e092.png" height="550">
 
 <br>
 
@@ -80,46 +80,70 @@
 <br>
 
 ## ⚙ Dependencies
-
-* sequelize : ORM
-* typescript : 타입 스크립트
-* crypto : 비밀번호 암호화 및 인증
-* cross-env : 환경변수
-* @types/jsonwebtoken : Token 생성 및 인증
-* @types/nodemailer : 이메일 발송
+* `typescript` - 타입스크립트 지원 모듈
+* `ts-node` - typescript node서버 구동
+* `nodemon` - 코드 수정시 자동 재시작 도구
+* `swagger` : Api Docs
+* `sequelize` : ORM
+* `cross-env` : 환경 변수
+* `jsonwebtoken` : Token 생성 및 인증
+* `yup` : 입력 검증
+* `crypto` : 비밀번호 암호화 및 인증
+* `dayjs`: 날짜/시간
+* `axios` : http 통신
+* `node-schedule` : 스케쥴러
+* `nodemailer` : 이메일 발송
+* `google-auth-library` : 구글로그인
+* `prettier` - 코드 포멧터
+* `eslint` - 문법 정적분석 도구
+* `jest` : 테스트 
+* `supertest` - 통합테스트 모듈
 
 ```
 
-"dependencies": {
+ "dependencies": {
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.9",
     "@types/http-errors": "^1.8.0",
     "@types/morgan": "^1.9.2",
+    "@types/yup": "^0.29.11",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
+    "dayjs": "^1.10.1",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "errorhandler": "^1.5.1",
     "express": "^4.16.4",
-    "express-validator": "^6.9.0",
+    "google-auth-library": "^6.1.3",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "mysql2": "^2.2.5",
+    "node-schedule": "^1.3.2",
     "nodemailer": "^6.4.17",
     "rand-token": "^1.0.1",
-    "sequelize": "^6.3.5",
+    "sequelize": "^5.22.0",
+    "sequelize-cli": "^6.2.0",
     "swagger-cli": "^4.0.4",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^4.1.6",
+    "yamljs": "^0.3.0",
+    "yup": "^0.32.8"
   },
   "devDependencies": {
     "@types/errorhandler": "^1.5.0",
     "@types/express": "^4.17.9",
+    "@types/jest": "^26.0.20",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/node": "^14.14.16",
+    "@types/node-schedule": "^1.3.1",
     "@types/nodemailer": "^6.4.0",
+    "@types/supertest": "^2.0.10",
+    "@types/swagger-ui-express": "^4.1.2",
+    "@types/yamljs": "^0.2.31",
     "@typescript-eslint/eslint-plugin": "^4.11.1",
     "@typescript-eslint/parser": "^4.11.1",
     "cross-env": "^7.0.3",
@@ -128,8 +152,11 @@
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.0",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.6",
     "prettier": "2.2.1",
+    "supertest": "^6.0.1",
+    "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
