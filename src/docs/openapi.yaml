@@ -296,12 +296,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -344,12 +351,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -421,12 +435,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -481,15 +502,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
                 '현재 비밀번호와 같은 값을 입력한 경우':
                   value:
                     message: '현재 비밀번호와 새로운 비밀번호가 동일합니다'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -541,15 +569,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
                 'password 입력 오류':
                   value:
                     message: '비밀번호가 일치하지 않습니다'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -665,7 +700,7 @@ paths:
                     example: '일기 생성 성공'
                   data:
                     $ref: '#/components/schemas/Diaries'
-        '400':
+        '401':
           description: 'FAIL : userId != 토큰 정보'
           content:
             application/json:
@@ -764,12 +799,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'FAIL : userId != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 '입력 값 오류':
                   value:
                     message: 'Body 타입이 잘못 되었습니다.'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -861,12 +903,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'FAIL : userId != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 '입력 값 오류':
                   value:
                     message: 'Body 타입이 잘못 되었습니다.'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -961,6 +1010,13 @@ paths:
                 'id 값 오류':
                   value:
                     message: '존재하지 않는 일기'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
                 'userId != 토큰 정보':
                   value:
                     message: '권한이 없습니다'
@@ -1037,6 +1093,13 @@ paths:
                 'id 값 오류':
                   value:
                     message: '존재하지 않는 일기'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
                 'userId != 토큰 정보':
                   value:
                     message: '권한이 없습니다'
@@ -1086,6 +1149,13 @@ paths:
                 'id 값 오류':
                   value:
                     message: '존재하지 않는 일기'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
                 'userId != 토큰 정보':
                   value:
                     message: '권한이 없습니다'
@@ -1204,12 +1274,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 != 토큰 정보':
-                  value:
-                    message: '권한이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
