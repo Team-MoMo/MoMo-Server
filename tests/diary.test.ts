@@ -71,7 +71,7 @@ describe('[DIARY] API TEST', () => {
     expect(res).toBeDefined();
     expect(res.status).toEqual(200);
     expect(res.type).toEqual('application/json');
-    expect(res.body.message).toEqual('일기 조회 성공');
+    expect(res.body.message).toEqual('일기 최근 미작성 날짜 조회 성공');
     done();
   });
 
