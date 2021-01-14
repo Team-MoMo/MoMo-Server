@@ -53,9 +53,7 @@ export const readRecentOne = async (req: Request, res: Response) => {
 
   try {
     const recentDiaryInfo = await diariesService.readRecentOne(userId!);
-    if (!recentDiaryInfo) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(DIARY)));
-    }
+
     return res
       .status(statusCode.OK)
       .json(resJson.success(resMessage.X_READ_SUCCESS(`${DIARY} 최근 미작성 날짜`), recentDiaryInfo));
