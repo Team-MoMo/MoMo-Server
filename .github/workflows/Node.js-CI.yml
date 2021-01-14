@@ -13,7 +13,7 @@ jobs:
       uses: actions/setup-node@v2.1.4
       with:
         node-version: '12'
-    - run: npm install
+    - run: npm ci
     - run: npm test
       env:
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
