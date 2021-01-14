@@ -29,14 +29,14 @@ describe('[SENTENCE] API TEST', () => {
     done();
   });
 
-  //   test(`[GET] ${BASE_URL}/onboarding`, async (done) => {
-  //     const res = await request.get(`${BASE_URL}/onboarding`).query({ emotionId: '1' }).set('Accept', 'application/json');
-  //     expect(res).toBeDefined();
-  //     expect(res.status).toEqual(200);
-  //     expect(res.type).toEqual('application/json');
-  //     expect(res.body.message).toEqual('온보딩문장 조회 성공');
-  //     done();
-  //   });
+  test(`[GET] ${BASE_URL}/onboarding`, async (done) => {
+    const res = await request.get(`${BASE_URL}/onboarding`).query({ emotionId: '1' }).set('Accept', 'application/json');
+    expect(res).toBeDefined();
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual('application/json');
+    expect(res.body.message).toEqual('온보딩문장 조회 성공');
+    done();
+  });
 
   test(`[POST] ${BASE_URL}/`, async (done) => {
     const res = await request

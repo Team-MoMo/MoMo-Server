@@ -103,12 +103,28 @@ export const countByDepth = async ({ userId, year, month }: ReadAllAttributes) =
 };
 
 export const readRecentOne = async (userId: number) => {
-  const diaryInfo = await model.Diary.findOne({
-    where: { userId },
-    order: [['wroteAt', 'DESC']],
-  });
+  let standardDate = dayjs().set('hour', 0).set('minutes', 0).set('second', 0);
 
-  return diaryInfo;
+  while (true) {
+    let addedDate = standardDate.add(1, 'day');
+    const diaryInfo = await model.Diary.findOne({
+      where: {
+        userId,
+        wroteAt: {
+          [Op.gte]: standardDate.format(),
+          [Op.lt]: addedDate.format(),
+        },
+      },
+      order: [['id', 'DESC']],
+    });
+
+    if (!diaryInfo) {
+      return standardDate.format();
+    }
+
+    standardDate = standardDate.subtract(1, 'day');
+    addedDate = addedDate.subtract(1, 'day');
+  }
 };
 
 export const readOne = async (id: number) => {
