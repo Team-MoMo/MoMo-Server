@@ -1,6 +1,6 @@
 # MOMO-SERVER
 
-### 🌊 당신의 감정 기록을 도와줄 작가의 감정 표현 '**MOMO**'
+### 🌊 책 속의 문장을 제공함으로써, 보다 깊이 있는 감정 기록을 도와주는 일기 앱 서비스 '**MOMO**'
 
 <img src="https://user-images.githubusercontent.com/60434971/103637907-87ab4c00-4f8f-11eb-9007-43d4385e69ad.png" width="200" height="200"> <br>
 
@@ -10,37 +10,35 @@
 <br>
 
 ## 📜프로젝트 설명
+<img src="https://user-images.githubusercontent.com/60434971/104602472-cb543300-56be-11eb-9b25-f73bcf9a53d8.png" height="600" > <br>
 
-### 책 속의 문장을 제공함으로써, 보다 깊이 있는 감정 기록을 도와주는 일기 앱 서비스
+### MOMO는 책 속의 문장과 일기를 결합하여 '보다 쉬운 감정 기록'을 도와주는 일기 앱서비스 입니다. <br>
+오늘의 감정을 선택하면, ✨**매일 3개씩 새로운 문장**이 제공됩니다. <br>
+마음의 드는 문장을 선택하고 ✏**오늘의 감정을 기록**해보세요. <br>
+문장이 감수성을 자극해서 평소보다 훨씬 쉽게 감정을 기록할 수 있을 거예요. <br>
+🐳 **깊어진 감정을 바다의 깊이로 표현**해서 나만의 바다를 만들어보세요.<br>
 
-<img src="https://user-images.githubusercontent.com/60434971/103638821-c8579500-4f90-11eb-9f73-a74c00150eeb.png" width="2000" height="450" > <br>
 
-감정 카테고리를 선택하면, 감정과 어울리는 **3개의 문장**이 제공됩니다. 하나의 문장을 선택하여 그날의 일기를 기록하고, 2M에서 심해까지 **감정의 깊이**를 선택하여 저장합니다. 저장된 일기는 해당 깊이의 바다를 떠다니는 물방울이 됩니다.
-
-사용자는 문장을 통해 **감수성을 자극**받으므로, 감정을 보다 섬세하고 구체적으로 기록할 수 있습니다. 따라서 평소에 일기를 쓰면서 **표현력**의 한계를 느꼈던 사람들에게 MOMO가 해결책이 되어줄 것입니다.
 <br> <br>
 
 ## 📌핵심 기능
 
+<img src="https://user-images.githubusercontent.com/60434971/104631203-488fa000-56df-11eb-9b8e-56c8d73a2edb.png" height="400" >
+
 ### ✔문장 추천
 
-매일 매일 다른 3개의 문장을 감정별로 제공 <br><br>
-<img src="https://user-images.githubusercontent.com/60434971/103647660-fe037a80-4f9e-11eb-9ae0-bb6ff49d7b1f.JPG" height="350"><br><br>
+유저별로 매일 매일 다른 3개의 문장을 감정별로 제공 <br><br>
 
 ### ✔일기 작성
 
 문장을 선택하여 감정의 깊이가 담긴 일기를 기록 <br><br>
-<img src="https://user-images.githubusercontent.com/60434971/103648740-a960ff00-4fa0-11eb-826f-6a911a3ddc17.jpg" height="350"><br><br>
 
 ### ✔일기 조회
 
 개별 일기 조회<br>
-**월간 일기 리스트** - **감정 깊이별 조회**, 날짜별 조회 제공<br>
+**월간 일기 리스트** - **감정 깊이별 조회 (일기 랜덤 배치)**, 날짜별 조회 제공<br>
 월간 일기 통계 - 이번 달의 감정을 한 눈에 볼 수 있는 통계 제공  <br><br>
-<img src="https://user-images.githubusercontent.com/60434971/103648246-e5e02b00-4f9f-11eb-8a9d-0fd8520a7550.JPG" height="365">
-<img src="https://user-images.githubusercontent.com/60434971/103648730-a6660e80-4fa0-11eb-9723-7c8464bccffd.jpg" height="350">
-<img src="https://user-images.githubusercontent.com/60434971/103648254-e973b200-4f9f-11eb-9d88-b5eedaf5e9ed.JPG" height="345">
-<br><b3>
+<br>
 
 ## 👨‍👧‍👧 Developer & Role
 
@@ -62,7 +60,7 @@
   </tr>
     <tr>
     <th> 일기 작성<br> 일기 조회<br> 일기 통계<br> 개발환경 설정 </th>
-    <th> 문장 추천 <br> 감정 조회 <br> 회원 관리 <br> 알림 </th>
+    <th> 문장 추천 <br> 문장등록 <br>감정 조회 <br> 회원 관리 <br> 알림 </th>
     <th> 로그인<br> 회원가입<br> 비밀번호 찾기 </th>
   </tr>
 </table>
@@ -76,8 +74,10 @@
 <br>
 
 ## 🏛 Architecture
+<img src="https://user-images.githubusercontent.com/60434971/104630231-dff3f380-56dd-11eb-8378-f618d5d6d467.JPG" height="500">
 
 <br>
+
 
 ## ⚙ Dependencies
 * `typescript` - 타입스크립트 지원 모듈
