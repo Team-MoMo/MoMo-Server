@@ -880,7 +880,7 @@ paths:
     get:
       security:
         - api_key: []
-      summary: '최근 작성된 일기 조회(영우)'
+      summary: '일기 작성이 안된 가장 최근 날짜조회(영우)'
       tags:
         - Diaries
       parameters:
@@ -893,7 +893,7 @@ paths:
           description: user 고유 id
       responses:
         '200':
-          description: 'SUCCESS: 일기 조회 성공'
+          description: 'SUCCESS: 일기 최근 미작성 날짜 조회 성공'
           content:
             application/json:
               schema:
@@ -901,19 +901,16 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: '일기 조회 성공'
+                    example: '일기 최근 미작성 날짜 조회 성공'
                   data:
                     $ref: '#/components/schemas/Diaries'
-        '400':
+        '401':
           description: 'FAIL : 잘못된 요청'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                '최근 작성된 일기가 없을 경우':
-                  value:
-                    message: '존재하지 않는 일기'
                 'userId != 토큰 정보':
                   value:
                     message: '권한이 없습니다'
