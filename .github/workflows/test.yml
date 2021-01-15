@@ -27,9 +27,11 @@ jobs:
         TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
         
     - name: Report Coverage 
-      uses: coverallsapp/github-action@v1.1.2
+      uses: slavcodev/coverage-monitor-action@1.2.0
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          clover_file: "coverage/clover.xml"
+          threshold_warning: 60
       if: success()
     
     - name: Close Pull
