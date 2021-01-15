@@ -18,6 +18,7 @@ jobs:
       env:
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
         DATABASE_DIALECT: ${{ secrets.DATABASE_DIALECT }}
+        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
