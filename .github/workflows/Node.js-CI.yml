@@ -25,9 +25,17 @@ jobs:
         NODEMAILER_PASS: ${{ secrets.NODEMAILER_PASS }}
         NODEMAILER_USER: ${{ secrets.NODEMAILER_USER }}
         TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
+        
+    - name: Report Coverage
+      uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }
+      if: success()
+    
     - name: Close Pull
       uses: peter-evans/close-pull@v1
       with:
         comment: Failed to pass the test
       if: failure()
+    
       
