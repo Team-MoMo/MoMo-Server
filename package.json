@@ -11,7 +11,8 @@
     "test": "cross-env NODE_ENV=test jest --runInBand --verbose --detectOpenHandles --forceExit --testTimeout=30000 ./tests/*.test.ts exit",
     "test:watch": "cross-env NODE_ENV=test jest --runInBand --verbose --detectOpenHandles --watchAll --testTimeout=30000 ./tests/*.test.ts",
     "test:coverage": "cross-env NODE_ENV=test jest --runInBand --verbose --detectOpenHandles --forceExit --coverage --testTimeout=30000 ./tests/*.test.ts exit",
-    "build": "tsc ./src"
+    "build": "tsc -p .",
+    "postbuild": "swagger-cli bundle ./src/docs/openapi.yaml --outfile build/docs/openapi.yaml --type yaml"
   },
   "dependencies": {
     "@types/cookie-parser": "^1.4.2",

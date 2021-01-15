@@ -8,14 +8,17 @@ WORKDIR /app
 # 와일드카드를 사용
 COPY package*.json ./
 
-# RUN npm install
-# 프로덕션을 위한 코드를 빌드하는 경우
 RUN npm ci 
-#--only=production
 
-EXPOSE 3000
+RUN npm install -g pm2
+
+ENV NODE_ENV=production
 
 # 앱 소스 추가
 COPY . .
 
-CMD [ "npm", "start" ]
+RUN npm run build
+
+EXPOSE 3000
+
+CMD [ "pm2-runtime", "./build/server.js" ]
