@@ -31,6 +31,7 @@ jobs:
       with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           clover_file: "coverage/clover.xml"
+          threshold_warning: 60
       if: success()
     
     - name: Close Pull
