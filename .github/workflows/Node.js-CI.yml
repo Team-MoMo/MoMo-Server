@@ -18,10 +18,15 @@ jobs:
       env:
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
         DATABASE_DIALECT: ${{ secrets.DATABASE_DIALECT }}
-        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
         DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
         NODEMAILER_PASS: ${{ secrets.NODEMAILER_PASS }}
         NODEMAILER_USER: ${{ secrets.NODEMAILER_USER }}
         TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
+    - name: Close Pull
+      uses: peter-evans/close-pull@v1
+      with:
+        comment: Failed to pass the test
+        if: failure()
+      
