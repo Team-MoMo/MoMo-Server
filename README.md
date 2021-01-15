@@ -10,9 +10,11 @@
 <br>
 
 ## 📜프로젝트 설명
+
 <img src="https://user-images.githubusercontent.com/60434971/104602472-cb543300-56be-11eb-9b25-f73bcf9a53d8.png" height="600" > <br>
 
 ### MOMO는 책 속의 문장과 일기를 결합하여 '보다 쉬운 감정 기록'을 도와주는 일기 앱서비스 입니다. <br>
+
 오늘의 감정을 선택하면, ✨**매일 3개씩 새로운 문장**이 제공됩니다. <br>
 마음의 드는 문장을 선택하고 ✏**오늘의 감정을 기록**해보세요. <br>
 문장이 감수성을 자극해서 평소보다 훨씬 쉽게 감정을 기록할 수 있을 거예요. <br>
@@ -21,7 +23,9 @@
 <br>
 
 ## 🎢 Workflow
+
 워크플로우를 보려면 👇 아래를 클릭하세요
+
 ### 🔗 [MOMO workflow](https://github.com/Team-MoMo/MoMo-Server/blob/feat/docs/src/docs/momo_workflow.pdf)
 
 <br> <br>
@@ -31,6 +35,7 @@
 <img src="https://user-images.githubusercontent.com/60434971/104631203-488fa000-56df-11eb-9b8e-56c8d73a2edb.png" height="400" >
 
 ### ✔문장 추천
+
 "오늘의 감정은 어땠나요?"<br>
 "마음에 파동이 이는 문장을 만나보세요."<br>
 ✨**유저별로 매일 매일 색다른 3개의 문장을 감정별로 제공**<br><br>
@@ -70,9 +75,9 @@
     <th><a href="https://github.com/chaeppy">🏡chaeppy</a></th>
   </tr>
     <tr>
-    <th> 일기 작성<br> 일기 조회<br> 일기 통계<br> 개발환경 설정 </th>
-    <th> 문장 추천 <br> 문장등록 <br>감정 조회 <br> 회원 관리 <br> 알림 </th>
-    <th> 로그인<br> 회원가입<br> 비밀번호 찾기 </th>
+    <th> 일기 작성, 조회<br> 일기 통계<br> 개발환경 설정 <br> AWS 인프라 환경 설정 <br> Dockerizing </th>
+    <th> 문장 추천, 등록 <br>감정 조회 <br> 회원 관리 <br> 알림 <br>Continuous Deploy </th>
+    <th> 로그인<br> 회원가입 <br> 비밀번호 찾기 <br> Continuous Integration </th>
   </tr>
 </table>
 
@@ -85,12 +90,13 @@
 <br>
 
 ## 🏛 Architecture
+
 <img src="https://user-images.githubusercontent.com/60434971/104630231-dff3f380-56dd-11eb-8378-f618d5d6d467.JPG" height="500">
 
 <br>
 
-
 ## ⚙ Dependencies
+
 * `typescript` - 타입스크립트 지원 모듈
 * `ts-node` - typescript node서버 구동
 * `nodemon` - 코드 수정시 자동 재시작 도구
@@ -107,7 +113,7 @@
 * `google-auth-library` : 구글로그인
 * `prettier` - 코드 포멧터
 * `eslint` - 문법 정적분석 도구
-* `jest` : 테스트 
+* `jest` : 테스트
 * `supertest` - 통합테스트 모듈
 
 ```
