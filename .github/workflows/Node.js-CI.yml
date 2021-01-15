@@ -14,7 +14,7 @@ jobs:
       with:
         node-version: '12'
     - run: npm ci
-    - run: npm cross-env NODE_ENV=test jest --runInBand --verbose --detectOpenHandles --coverage && coveralls < coverage/lcov.info --testTimeout=30000 ./tests/*.test.ts exit
+    - run: npm run test:coverage
       env:
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
         DATABASE_DIALECT: ${{ secrets.DATABASE_DIALECT }}
