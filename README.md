@@ -5,6 +5,7 @@
 
 * SOPT 27th APPJAM
 * 2020.12.28 ~ 2021.01.16
+[![Coverage Status](https://coveralls.io/repos/github/Team-MoMo/MoMo-Server/badge.svg)](https://coveralls.io/github/Team-MoMo/MoMo-Server)
 
 <br>
 
