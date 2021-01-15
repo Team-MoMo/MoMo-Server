@@ -26,7 +26,7 @@ jobs:
         NODEMAILER_USER: ${{ secrets.NODEMAILER_USER }}
         TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
         
-    - name: Report Coverage
+    - name: Report Coverage 
       uses: coverallsapp/github-action@v1.1.2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
