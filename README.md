@@ -1,11 +1,11 @@
-# MOMO-SERVER
-
+# MOMO-SERVER 
 ### 🌊 책 속의 문장을 제공함으로써, 보다 깊이 있는 감정 기록을 도와주는 일기 앱 서비스 '**MOMO**'
 
 <img src="https://user-images.githubusercontent.com/60434971/103637907-87ab4c00-4f8f-11eb-9007-43d4385e69ad.png" width="200" height="200"> <br>
 
 * SOPT 27th APPJAM
 * 2020.12.28 ~ 2021.01.16
+[![Coverage Status](https://coveralls.io/repos/github/Team-MoMo/MoMo-Server/badge.svg)](https://coveralls.io/github/Team-MoMo/MoMo-Server)
 
 <br>
 
