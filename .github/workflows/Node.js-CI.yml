@@ -27,9 +27,10 @@ jobs:
         TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
         
     - name: Report Coverage
-      uses: coverallsapp/github-action@v1.1.2
+      uses: codacy/codacy-coverage-reporter-action@master
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: cobertura.xml
       if: success()
     
     - name: Close Pull
