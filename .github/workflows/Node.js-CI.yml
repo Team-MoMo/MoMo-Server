@@ -27,10 +27,9 @@ jobs:
         TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
         
     - name: Report Coverage
-      uses: codacy/codacy-coverage-reporter-action@master
+      uses: coverallsapp/github-action@v1.1.2
       with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: cobertura.xml
+        github-token: ${{ secrets.GITHUB_TOKEN }}
       if: success()
     
     - name: Close Pull
@@ -38,5 +37,3 @@ jobs:
       with:
         comment: Failed to pass the test
       if: failure()
-    
-      
