@@ -27,9 +27,9 @@ jobs:
         TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
         
     - name: Report Coverage 
-      uses: ziishaned/jest-reporter-action@0.1.1
+      uses: slavcodev/coverage-monitor-action@1.2.0
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       if: success()
     
     - name: Close Pull
