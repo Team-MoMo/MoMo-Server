@@ -28,5 +28,5 @@ jobs:
       uses: peter-evans/close-pull@v1
       with:
         comment: Failed to pass the test
-        if: failure()
+      if: failure()
       
