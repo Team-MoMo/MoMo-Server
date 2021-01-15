@@ -131,7 +131,7 @@ describe('[USER] API TEST', () => {
     done();
   });
 
-  test(`[POSt] ${BASE_URL}/password/temp`, async (done) => {
+  test(`[POST] ${BASE_URL}/password/temp`, async (done) => {
     const res = await request
       .post(`${BASE_URL}/password/temp`)
       .send({ email: `${randomString}@gmoil.com` })
