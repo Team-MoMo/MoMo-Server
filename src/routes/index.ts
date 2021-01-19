@@ -16,7 +16,7 @@ router.use('/emotions', emotions);
 
 // health check API
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
-  return res.status(statusCode.OK).json(resJson.success('jenkins 1.0.9 build and run test'));
+  return res.status(statusCode.OK).json(resJson.success(resMessage.HEALTH_CHECK));
 });
 
 export default router;
