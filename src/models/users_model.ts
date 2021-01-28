@@ -80,6 +80,7 @@ User.init(
   },
   {
     tableName: 'Users',
+    paranoid: true,
     sequelize,
   }
 );

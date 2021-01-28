@@ -159,24 +159,41 @@ const diary = {
 const sentence = {
   readAllQuery: {
     shape: {
+      bookName: validation.optionalString,
+      publisher: validation.optionalString,
+      writer: validation.optionalString,
+    },
+    path: RequestType.QUERY,
+  },
+  readRecommendedSentencesQuery: {
+    shape: {
       emotionId: validation.number,
       userId: validation.number,
     },
     path: RequestType.QUERY,
   },
-  readAllOnboarding: {
+  readAllOnboardingQuery: {
     shape: {
       emotionId: validation.number,
     },
     path: RequestType.QUERY,
   },
-  create: {
+  createBody: {
     shape: {
       contents: validation.string,
       bookName: validation.string,
       writer: validation.string,
       publisher: validation.string,
       emotion: validation.emotionList,
+    },
+    path: RequestType.BODY,
+  },
+  updateBlindedAtBody: {
+    shape: {
+      sentenceId: validation.optionalNumber,
+      bookName: validation.optionalString,
+      publisher: validation.optionalString,
+      writer: validation.optionalString,
     },
     path: RequestType.BODY,
   },

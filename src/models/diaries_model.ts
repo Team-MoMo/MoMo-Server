@@ -64,6 +64,7 @@ Diary.init(
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'Diaries',
   }
 );

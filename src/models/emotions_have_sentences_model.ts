@@ -33,6 +33,7 @@ EmotionsHaveSentences.init(
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'EmotionsHaveSentences',
   }
 );

@@ -9,8 +9,37 @@ import dayjs from 'dayjs';
 const USER = '회원';
 const SENTENCE = '문장';
 const ONBOARDING = '온보딩';
+const BLIND = '블라인드';
+
+interface SentenceAttributes {
+  sentenceId?: number;
+  bookName?: string;
+  publisher?: string;
+  writer?: string;
+  blindedAt?: null;
+}
 
 export const readAll = async (req: Request, res: Response) => {
+  const { sentenceId, bookName, publisher, writer }: SentenceAttributes = req.query;
+
+  if (!sentenceId && !publisher && !writer && !bookName) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+  }
+
+  const readOption = { sentenceId: sentenceId!, bookName: bookName!, publisher: publisher!, writer: writer! };
+
+  try {
+    const sentenceInfo: Sentence[] = await sentencesService.readAll(readOption);
+    if (!sentenceInfo[0]) {
+      return res.status(statusCode.OK).json(resJson.success(resMessage.NO_X(SENTENCE)));
+    }
+    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), sentenceInfo));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE), err));
+  }
+};
+
+export const readRecommendedSentences = async (req: Request, res: Response) => {
   const decodedUserId = req.decoded?.userId;
   const { emotionId, userId }: { emotionId?: number; userId?: number } = req.query;
 
@@ -26,10 +55,9 @@ export const readAll = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
 
-    const now = dayjs(new Date());
+    const now = dayjs(new Date()).add(9, 'hour');
     const before30Day = now.subtract(30, 'day');
     let date;
-
     if (now.get('hour') > 5) {
       date = now.set('hour', 6).set('minute', 0).set('second', 0).set('millisecond', 0);
     } else {
@@ -53,7 +81,7 @@ export const readAll = async (req: Request, res: Response) => {
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
     recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
-    if (!recommendSentenceList) {
+    if (!recommendSentenceList[0]) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SENTENCES_NOT_EXIST));
     }
     await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
@@ -80,10 +108,47 @@ export const create = async (req: Request, res: Response) => {
 
   try {
     const emotionIds = await sentencesService.readAllEmotionIds(emotion);
-    const sentenceInfo = await sentencesService.create(req.body, emotionIds);
+    const createdSentenceInfo = await sentencesService.create(req.body, emotionIds);
 
-    return res.status(statusCode.CREATED).json(resJson.success(resMessage.X_CREATE_SUCCESS(SENTENCE), sentenceInfo));
+    return res
+      .status(statusCode.CREATED)
+      .json(resJson.success(resMessage.X_CREATE_SUCCESS(SENTENCE), createdSentenceInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_CREATE_FAIL(SENTENCE), err));
   }
 };
+
+export const updateBlindedAt = async (req: Request, res: Response) => {
+  const { sentenceId, bookName, publisher, writer, blindedAt }: SentenceAttributes = req.body;
+
+  if (sentenceId! && publisher! && writer! && bookName!) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+  }
+
+  const blindOption = {
+    sentenceId: sentenceId!,
+    bookName: bookName!,
+    publisher: publisher!,
+    writer: writer!,
+    blindedAt: blindedAt!,
+  };
+
+  try {
+    const sentenceInfo = await sentencesService.readAll({ sentenceId, bookName, publisher, writer });
+
+    if (!sentenceInfo[0]) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(SENTENCE)));
+    }
+
+    const updatedSentenceInfo = await sentencesService.updateBlindedAt(blindOption);
+    return res
+      .status(statusCode.OK)
+      .json(resJson.success(resMessage.X_UPDATE_SUCCESS(SENTENCE + BLIND), updatedSentenceInfo));
+  } catch (err) {
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .json(resJson.fail(resMessage.X_UPDATE_FAIL(SENTENCE + BLIND), err));
+  }
+};
+
+export const deleteAll = async (req: Request, res: Response) => {};

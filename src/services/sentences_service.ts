@@ -5,8 +5,9 @@ import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 import Emotion from '../models/emotions_model';
+import { sentencesController } from '../controllers';
 
-interface createSentence {
+interface CreateSentence {
   contents: string;
   bookName: string;
   writer: string;
@@ -14,10 +15,33 @@ interface createSentence {
   emotion: string[];
 }
 
+interface SentenceAttributes {
+  sentenceId?: number;
+  bookName?: string;
+  publisher?: string;
+  writer?: string;
+  blindedAt?: null;
+}
+
+export const readAll = async ({ sentenceId, bookName, publisher, writer }: SentenceAttributes) => {
+  const sentences: Sentence[] = await model.Sentence.findAll({
+    where: {
+      [Op.and]: [
+        !!sentenceId && { id: sentenceId },
+        !!bookName && { bookName },
+        !!publisher && { publisher },
+        !!writer && { writer },
+      ],
+    },
+  });
+  return sentences;
+};
+
 export const readAllNotInUserSentences = async (emotionId: number, cannotRecommendSentence: number[]) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
     where: {
       id: { [Op.notIn]: cannotRecommendSentence },
+      blindedAt: { [Op.eq]: null },
     },
     include: [{ model: model.Emotion, where: { id: emotionId }, attributes: [] }],
     order: [sequelize.fn('RAND')],
@@ -125,7 +149,7 @@ export const readAllEmotionIds = async (emotion: string[]) => {
   return emotionIds;
 };
 
-export const create = async (body: createSentence, emotionId: number[]) => {
+export const create = async (body: CreateSentence, emotionId: number[]) => {
   try {
     const createdSentenceTransaction = await model.sequelize.transaction(async (transaction) => {
       const sentenceInfo = await model.Sentence.create(
@@ -153,4 +177,32 @@ export const create = async (body: createSentence, emotionId: number[]) => {
   } catch (err) {
     throw err;
   }
+};
+
+export const updateBlindedAt = async ({ sentenceId, bookName, publisher, writer, blindedAt }: SentenceAttributes) => {
+  const blindOption = {
+    sentenceId: sentenceId!,
+    bookName: bookName!,
+    publisher: publisher!,
+    writer: writer!,
+    blindedAt: blindedAt!,
+  };
+  await model.Sentence.update(
+    {
+      blindedAt: blindedAt === undefined ? dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') : null,
+    },
+    {
+      where: {
+        [Op.and]: [
+          !!sentenceId && { id: sentenceId },
+          !!bookName && { bookName },
+          !!publisher && { publisher },
+          !!writer && { writer },
+        ],
+      },
+    }
+  );
+
+  const updatedSentences = await readAll({ sentenceId, bookName, publisher, writer });
+  return updatedSentences;
 };

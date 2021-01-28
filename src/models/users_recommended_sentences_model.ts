@@ -42,6 +42,7 @@ UsersRecommendedSentences.init(
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'UsersRecommendedSentences',
   }
 );

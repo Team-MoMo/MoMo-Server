@@ -9,6 +9,7 @@ interface SentenceAttributes {
   bookName: string;
   writer: string;
   publisher: string;
+  blindedAt: string;
 }
 
 class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
@@ -17,6 +18,7 @@ class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
   public bookName!: string;
   public writer!: string;
   public publisher!: string;
+  public blindedAt!: string;
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
@@ -49,9 +51,14 @@ Sentence.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    blindedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'Sentences',
   }
 );

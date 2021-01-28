@@ -33,6 +33,7 @@ Notification.init(
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'Notifications',
   }
 );
