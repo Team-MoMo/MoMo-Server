@@ -1,5 +1,5 @@
 import model from '../models';
-import sequelize, { Op } from 'sequelize';
+import sequelize, { DATE, Op } from 'sequelize';
 import dayjs from 'dayjs';
 import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
@@ -20,7 +20,8 @@ interface SentenceAttributes {
   bookName?: string;
   publisher?: string;
   writer?: string;
-  blindedAt?: null;
+  blindedAt?: string;
+  deletedAt?: string;
 }
 
 export const readAll = async ({ sentenceId, bookName, publisher, writer }: SentenceAttributes) => {
@@ -41,7 +42,7 @@ export const readAllNotInUserSentences = async (emotionId: number, cannotRecomme
   const sentences: Sentence[] = await model.Sentence.findAll({
     where: {
       id: { [Op.notIn]: cannotRecommendSentence },
-      blindedAt: { [Op.eq]: null },
+      blindedAt: { [Op.or]: [{ [Op.gte]: dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') }, null] },
     },
     include: [{ model: model.Emotion, where: { id: emotionId }, attributes: [] }],
     order: [sequelize.fn('RAND')],
@@ -180,16 +181,9 @@ export const create = async (body: CreateSentence, emotionId: number[]) => {
 };
 
 export const updateBlindedAt = async ({ sentenceId, bookName, publisher, writer, blindedAt }: SentenceAttributes) => {
-  const blindOption = {
-    sentenceId: sentenceId!,
-    bookName: bookName!,
-    publisher: publisher!,
-    writer: writer!,
-    blindedAt: blindedAt!,
-  };
   await model.Sentence.update(
     {
-      blindedAt: blindedAt === undefined ? dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') : null,
+      blindedAt: blindedAt === undefined ? dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') : blindedAt,
     },
     {
       where: {
@@ -205,4 +199,17 @@ export const updateBlindedAt = async ({ sentenceId, bookName, publisher, writer,
 
   const updatedSentences = await readAll({ sentenceId, bookName, publisher, writer });
   return updatedSentences;
+};
+
+export const deleteAll = async ({ sentenceId, bookName, publisher, writer, deletedAt }: SentenceAttributes) => {
+  await model.Sentence.destroy({
+    where: {
+      [Op.and]: [
+        !!sentenceId && { id: sentenceId },
+        !!bookName && { bookName },
+        !!publisher && { publisher },
+        !!writer && { writer },
+      ],
+    },
+  });
 };

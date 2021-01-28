@@ -151,4 +151,31 @@ export const updateBlindedAt = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteAll = async (req: Request, res: Response) => {};
+export const deleteAll = async (req: Request, res: Response) => {
+  const { sentenceId, bookName, publisher, writer, blindedAt }: SentenceAttributes = req.body;
+
+  if (sentenceId! && publisher! && writer! && bookName!) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
+  }
+
+  const deleteOption = {
+    sentenceId: sentenceId!,
+    bookName: bookName!,
+    publisher: publisher!,
+    writer: writer!,
+    blindedAt: blindedAt!,
+  };
+
+  try {
+    const sentenceInfo = await sentencesService.readAll({ sentenceId, bookName, publisher, writer });
+
+    if (!sentenceInfo[0]) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(SENTENCE)));
+    }
+
+    const deletedSentenceInfo = await sentencesService.deleteAll(deleteOption);
+    return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(SENTENCE), deletedSentenceInfo));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_DELETE_FAIL(SENTENCE), err));
+  }
+};
