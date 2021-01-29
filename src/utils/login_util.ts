@@ -3,7 +3,7 @@ import axois from 'axios';
 import User from '../models/users_model';
 
 const loginUtil = {
-  googleClient: new OAuth2Client(process.env.CLIENT_ID),
+  googleClient: new OAuth2Client(process.env.GOOGLE_CLIENT_ID),
   google: async (token: string) => {
     try {
       const ticket = await loginUtil.googleClient.verifyIdToken({
