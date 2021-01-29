@@ -20,7 +20,7 @@ export const readAllNotInUserSentences = async (emotionId: number, cannotRecomme
       id: { [Op.notIn]: cannotRecommendSentence },
     },
     include: [{ model: model.Emotion, where: { id: emotionId }, attributes: [] }],
-    order: [sequelize.fn('RAND'), ['id', 'DESC']],
+    order: [sequelize.fn('RAND')],
     limit: 3,
   });
   return sentences.sort((a, b) => {

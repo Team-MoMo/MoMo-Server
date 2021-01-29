@@ -108,7 +108,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                message: '사용 불가능한 ID입니다.'
+                message: '사용 불가능한 이메일입니다.'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -296,12 +296,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 입력없는 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -344,12 +351,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 입력없는 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -421,12 +435,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 / isAlarmSet 입력없는 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -481,15 +502,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 / newPassword 입력없는 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
                 '현재 비밀번호와 같은 값을 입력한 경우':
                   value:
                     message: '현재 비밀번호와 새로운 비밀번호가 동일합니다'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -541,15 +569,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'id값 / password 입력없는 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
                 'password 입력 오류':
                   value:
                     message: '비밀번호가 일치하지 않습니다'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: 'FAIL : 서버 내부 에러'
           content:
@@ -648,7 +683,7 @@ paths:
             example:
               contents: 'test_contents_0'
               depth: 3
-              userId: 8,
+              userId: 2,
               sentenceId: 40,
               emotionId: 3,
               wroteAt: "2020-08-16"
@@ -665,14 +700,14 @@ paths:
                     example: '일기 생성 성공'
                   data:
                     $ref: '#/components/schemas/Diaries'
-        '400':
-          description: 'FAIL : 빈값이 있을 경우'
+        '401':
+          description: 'FAIL : userId != 토큰 정보'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
               example:
-                message: '필요한 값이 없습니다'
+                message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -686,6 +721,10 @@ paths:
       security:
         - api_key: []
       summary: '일기 전체 조회 및  깊이 / 필터별 조회(영우)'
+      description: '일기 전체 조회(userId, year, month 값 필요(https://momodiary.ga/diaries?year=2020&month=12&userId=1)) => 사용자가 작성한 모든 일기 조회(날짜순으로 정렬)
+      </br>일기 깊이 조회(userId, year, month, order=depth 필요(https://momodiary.ga/diaries?year=2020&month=12&userId=2&order=depth)) => 해당 년/월에 사용자가 작성한 일기 조회(깊이순으로 정렬)
+      </br>일기 필터 조회(userId, year, month, order=filter 필요 / day, emotionId, depth 필터에 따라 선택적으로 (https://momodiary.ga?year=2020&month=12&userId=2&order=filter&day=10&emotionId=2))
+      </br> => 해당 년/월 or 년/월/일에 사용자가 작성한 일기 필터에 따라 조회(날짜순으로 정렬)'
       tags:
         - Diaries
       parameters:
@@ -694,7 +733,7 @@ paths:
           schema:
             type: string
           required: true
-          example: 1
+          example: 2
           description: user 고유 id
         - in: query
           name: year
@@ -764,12 +803,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'FAIL : 빈값이 있을 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 '입력 값 오류':
                   value:
                     message: 'Body 타입이 잘못 되었습니다.'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -792,7 +838,7 @@ paths:
           schema:
             type: string
           required: true
-          example: 1
+          example: 2
           description: user 고유 id
         - in: query
           name: year
@@ -806,7 +852,7 @@ paths:
           schema:
             type: string
           required: true
-          example: "11"
+          example: "12"
           description: 조회 할 월
       responses:
         '200':
@@ -861,12 +907,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'FAIL : 빈값이 있을 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 '입력 값 오류':
                   value:
                     message: 'Body 타입이 잘못 되었습니다.'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -875,6 +928,53 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: '일기통계 조회 실패'
+                error: 'error && error.message'
+  /diaries/recent:
+    get:
+      security:
+        - api_key: []
+      summary: '일기 작성이 안된 가장 최근 날짜조회(영우)'
+      tags:
+        - Diaries
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+          required: true
+          example: 2
+          description: user 고유 id
+      responses:
+        '200':
+          description: 'SUCCESS: 일기 최근 미작성 날짜 조회 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 최근 미작성 날짜 조회 성공'
+                  data:
+                    example: '2021-01-13T00:00:00+00:00'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 조회 실패'
                 error: 'error && error.message'
   /diaries/{id}:
     get:
@@ -887,7 +987,7 @@ paths:
         - in: path
           name: id
           schema:
-            type: string
+            type: integer
           required: true
           example: 1
           description: 일기 고유 id
@@ -911,12 +1011,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'FAIL : 빈값이 있을 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id 값 오류':
                   value:
-                    message: '존재하지 않는 diary'
+                    message: '존재하지 않는 일기'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                '해당 일기의 userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -936,7 +1043,7 @@ paths:
         - in: path
           name: id
           schema:
-            type: string
+            type: integer
           required: true
           example: 1
           description: 일기 고유 id
@@ -963,7 +1070,7 @@ paths:
             example:
               depth: 3
               contents: 'test_contents_0'
-              userId: 8,
+              userId: 2,
               sentenceId: 40,
               emotionId: 7,
               wroteAt: "2020-08-16"
@@ -987,12 +1094,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'FAIL : 빈값이 있을 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id 값 오류':
                   value:
-                    message: '존재하지 않는 diary'
+                    message: '존재하지 않는 일기'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -1012,7 +1126,7 @@ paths:
         - in: path
           name: id
           schema:
-            type: string
+            type: integer
           required: true
           example: 1
           description: 다이어리 고유 id
@@ -1036,12 +1150,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'FAIL : 빈값이 있을 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id 값 오류':
                   value:
-                    message: '존재하지 않는 diary'
+                    message: '존재하지 않는 일기'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
@@ -1133,7 +1254,7 @@ paths:
           schema:
             type: string
           required: true
-          example: 1
+          example: 2
           description: user 고유 id
       responses:
         '200':
@@ -1157,12 +1278,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                'userId or emotionId값 입력없는 경우':
-                  value:
-                    message: '필요한 값이 없습니다'
                 'id값 오류':
                   value:
                     message: '존재하지 않는 회원'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
         '500' :
           description: '서버 내부 에러'
           content:
