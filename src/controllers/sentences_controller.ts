@@ -16,7 +16,7 @@ interface SentenceAttributes {
   bookName?: string;
   publisher?: string;
   writer?: string;
-  blindedAt?: null;
+  blindedAt?: string;
 }
 
 export const readAll = async (req: Request, res: Response) => {
@@ -125,22 +125,15 @@ export const updateBlindedAt = async (req: Request, res: Response) => {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
-  const blindOption = {
-    sentenceId: sentenceId!,
-    bookName: bookName!,
-    publisher: publisher!,
-    writer: writer!,
-    blindedAt: blindedAt!,
-  };
+  const readOption = { sentenceId: sentenceId!, bookName: bookName!, publisher: publisher!, writer: writer! };
 
   try {
-    const sentenceInfo = await sentencesService.readAll({ sentenceId, bookName, publisher, writer });
-
+    const sentenceInfo: Sentence[] = await sentencesService.readAll(readOption);
     if (!sentenceInfo[0]) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(SENTENCE)));
+      return res.status(statusCode.OK).json(resJson.success(resMessage.NO_X(SENTENCE)));
     }
+    const updatedSentenceInfo = await sentencesService.updateBlindedAt(sentenceInfo, blindedAt);
 
-    const updatedSentenceInfo = await sentencesService.updateBlindedAt(blindOption);
     return res
       .status(statusCode.OK)
       .json(resJson.success(resMessage.X_UPDATE_SUCCESS(SENTENCE + BLIND), updatedSentenceInfo));
@@ -152,7 +145,7 @@ export const updateBlindedAt = async (req: Request, res: Response) => {
 };
 
 export const deleteAll = async (req: Request, res: Response) => {
-  const { sentenceId, bookName, publisher, writer, blindedAt }: SentenceAttributes = req.body;
+  const { sentenceId, bookName, publisher, writer }: SentenceAttributes = req.body;
 
   if (sentenceId! && publisher! && writer! && bookName!) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));

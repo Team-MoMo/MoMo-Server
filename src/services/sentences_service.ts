@@ -1,11 +1,10 @@
 import model from '../models';
-import sequelize, { DATE, Op } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import dayjs from 'dayjs';
 import Diary from '../models/diaries_model';
 import Sentence from '../models/sentences_model';
 import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 import Emotion from '../models/emotions_model';
-import { sentencesController } from '../controllers';
 
 interface CreateSentence {
   contents: string;
@@ -23,6 +22,15 @@ interface SentenceAttributes {
   blindedAt?: string;
   deletedAt?: string;
 }
+
+export const readOne = async (id: number) => {
+  const sentence: Sentence = await model.Sentence.findOne({
+    where: {
+      id,
+    },
+  });
+  return sentence;
+};
 
 export const readAll = async ({ sentenceId, bookName, publisher, writer }: SentenceAttributes) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
@@ -180,25 +188,17 @@ export const create = async (body: CreateSentence, emotionId: number[]) => {
   }
 };
 
-export const updateBlindedAt = async ({ sentenceId, bookName, publisher, writer, blindedAt }: SentenceAttributes) => {
-  await model.Sentence.update(
-    {
-      blindedAt: blindedAt === undefined ? dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') : blindedAt,
-    },
-    {
-      where: {
-        [Op.and]: [
-          !!sentenceId && { id: sentenceId },
-          !!bookName && { bookName },
-          !!publisher && { publisher },
-          !!writer && { writer },
-        ],
-      },
-    }
-  );
+export const updateBlindedAt = async (sentence: Sentence[], blindedAt?: string) => {
+  const updatedSentenceInfo = await Promise.all(
+    sentence.map(async (element) => {
+      await element.update({
+        blindedAt: blindedAt === undefined ? dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') : blindedAt,
+      });
 
-  const updatedSentences = await readAll({ sentenceId, bookName, publisher, writer });
-  return updatedSentences;
+      return await readOne(element.get('id'));
+    })
+  );
+  return updatedSentenceInfo;
 };
 
 export const deleteAll = async (sentence: Sentence[]) => {
@@ -206,14 +206,4 @@ export const deleteAll = async (sentence: Sentence[]) => {
     await element.destroy();
   });
   return;
-  // await model.Sentence.destroy({
-  //   where: {
-  //     [Op.and]: [
-  //       !!sentenceId && { id: sentenceId },
-  //       !!bookName && { bookName },
-  //       !!publisher && { publisher },
-  //       !!writer && { writer },
-  //     ],
-  //   },
-  // });
 };
