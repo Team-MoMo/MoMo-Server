@@ -1,6 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
 import axois from 'axios';
 import User from '../models/users_model';
+import verifyAppleToken from 'verify-apple-id-token';
 
 const loginUtil = {
   googleClient: new OAuth2Client(process.env.GOOGLE_CLIENT_ID),
@@ -11,8 +12,8 @@ const loginUtil = {
         audience: process.env.CLIENT_ID,
       });
       const payload = ticket.getPayload()!;
-      const userid = payload['sub'];
-      return userid;
+      const userId = payload['sub'];
+      return userId;
     } catch (err) {
       return null;
     }
@@ -26,8 +27,22 @@ const loginUtil = {
           Authorization: `Bearer ${token}`,
         },
       });
-      return tokenInfo.data.id;
+      const userId = tokenInfo.data.id;
+      return userId;
     } catch (err) {
+      return null;
+    }
+  },
+  apple: async (token: string) => {
+    try {
+      const decoded = await verifyAppleToken({
+        idToken: token,
+        clientId: process.env.APPLE_APP_ID!,
+      });
+      const userId = decoded.sub;
+      return userId;
+    } catch (err) {
+      console.log(err);
       return null;
     }
   },
