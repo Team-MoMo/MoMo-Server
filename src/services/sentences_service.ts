@@ -201,15 +201,19 @@ export const updateBlindedAt = async ({ sentenceId, bookName, publisher, writer,
   return updatedSentences;
 };
 
-export const deleteAll = async ({ sentenceId, bookName, publisher, writer, deletedAt }: SentenceAttributes) => {
-  await model.Sentence.destroy({
-    where: {
-      [Op.and]: [
-        !!sentenceId && { id: sentenceId },
-        !!bookName && { bookName },
-        !!publisher && { publisher },
-        !!writer && { writer },
-      ],
-    },
+export const deleteAll = async (sentence: Sentence[]) => {
+  sentence.forEach(async (element) => {
+    await element.destroy();
   });
+  return;
+  // await model.Sentence.destroy({
+  //   where: {
+  //     [Op.and]: [
+  //       !!sentenceId && { id: sentenceId },
+  //       !!bookName && { bookName },
+  //       !!publisher && { publisher },
+  //       !!writer && { writer },
+  //     ],
+  //   },
+  // });
 };

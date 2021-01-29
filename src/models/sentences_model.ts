@@ -2,6 +2,7 @@ import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from './index';
 import Diary from './diaries_model';
 import UsersRecommendedSentences from './users_recommended_sentences_model';
+import EmotionsHaveSentences from './emotions_have_sentences_model';
 
 interface SentenceAttributes {
   id?: number;
@@ -57,9 +58,29 @@ Sentence.init(
     },
   },
   {
-    sequelize,
-    paranoid: true,
     tableName: 'Sentences',
+    paranoid: true,
+    sequelize,
+    hooks: {
+      afterDestroy: async (sentence, option) => {
+        await Diary.update(
+          {
+            sentenceId: null,
+          },
+          {
+            where: {
+              sentenceId: sentence.get('id'),
+            },
+          }
+        );
+
+        await EmotionsHaveSentences.destroy({
+          where: {
+            sentenceId: sentence.get('id'),
+          },
+        });
+      },
+    },
   }
 );
 

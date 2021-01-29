@@ -158,23 +158,15 @@ export const deleteAll = async (req: Request, res: Response) => {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
-  const deleteOption = {
-    sentenceId: sentenceId!,
-    bookName: bookName!,
-    publisher: publisher!,
-    writer: writer!,
-    blindedAt: blindedAt!,
-  };
+  const readOption = { sentenceId: sentenceId!, bookName: bookName!, publisher: publisher!, writer: writer! };
 
   try {
-    const sentenceInfo = await sentencesService.readAll({ sentenceId, bookName, publisher, writer });
-
+    const sentenceInfo: Sentence[] = await sentencesService.readAll(readOption);
     if (!sentenceInfo[0]) {
-      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(SENTENCE)));
+      return res.status(statusCode.OK).json(resJson.success(resMessage.NO_X(SENTENCE)));
     }
-
-    const deletedSentenceInfo = await sentencesService.deleteAll(deleteOption);
-    return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(SENTENCE), deletedSentenceInfo));
+    await sentencesService.deleteAll(sentenceInfo);
+    return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(SENTENCE), sentenceInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_DELETE_FAIL(SENTENCE), err));
   }

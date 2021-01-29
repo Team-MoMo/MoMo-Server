@@ -55,7 +55,8 @@ Diary.init(
     },
     sentenceId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
+      onDelete: 'SET NULL',
     },
     emotionId: {
       type: DataTypes.INTEGER,
