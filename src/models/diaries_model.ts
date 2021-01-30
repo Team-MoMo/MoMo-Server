@@ -8,6 +8,7 @@ interface DiaryAttributes {
   depth: number;
   userId: number;
   sentenceId: number;
+  tempSentenceId: number;
   emotionId: number;
   createdAt?: string;
   wroteAt: string;
@@ -20,6 +21,7 @@ class Diary extends Model<DiaryAttributes> implements DiaryAttributes {
   public depth!: number;
   public userId!: number;
   public sentenceId!: number;
+  public tempSentenceId!: number;
   public emotionId!: number;
   public wroteAt!: string;
   readonly createdAt!: string;
@@ -57,6 +59,10 @@ Diary.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       onDelete: 'SET NULL',
+    },
+    tempSentenceId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     emotionId: {
       type: DataTypes.INTEGER,
