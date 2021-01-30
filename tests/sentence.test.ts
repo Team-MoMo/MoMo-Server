@@ -16,16 +16,25 @@ describe('[SENTENCE] API TEST', () => {
 
   afterAll(async () => {});
 
-  test(`[GET] ${BASE_URL}/`, async (done) => {
+  test(`[GET] ${BASE_URL}`, async (done) => {
+    const res = await request.get(BASE_URL).query({ publisher: 'publisher' }).set('Accept', 'application/json');
+    expect(res).toBeDefined();
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual('application/json');
+    expect(res.body.message).toEqual('문장 조회 성공');
+    done();
+  });
+
+  test(`[GET] ${BASE_URL}/recommend`, async (done) => {
     const res = await request
-      .get(BASE_URL)
+      .get(`${BASE_URL}/recommend`)
       .query({ emotionId: '1', userId: '1' })
       .set('Authorization', token)
       .set('Accept', 'application/json');
     expect(res).toBeDefined();
     expect(res.status).toEqual(200);
     expect(res.type).toEqual('application/json');
-    expect(res.body.message).toEqual('문장 조회 성공');
+    expect(res.body.message).toEqual('추천문장 조회 성공');
     done();
   });
 
@@ -53,6 +62,34 @@ describe('[SENTENCE] API TEST', () => {
     expect(res.status).toEqual(201);
     expect(res.type).toEqual('application/json');
     expect(res.body.message).toEqual('문장 생성 성공');
+    done();
+  });
+
+  test(`[PUT] ${BASE_URL}/blind`, async (done) => {
+    const res = await request
+      .put(`${BASE_URL}/blind`)
+      .send({
+        publisher: 'publisher2',
+      })
+      .set('Accept', 'application/json');
+    expect(res).toBeDefined();
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual('application/json');
+    expect(res.body.message).toEqual('문장블라인드 수정 성공');
+    done();
+  });
+
+  test(`[DELETE] ${BASE_URL}`, async (done) => {
+    const res = await request
+      .delete(BASE_URL)
+      .send({
+        writer: 'writer2',
+      })
+      .set('Accept', 'application/json');
+    expect(res).toBeDefined();
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual('application/json');
+    expect(res.body.message).toEqual('문장 삭제 성공');
     done();
   });
 });

@@ -159,6 +159,7 @@ const diary = {
 const sentence = {
   readAllQuery: {
     shape: {
+      sentenceId: validation.optionalNumber,
       bookName: validation.optionalString,
       publisher: validation.optionalString,
       writer: validation.optionalString,
@@ -189,6 +190,16 @@ const sentence = {
     path: RequestType.BODY,
   },
   updateBlindedAtBody: {
+    shape: {
+      sentenceId: validation.optionalNumber,
+      bookName: validation.optionalString,
+      publisher: validation.optionalString,
+      writer: validation.optionalString,
+      blindedAt: validation.optionalString,
+    },
+    path: RequestType.BODY,
+  },
+  deleteAllBody: {
     shape: {
       sentenceId: validation.optionalNumber,
       bookName: validation.optionalString,

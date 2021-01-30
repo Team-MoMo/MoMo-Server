@@ -10,6 +10,7 @@ const USER = '회원';
 const SENTENCE = '문장';
 const ONBOARDING = '온보딩';
 const BLIND = '블라인드';
+const RECOMMEND = '추천';
 
 interface SentenceAttributes {
   sentenceId?: number;
@@ -73,7 +74,7 @@ export const readRecommendedSentences = async (req: Request, res: Response) => {
       recommendSentenceList = await sentencesService.readAllInUserRecommendSentences(userRecommendSentenceIds);
       return res
         .status(statusCode.OK)
-        .json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
+        .json(resJson.success(resMessage.X_READ_SUCCESS(RECOMMEND + SENTENCE), recommendSentenceList));
     }
 
     const userSentences: number[] = await sentencesService.readAllDiaries(emotionId!, userId!, before30Day);
@@ -85,9 +86,13 @@ export const readRecommendedSentences = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SENTENCES_NOT_EXIST));
     }
     await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
-    return res.status(statusCode.OK).json(resJson.success(resMessage.X_READ_SUCCESS(SENTENCE), recommendSentenceList));
+    return res
+      .status(statusCode.OK)
+      .json(resJson.success(resMessage.X_READ_SUCCESS(RECOMMEND + SENTENCE), recommendSentenceList));
   } catch (err) {
-    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_READ_FAIL(SENTENCE), err));
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .json(resJson.fail(resMessage.X_READ_FAIL(RECOMMEND + SENTENCE), err));
   }
 };
 
