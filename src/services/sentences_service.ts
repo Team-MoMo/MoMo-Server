@@ -82,7 +82,7 @@ export const readAllUsersRecommendSentencesAfter6 = async (emotionId: number, us
     where: {
       emotionId,
       userId,
-      createdAt: { [Op.gte]: date.format('YYYY-MM-DD HH:mm') },
+      createdAt: { [Op.gte]: date },
     },
   });
 

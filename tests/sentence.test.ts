@@ -69,7 +69,7 @@ describe('[SENTENCE] API TEST', () => {
     const res = await request
       .put(`${BASE_URL}/blind`)
       .send({
-        publisher: 'publisher2',
+        sentenceId: 1,
       })
       .set('Accept', 'application/json');
     expect(res).toBeDefined();
@@ -83,7 +83,7 @@ describe('[SENTENCE] API TEST', () => {
     const res = await request
       .delete(BASE_URL)
       .send({
-        writer: 'writer2',
+        sentenceId: 1,
       })
       .set('Accept', 'application/json');
     expect(res).toBeDefined();

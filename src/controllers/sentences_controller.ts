@@ -78,6 +78,7 @@ export const readRecommendedSentences = async (req: Request, res: Response) => {
     }
 
     const userSentences: number[] = await sentencesService.readAllDiaries(emotionId!, userId!, before30Day);
+    console.log(userSentences);
     const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(userId!);
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
