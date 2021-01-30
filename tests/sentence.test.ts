@@ -10,7 +10,7 @@ const BASE_URL = '/sentences';
 describe('[SENTENCE] API TEST', () => {
   beforeAll(async (done) => {
     request = supertest(app);
-    token = jwt.sign({ id: 1 }).token;
+    token = jwt.sign({ id: 2 }).token;
     done();
   });
 
@@ -28,7 +28,7 @@ describe('[SENTENCE] API TEST', () => {
   test(`[GET] ${BASE_URL}/recommend`, async (done) => {
     const res = await request
       .get(`${BASE_URL}/recommend`)
-      .query({ emotionId: '1', userId: '1' })
+      .query({ emotionId: '1', userId: '2' })
       .set('Authorization', token)
       .set('Accept', 'application/json');
     expect(res).toBeDefined();
@@ -69,7 +69,7 @@ describe('[SENTENCE] API TEST', () => {
     const res = await request
       .put(`${BASE_URL}/blind`)
       .send({
-        sentenceId: 1,
+        sentenceId: 2,
       })
       .set('Accept', 'application/json');
     expect(res).toBeDefined();
@@ -83,7 +83,7 @@ describe('[SENTENCE] API TEST', () => {
     const res = await request
       .delete(BASE_URL)
       .send({
-        sentenceId: 1,
+        sentenceId: 2,
       })
       .set('Accept', 'application/json');
     expect(res).toBeDefined();

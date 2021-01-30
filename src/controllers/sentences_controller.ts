@@ -83,6 +83,7 @@ export const readRecommendedSentences = async (req: Request, res: Response) => {
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
     recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
+    console.log(recommendSentenceList);
     if (!recommendSentenceList[0]) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SENTENCES_NOT_EXIST));
     }
