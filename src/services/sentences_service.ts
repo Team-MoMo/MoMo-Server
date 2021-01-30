@@ -54,7 +54,7 @@ export const readAllNotInUserSentences = async (emotionId: number, cannotRecomme
     },
     include: [{ model: model.Emotion, where: { id: emotionId }, attributes: [] }],
     order: [sequelize.fn('RAND')],
-    // limit: 3,
+    limit: 3,
   });
   return sentences.sort((a, b) => {
     if (a.id === b.id) {
