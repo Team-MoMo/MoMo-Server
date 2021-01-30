@@ -11,6 +11,7 @@ const validation = {
   string: yup.string().required(),
   boolean: yup.boolean().required(),
   date: yup.date().required(),
+
   optionalString: yup.string().notRequired(),
   optionalNumber: yup.number().notRequired(),
 
@@ -189,17 +190,7 @@ const sentence = {
     },
     path: RequestType.BODY,
   },
-  updateBlindedAtBody: {
-    shape: {
-      sentenceId: validation.optionalNumber,
-      bookName: validation.optionalString,
-      publisher: validation.optionalString,
-      writer: validation.optionalString,
-      blindedAt: validation.optionalString,
-    },
-    path: RequestType.BODY,
-  },
-  deleteAllBody: {
+  blindAndDeleteBody: {
     shape: {
       sentenceId: validation.optionalNumber,
       bookName: validation.optionalString,

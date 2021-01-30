@@ -50,11 +50,11 @@ export const readAllNotInUserSentences = async (emotionId: number, cannotRecomme
   const sentences: Sentence[] = await model.Sentence.findAll({
     where: {
       id: { [Op.notIn]: cannotRecommendSentence },
-      blindedAt: { [Op.or]: [{ [Op.gte]: dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') }, null] },
+      blindedAt: { [Op.or]: [{ [Op.gte]: dayjs().add(9, 'hour') }, null] },
     },
     include: [{ model: model.Emotion, where: { id: emotionId }, attributes: [] }],
     order: [sequelize.fn('RAND')],
-    limit: 3,
+    // limit: 3,
   });
   return sentences.sort((a, b) => {
     if (a.id === b.id) {
@@ -192,7 +192,7 @@ export const updateBlindedAt = async (sentence: Sentence[], blindedAt?: string) 
   const updatedSentenceInfo = await Promise.all(
     sentence.map(async (element) => {
       await element.update({
-        blindedAt: blindedAt === undefined ? dayjs(new Date()).add(9, 'hour').format('YYYY-MM-DD HH:mm') : blindedAt,
+        blindedAt: blindedAt === undefined ? dayjs().add(9, 'hour').format('YYYY-MM-DD HH:mm') : blindedAt,
       });
 
       return await readOne(element.get('id'));

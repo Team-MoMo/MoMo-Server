@@ -56,7 +56,7 @@ export const readRecommendedSentences = async (req: Request, res: Response) => {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(USER)));
     }
 
-    const now = dayjs(new Date()).add(9, 'hour');
+    const now = dayjs().add(9, 'hour');
     const before30Day = now.subtract(30, 'day');
     let date;
     if (now.get('hour') > 5) {
@@ -78,16 +78,14 @@ export const readRecommendedSentences = async (req: Request, res: Response) => {
     }
 
     const userSentences: number[] = await sentencesService.readAllDiaries(emotionId!, userId!, before30Day);
-    console.log(userSentences);
     const userRecommendedSentences: number[] = await sentencesService.readAllUsersRecommendSentences(userId!);
     const cannotRecommendSentence: number[] = userSentences.concat(userRecommendedSentences);
 
     recommendSentenceList = await sentencesService.readAllNotInUserSentences(emotionId!, cannotRecommendSentence);
-    console.log(recommendSentenceList);
     if (!recommendSentenceList[0]) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SENTENCES_NOT_EXIST));
     }
-    await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
+    // await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
     return res
       .status(statusCode.OK)
       .json(resJson.success(resMessage.X_READ_SUCCESS(RECOMMEND + SENTENCE), recommendSentenceList));
@@ -128,7 +126,7 @@ export const create = async (req: Request, res: Response) => {
 export const updateBlindedAt = async (req: Request, res: Response) => {
   const { sentenceId, bookName, publisher, writer, blindedAt }: SentenceAttributes = req.body;
 
-  if (sentenceId! && publisher! && writer! && bookName!) {
+  if (!sentenceId && !publisher && !writer && !bookName) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
@@ -137,7 +135,7 @@ export const updateBlindedAt = async (req: Request, res: Response) => {
   try {
     const sentenceInfo: Sentence[] = await sentencesService.readAll(readOption);
     if (!sentenceInfo[0]) {
-      return res.status(statusCode.OK).json(resJson.success(resMessage.NO_X(SENTENCE)));
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(SENTENCE)));
     }
     const updatedSentenceInfo = await sentencesService.updateBlindedAt(sentenceInfo, blindedAt);
 
@@ -154,7 +152,7 @@ export const updateBlindedAt = async (req: Request, res: Response) => {
 export const deleteAll = async (req: Request, res: Response) => {
   const { sentenceId, bookName, publisher, writer }: SentenceAttributes = req.body;
 
-  if (sentenceId! && publisher! && writer! && bookName!) {
+  if (!sentenceId && !publisher && !writer && !bookName) {
     return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NULL_VALUE));
   }
 
@@ -163,7 +161,7 @@ export const deleteAll = async (req: Request, res: Response) => {
   try {
     const sentenceInfo: Sentence[] = await sentencesService.readAll(readOption);
     if (!sentenceInfo[0]) {
-      return res.status(statusCode.OK).json(resJson.success(resMessage.NO_X(SENTENCE)));
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X(SENTENCE)));
     }
     await sentencesService.deleteAll(sentenceInfo);
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(SENTENCE), sentenceInfo));

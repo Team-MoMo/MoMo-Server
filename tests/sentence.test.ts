@@ -3,7 +3,7 @@ import app from '../src/app';
 import { jwt } from '../src/utils';
 require('mysql2/node_modules/iconv-lite').encodingExists('foo');
 
-let request: supertest.SuperTest<supertest.Test>, token: string;
+let request: supertest.SuperTest<supertest.Test>, token: string, sentenceId: number;
 
 const BASE_URL = '/sentences';
 
@@ -62,6 +62,8 @@ describe('[SENTENCE] API TEST', () => {
     expect(res.status).toEqual(201);
     expect(res.type).toEqual('application/json');
     expect(res.body.message).toEqual('문장 생성 성공');
+    sentenceId = res.body.data.id;
+    console.log(res.body.data);
     done();
   });
 
@@ -69,7 +71,7 @@ describe('[SENTENCE] API TEST', () => {
     const res = await request
       .put(`${BASE_URL}/blind`)
       .send({
-        sentenceId: 2,
+        sentenceId: sentenceId,
       })
       .set('Accept', 'application/json');
     expect(res).toBeDefined();
@@ -83,7 +85,7 @@ describe('[SENTENCE] API TEST', () => {
     const res = await request
       .delete(BASE_URL)
       .send({
-        sentenceId: 2,
+        sentenceId: sentenceId,
       })
       .set('Accept', 'application/json');
     expect(res).toBeDefined();
