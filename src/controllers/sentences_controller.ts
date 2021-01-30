@@ -85,7 +85,7 @@ export const readRecommendedSentences = async (req: Request, res: Response) => {
     if (!recommendSentenceList[0]) {
       return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.SENTENCES_NOT_EXIST));
     }
-    // await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
+    await sentencesService.createUsersRecommendSentences(userId!, emotionId!, recommendSentenceList);
     return res
       .status(statusCode.OK)
       .json(resJson.success(resMessage.X_READ_SUCCESS(RECOMMEND + SENTENCE), recommendSentenceList));

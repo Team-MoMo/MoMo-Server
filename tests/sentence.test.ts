@@ -10,11 +10,24 @@ const BASE_URL = '/sentences';
 describe('[SENTENCE] API TEST', () => {
   beforeAll(async (done) => {
     request = supertest(app);
-    token = jwt.sign({ id: 2 }).token;
+    token = jwt.sign({ id: 140 }).token;
     done();
   });
 
   afterAll(async () => {});
+
+  test(`[GET] ${BASE_URL}/recommend`, async (done) => {
+    const res = await request
+      .get(`${BASE_URL}/recommend`)
+      .query({ emotionId: '1', userId: '140' })
+      .set('Authorization', token)
+      .set('Accept', 'application/json');
+    expect(res).toBeDefined();
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual('application/json');
+    expect(res.body.message).toEqual('추천문장 조회 성공');
+    done();
+  });
 
   test(`[GET] ${BASE_URL}`, async (done) => {
     const res = await request.get(BASE_URL).query({ publisher: 'publisher' }).set('Accept', 'application/json');
@@ -22,19 +35,6 @@ describe('[SENTENCE] API TEST', () => {
     expect(res.status).toEqual(200);
     expect(res.type).toEqual('application/json');
     expect(res.body.message).toEqual('문장 조회 성공');
-    done();
-  });
-
-  test(`[GET] ${BASE_URL}/recommend`, async (done) => {
-    const res = await request
-      .get(`${BASE_URL}/recommend`)
-      .query({ emotionId: '1', userId: '2' })
-      .set('Authorization', token)
-      .set('Accept', 'application/json');
-    expect(res).toBeDefined();
-    expect(res.status).toEqual(200);
-    expect(res.type).toEqual('application/json');
-    expect(res.body.message).toEqual('추천문장 조회 성공');
     done();
   });
 
@@ -63,7 +63,6 @@ describe('[SENTENCE] API TEST', () => {
     expect(res.type).toEqual('application/json');
     expect(res.body.message).toEqual('문장 생성 성공');
     sentenceId = res.body.data.id;
-    console.log(res.body.data);
     done();
   });
 
