@@ -13,6 +13,7 @@ jobs:
       uses: actions/setup-node@v2.1.4
       with:
         node-version: '12'
+    - run: cd server
     - run: npm ci
     - run: npm run test:coverage
       env:
