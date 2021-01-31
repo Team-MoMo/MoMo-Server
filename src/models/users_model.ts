@@ -1,5 +1,8 @@
 import { Model, DataTypes, Association } from 'sequelize';
 import Diary from './diaries_model';
+import UsersRecommendedSentence from './users_recommended_sentences_model';
+import notification from './notifications_model';
+
 import { sequelize } from './index';
 import Notification from './notifications_model';
 
@@ -80,7 +83,29 @@ User.init(
   },
   {
     tableName: 'Users',
+    paranoid: true,
     sequelize,
+    hooks: {
+      afterDestroy: async (user, option) => {
+        await Diary.destroy({
+          where: {
+            userId: user.get('id'),
+          },
+        });
+
+        await UsersRecommendedSentence.destroy({
+          where: {
+            userId: user.get('id'),
+          },
+        });
+
+        await Notification.destroy({
+          where: {
+            userId: user.get('id'),
+          },
+        });
+      },
+    },
   }
 );
 
