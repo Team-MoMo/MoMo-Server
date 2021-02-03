@@ -24,7 +24,7 @@ EmotionsHaveSentences.init(
     },
     sentenceId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     emotionId: {
       type: DataTypes.INTEGER,
@@ -33,6 +33,7 @@ EmotionsHaveSentences.init(
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'EmotionsHaveSentences',
   }
 );

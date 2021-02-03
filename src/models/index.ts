@@ -29,6 +29,7 @@ import EmotionsHaveSentences from './emotions_have_sentences_model';
 User.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'userId',
+  hooks: true,
   as: 'diaries',
 });
 Diary.belongsTo(User, {
@@ -39,6 +40,7 @@ Diary.belongsTo(User, {
 User.hasMany(Notification, {
   sourceKey: 'id',
   foreignKey: 'userId',
+  hooks: true,
   as: 'notifications',
 });
 Notification.belongsTo(User, {
@@ -49,6 +51,8 @@ Notification.belongsTo(User, {
 Sentence.hasMany(Diary, {
   sourceKey: 'id',
   foreignKey: 'sentenceId',
+  onDelete: 'set null',
+  hooks: true,
   as: 'diaries',
 });
 Diary.belongsTo(Sentence, {
@@ -79,6 +83,7 @@ Diary.belongsTo(Emotion, {
 User.belongsToMany(Sentence, {
   through: UsersRecommendedSentences,
   foreignKey: 'userId',
+  hooks: true,
 });
 Sentence.belongsToMany(User, {
   through: UsersRecommendedSentences,
@@ -92,6 +97,7 @@ Emotion.belongsToMany(Sentence, {
 Sentence.belongsToMany(Emotion, {
   through: EmotionsHaveSentences,
   foreignKey: 'sentenceId',
+  hooks: true,
 });
 
 const db = {

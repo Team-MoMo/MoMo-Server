@@ -33,7 +33,7 @@ UsersRecommendedSentences.init(
     },
     sentenceId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     emotionId: {
       type: DataTypes.INTEGER,
@@ -42,6 +42,7 @@ UsersRecommendedSentences.init(
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'UsersRecommendedSentences',
   }
 );

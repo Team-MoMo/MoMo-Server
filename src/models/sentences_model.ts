@@ -2,6 +2,7 @@ import { Model, DataTypes, Association } from 'sequelize';
 import { sequelize } from './index';
 import Diary from './diaries_model';
 import UsersRecommendedSentences from './users_recommended_sentences_model';
+import EmotionsHaveSentences from './emotions_have_sentences_model';
 
 interface SentenceAttributes {
   id?: number;
@@ -9,6 +10,7 @@ interface SentenceAttributes {
   bookName: string;
   writer: string;
   publisher: string;
+  blindedAt: string;
 }
 
 class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
@@ -17,6 +19,7 @@ class Sentence extends Model<SentenceAttributes> implements SentenceAttributes {
   public bookName!: string;
   public writer!: string;
   public publisher!: string;
+  public blindedAt!: string;
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
@@ -49,10 +52,35 @@ Sentence.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    blindedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
-    sequelize,
     tableName: 'Sentences',
+    paranoid: true,
+    sequelize,
+    hooks: {
+      afterDestroy: async (sentence, option) => {
+        await Diary.update(
+          {
+            sentenceId: null,
+          },
+          {
+            where: {
+              sentenceId: sentence.get('id'),
+            },
+          }
+        );
+
+        await EmotionsHaveSentences.destroy({
+          where: {
+            sentenceId: sentence.get('id'),
+          },
+        });
+      },
+    },
   }
 );
 
