@@ -193,7 +193,12 @@ paths:
                   example: kakao || google || apple
                 accessToken:
                   type: string
+<<<<<<< HEAD
                   description: 'kakao: accessToken 값, google: IDToken 값, apple: identityToken 값'
+=======
+                  description: kakao: accessToken 값, google: IDToken 값, apple: identityToken 값
+                  
+>>>>>>> 766e2d6 (Feat: 애플로그인 기능 구현 (#103))
       responses:
         '200':
           description: 'SUCCESS : 로그인 성공'
