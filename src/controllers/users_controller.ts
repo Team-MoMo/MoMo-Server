@@ -51,8 +51,10 @@ export const signinBySocial = async (req: Request, res: Response) => {
     let userId;
     if (socialName === 'kakao') {
       userId = await loginUtil.kakao(accessToken);
-    } else {
+    } else if (socialName === 'google') {
       userId = await loginUtil.google(accessToken);
+    } else if (socialName === 'apple') {
+      userId = await loginUtil.apple(accessToken);
     }
 
     if (!userId) {

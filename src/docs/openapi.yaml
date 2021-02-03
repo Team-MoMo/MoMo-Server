@@ -190,10 +190,10 @@ paths:
                 socialName:
                   type: string
                   description: 소셜 로그인 종류
-                  example: kakao || google
+                  example: kakao || google || apple
                 accessToken:
                   type: string
-                  description: accessToken 값
+                  description: kakao: accessToken 값, google: IDToken 값, apple: identityToken 값
                   
       responses:
         '200':

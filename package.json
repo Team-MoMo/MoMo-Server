@@ -43,6 +43,7 @@
     "swagger-cli": "^4.0.4",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^4.1.6",
+    "verify-apple-id-token": "^2.0.3",
     "yamljs": "^0.3.0",
     "yup": "^0.32.8"
   },
