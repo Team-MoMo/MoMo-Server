@@ -6,7 +6,7 @@ import Sentence from '../models/sentences_model';
 import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 import Emotion from '../models/emotions_model';
 
-interface createSentence {
+interface CreateSentence {
   contents: string;
   bookName: string;
   writer: string;
@@ -14,10 +14,43 @@ interface createSentence {
   emotion: string[];
 }
 
+interface SentenceAttributes {
+  sentenceId?: number;
+  bookName?: string;
+  publisher?: string;
+  writer?: string;
+  blindedAt?: string;
+  deletedAt?: string;
+}
+
+export const readOne = async (id: number) => {
+  const sentence: Sentence = await model.Sentence.findOne({
+    where: {
+      id,
+    },
+  });
+  return sentence;
+};
+
+export const readAll = async ({ sentenceId, bookName, publisher, writer }: SentenceAttributes) => {
+  const sentences: Sentence[] = await model.Sentence.findAll({
+    where: {
+      [Op.and]: [
+        !!sentenceId && { id: sentenceId },
+        !!bookName && { bookName },
+        !!publisher && { publisher },
+        !!writer && { writer },
+      ],
+    },
+  });
+  return sentences;
+};
+
 export const readAllNotInUserSentences = async (emotionId: number, cannotRecommendSentence: number[]) => {
   const sentences: Sentence[] = await model.Sentence.findAll({
     where: {
       id: { [Op.notIn]: cannotRecommendSentence },
+      blindedAt: { [Op.or]: [{ [Op.gte]: dayjs().add(9, 'hour') }, null] },
     },
     include: [{ model: model.Emotion, where: { id: emotionId }, attributes: [] }],
     order: [sequelize.fn('RAND')],
@@ -49,7 +82,7 @@ export const readAllUsersRecommendSentencesAfter6 = async (emotionId: number, us
     where: {
       emotionId,
       userId,
-      createdAt: { [Op.gte]: date.format('YYYY-MM-DD HH:mm') },
+      createdAt: { [Op.gte]: date },
     },
   });
 
@@ -125,7 +158,7 @@ export const readAllEmotionIds = async (emotion: string[]) => {
   return emotionIds;
 };
 
-export const create = async (body: createSentence, emotionId: number[]) => {
+export const create = async (body: CreateSentence, emotionId: number[]) => {
   try {
     const createdSentenceTransaction = await model.sequelize.transaction(async (transaction) => {
       const sentenceInfo = await model.Sentence.create(
@@ -153,4 +186,24 @@ export const create = async (body: createSentence, emotionId: number[]) => {
   } catch (err) {
     throw err;
   }
+};
+
+export const updateBlindedAt = async (sentence: Sentence[], blindedAt?: string) => {
+  const updatedSentenceInfo = await Promise.all(
+    sentence.map(async (element) => {
+      await element.update({
+        blindedAt: blindedAt === undefined ? dayjs().add(9, 'hour').format('YYYY-MM-DD HH:mm') : blindedAt,
+      });
+
+      return await readOne(element.get('id'));
+    })
+  );
+  return updatedSentenceInfo;
+};
+
+export const deleteAll = async (sentence: Sentence[]) => {
+  sentence.forEach(async (element) => {
+    await element.destroy();
+  });
+  return;
 };

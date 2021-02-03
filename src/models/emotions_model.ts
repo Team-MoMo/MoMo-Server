@@ -34,6 +34,7 @@ Emotion.init(
   },
   {
     sequelize,
+    paranoid: true,
     tableName: 'Emotions',
   }
 );
