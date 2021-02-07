@@ -20,7 +20,7 @@ services:
       - ../volumes/certbot/conf:/etc/letsencrypt
       - ../volumes/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  server1:
+  express1:
     build:
       context: ./server
     container_name: express1
@@ -30,7 +30,7 @@ services:
       - ./src/express1:/src
       - /src/node_modules
     restart: "unless-stopped"
-  server2:
+  express2:
     build:
       context: ./server
     container_name: express2
