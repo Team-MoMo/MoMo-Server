@@ -74,4 +74,4 @@ docker-compose run --rm --entrypoint "\
 echo
 
 echo "### Reloading nginx ..."
-docker-compose exec proxy nginx -s reload
+docker-compose exec proxy proxy -s reload
