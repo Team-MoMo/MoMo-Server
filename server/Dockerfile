@@ -8,12 +8,13 @@ WORKDIR /app
 # 와일드카드를 사용
 COPY package*.json ./
 
-RUN npm ci --only=production
+RUN npm ci --only=production && npm install typescript
 ENV NODE_ENV=production
 
 # 앱 소스 추가
 COPY . .
+RUN npm run build
 
 EXPOSE 3000
 
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "./build/server.js" ]
