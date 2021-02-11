@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:14
 
 # 앱 디랙터리 생성
 WORKDIR /app
@@ -8,17 +8,12 @@ WORKDIR /app
 # 와일드카드를 사용
 COPY package*.json ./
 
-RUN npm ci 
-
-RUN npm install -g pm2
-
+RUN npm ci
 ENV NODE_ENV=production
 
 # 앱 소스 추가
 COPY . .
 
-RUN npm run build
-
 EXPOSE 3000
 
-CMD [ "pm2-runtime", "./build/server.js" ]
+CMD [ "npm", "run", "start" ]
