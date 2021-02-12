@@ -33,6 +33,7 @@ jobs:
 
       - name: Report Coverage
         uses: slavcodev/coverage-monitor-action@1.2.0
+        working-directory: ./server
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           clover_file: "coverage/clover.xml"
