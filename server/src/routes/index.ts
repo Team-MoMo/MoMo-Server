@@ -4,10 +4,7 @@ import diaries from './diaries';
 import sentences from './sentences';
 import emotions from './emotions';
 import { resJson, resMessage, statusCode } from '../utils';
-import { schedulerController } from '../controllers';
-
 const router = express.Router();
-schedulerController.deleteAllYesterday();
 
 router.use('/users', users);
 router.use('/diaries', diaries);
