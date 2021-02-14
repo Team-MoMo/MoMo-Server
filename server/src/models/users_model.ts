@@ -16,6 +16,7 @@ interface UserAttributes {
   tempPassword?: string | null;
   tempPasswordCreatedAt?: Date | null;
   tempPasswordIssueCount?: number;
+  isDeleted?: boolean | null;
 }
 
 class User extends Model<UserAttributes> implements UserAttributes {
@@ -46,7 +47,6 @@ User.init(
     },
     email: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
     },
     password: {
@@ -80,13 +80,23 @@ User.init(
       allowNull: false,
       defaultValue: 0,
     },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
   },
   {
     tableName: 'Users',
     paranoid: true,
     sequelize,
+    indexes: [{ unique: true, fields: ['email', 'isDeleted'] }],
     hooks: {
       afterDestroy: async (user, option) => {
+        await user.update({
+          isDeleted: null,
+        });
+
         await Diary.destroy({
           where: {
             userId: user.get('id'),

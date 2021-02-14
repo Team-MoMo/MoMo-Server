@@ -1,41 +1,46 @@
 name: test
 on:
   pull_request:
-    branches:    
+    branches:
       - main
       - develop
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v2.1.4
-      with:
-        node-version: '12'
-    - run: npm ci
-    - run: npm run test:coverage
-      env:
-        CLIENT_ID: ${{ secrets.CLIENT_ID }}
-        DATABASE_DIALECT: ${{ secrets.DATABASE_DIALECT }}
-        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
-        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-        DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-        NODEMAILER_PASS: ${{ secrets.NODEMAILER_PASS }}
-        NODEMAILER_USER: ${{ secrets.NODEMAILER_USER }}
-        TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
-        
-    - name: Report Coverage 
-      uses: slavcodev/coverage-monitor-action@1.2.0
-      with:
+      - name: Checkout action
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: "12"
+      - name: Install Dependencies
+        working-directory: ./server
+        run: npm ci
+      - name: Test
+        working-directory: ./server
+        run: npm run test:coverage
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DATABASE_DIALECT: ${{ secrets.DATABASE_DIALECT }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          NODEMAILER_PASS: ${{ secrets.NODEMAILER_PASS }}
+          NODEMAILER_USER: ${{ secrets.NODEMAILER_USER }}
+          TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
+
+      - name: Report Coverage
+        uses: slavcodev/coverage-monitor-action@1.2.0
+        with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          clover_file: "coverage/clover.xml"
+          clover_file: "./server/coverage/clover.xml"
           threshold_warning: 60
-      if: success()
-    
-    - name: Close Pull
-      uses: peter-evans/close-pull@v1
-      with:
-        comment: Failed to pass the test
-      if: failure()
+        if: success()
+
+      - name: Close Pull
+        uses: peter-evans/close-pull@v1
+        with:
+          comment: Failed to pass the test
+        if: failure()
