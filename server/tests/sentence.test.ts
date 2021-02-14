@@ -113,7 +113,7 @@ describe('[SENTENCE] API TEST', () => {
     expect(res).toBeDefined();
     expect(res.status).toEqual(200);
     expect(res.type).toEqual('application/json');
-    expect(res.body.message).toEqual('추천문장 삭제 성공');
+    expect(res.body.message).toEqual('추천 문장 삭제 성공');
     done();
   });
 });
