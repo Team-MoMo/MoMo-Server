@@ -44,6 +44,13 @@ UsersRecommendedSentences.init(
     sequelize,
     paranoid: true,
     tableName: 'UsersRecommendedSentences',
+    hooks: {
+      afterDestroy: async (user, option) => {
+        await user.update({
+          isDeleted: null,
+        });
+      },
+    },
   }
 );
 
