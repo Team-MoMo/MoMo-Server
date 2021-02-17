@@ -64,10 +64,12 @@ Emotion.hasMany(UsersRecommendedSentences, {
   sourceKey: 'id',
   foreignKey: 'emotionId',
   as: 'usersRecommendedSentences',
+  hooks: true,
 });
 UsersRecommendedSentences.belongsTo(Emotion, {
   targetKey: 'id',
   foreignKey: 'emotionId',
+  hooks: true,
 });
 
 Emotion.hasMany(Diary, {
@@ -88,6 +90,7 @@ User.belongsToMany(Sentence, {
 Sentence.belongsToMany(User, {
   through: UsersRecommendedSentences,
   foreignKey: 'sentenceId',
+  hooks: true,
 });
 
 Emotion.belongsToMany(Sentence, {
