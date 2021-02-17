@@ -6,6 +6,7 @@ interface UsersRecommendedSentencesAttributes {
   userId: number;
   sentenceId: number;
   emotionId: number;
+  isDeleted?: boolean | null;
   createdAt?: string;
 }
 
@@ -16,6 +17,7 @@ class UsersRecommendedSentences
   public userId!: number;
   public sentenceId!: number;
   public emotionId!: number;
+  public isDeleted!: boolean | null;
   readonly createdAt!: string;
   readonly updatedAt!: Date;
 }
@@ -39,14 +41,20 @@ UsersRecommendedSentences.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
   },
   {
     sequelize,
     paranoid: true,
     tableName: 'UsersRecommendedSentences',
+    indexes: [{ unique: true, fields: ['userId', 'sentenceId', 'isDeleted'] }],
     hooks: {
-      afterDestroy: async (user, option) => {
-        await user.update({
+      afterDestroy: async (usersRecommendedSentences, option) => {
+        await usersRecommendedSentences.update({
           isDeleted: null,
         });
       },

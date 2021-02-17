@@ -7,7 +7,8 @@ export const deleteAllYesterday = async () => {
     try {
       const today = dayjs(new Date()).add(9, 'hour');
       const yesterday = today.subtract(1, 'day').set('hour', 6).set('minute', 0).set('second', 0);
-      await schedulerService.deleteAllYesterday(yesterday);
+      const yesterdaySentences = await schedulerService.readAllYesterday(yesterday);
+      await schedulerService.deleteAllYesterday(yesterdaySentences!);
     } catch (err) {}
   });
 };
