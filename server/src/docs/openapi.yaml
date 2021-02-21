@@ -1613,6 +1613,9 @@ components:
         tempPasswordIssueCount:
           type: number
           description: 임시 비밀번호 시도 횟수
+        isDeleted:
+          type: boolean
+          description: 해당 데이터 삭제 여부
         createdAt:
           type: date-time
           description: 해당 데이터가 생성된 시점
@@ -1752,6 +1755,9 @@ components:
         emotionId:
           type: number
           description: emotion 고유 id
+        isDeleted:
+          type: boolean
+          description: 해당 데이터 삭제여부
         createdAt:
           type: date-time
           description: 해당 데이터가 생성된 시점
