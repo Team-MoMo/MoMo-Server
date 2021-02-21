@@ -16,5 +16,6 @@ router.get('/onboarding', validate(yup.sentence.readAllOnboardingQuery), sentenc
 router.post('/', validate(yup.sentence.createBody), sentencesController.create);
 router.put('/blind', validate(yup.sentence.blindAndDeleteBody), sentencesController.updateBlindedAt);
 router.delete('/', validate(yup.sentence.blindAndDeleteBody), sentencesController.deleteAll);
+router.delete('/recommend', sentencesController.deleteAllYesterday);
 
 export default router;

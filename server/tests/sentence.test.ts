@@ -93,4 +93,27 @@ describe('[SENTENCE] API TEST', () => {
     expect(res.body.message).toEqual('문장 삭제 성공');
     done();
   });
+
+  test(`[DELETE] ${BASE_URL}`, async (done) => {
+    const res = await request
+      .delete(BASE_URL)
+      .send({
+        sentenceId: sentenceId,
+      })
+      .set('Accept', 'application/json');
+    expect(res).toBeDefined();
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual('application/json');
+    expect(res.body.message).toEqual('문장 삭제 성공');
+    done();
+  });
+
+  test(`[DELETE] ${BASE_URL}/recommend`, async (done) => {
+    const res = await request.delete(`${BASE_URL}/recommend`).set('Accept', 'application/json');
+    expect(res).toBeDefined();
+    expect(res.status).toEqual(200);
+    expect(res.type).toEqual('application/json');
+    expect(res.body.message).toEqual('추천문장 삭제 성공');
+    done();
+  });
 });
