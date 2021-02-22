@@ -174,8 +174,8 @@ export const deleteAllYesterday = async (req: Request, res: Response) => {
   try {
     const today = dayjs(new Date()).add(9, 'hour');
     const yesterday = today.subtract(1, 'day').set('hour', 6).set('minute', 0).set('second', 0);
-    await sentencesService.deleteAllYesterday(yesterday);
-    return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(RECOMMEND + SENTENCE)));
+    const yesterdaySentences = await sentencesService.readAllYesterday(yesterday);
+    await sentencesService.deleteAllYesterday(yesterdaySentences!);
   } catch (err) {
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
