@@ -3,7 +3,6 @@ import Diary from '../models/diaries_model';
 import { random } from '../utils';
 import sequelize, { Op } from 'sequelize';
 import dayjs from 'dayjs';
-import UsersRecommendedSentences from '../models/users_recommended_sentences_model';
 
 interface ReadAllAttributes {
   userId: number;
