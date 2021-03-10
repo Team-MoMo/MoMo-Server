@@ -53,6 +53,9 @@ UsersRecommendedSentences.init(
     tableName: 'UsersRecommendedSentences',
     indexes: [{ unique: true, fields: ['userId', 'sentenceId', 'isDeleted'] }],
     hooks: {
+      beforeBulkDestroy: async (option) => {
+        option.individualHooks = true;
+      },
       afterDestroy: async (usersRecommendedSentences, option) => {
         await usersRecommendedSentences.update({
           isDeleted: null,
