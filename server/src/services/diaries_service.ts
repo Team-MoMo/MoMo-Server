@@ -141,7 +141,7 @@ export const create = async (body: Diary) => {
       body.tempSentenceId = body.sentenceId;
       const diaryInfo = await model.Diary.create(body, { transaction });
       // 글 작성후 새로운 문장 추천을 받기위함
-      await model.UsersRecommendedSentences.destroy({ where: { userId: body.userId }, transaction });
+      await model.UsersRecommendedSentences.destroy({ where: { userId: body.userId } });
       return diaryInfo;
     });
     return createdDiaryTransaction;
