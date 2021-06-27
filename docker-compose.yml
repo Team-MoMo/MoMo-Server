@@ -31,13 +31,13 @@ services:
       - ./src/express1:/src
       - /src/node_modules
     restart: "unless-stopped"
-  express2:
-    build:
-      context: ./server
-    container_name: express2
-    expose:
-      - "3000"
-    volumes:
-      - ./src/express2:/src
-      - /src/node_modules
-    restart: "unless-stopped"
+  # express2:
+  #   build:
+  #     context: ./server
+  #   container_name: express2
+  #   expose:
+  #     - "3000"
+  #   volumes:
+  #     - ./src/express2:/src
+  #     - /src/node_modules
+  #   restart: "unless-stopped"
