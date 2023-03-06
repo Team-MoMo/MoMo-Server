@@ -8,7 +8,7 @@ WORKDIR /app
 # 와일드카드를 사용
 COPY package*.json ./
 
-RUN npm ci && npm install typescript
+RUN npm i && npm install typescript
 ENV NODE_ENV=production
 
 # 앱 소스 추가
