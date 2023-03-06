@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16-alpine
 
 # 앱 디랙터리 생성
 WORKDIR /app
