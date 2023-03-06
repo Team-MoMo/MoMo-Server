@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
-import { diariesService } from '../services';
+import { diariesService, usersService } from '../services';
 import { resJson, resMessage, statusCode } from '../utils';
 import Diary from '../models/diaries_model';
+import * as json2scv from 'json2csv';
+import { createTransport } from 'nodemailer';
+import dayjs from 'dayjs';
 
 const DIARY = '일기';
 interface ReadAllAttributes {
@@ -169,5 +172,102 @@ export const deleteOne = async (req: Request, res: Response) => {
     return res.status(statusCode.OK).json(resJson.success(resMessage.X_DELETE_SUCCESS(DIARY), deletedDiaryInfo));
   } catch (err) {
     return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail(resMessage.X_DELETE_FAIL(DIARY), err));
+  }
+};
+
+export const exportUserDiaries = async (req: Request, res: Response) => {
+  const decodedUserId = req.decoded?.userId;
+  const { userId, email }: { userId?: number; email?: string } = req.body;
+
+  if (userId === undefined || decodedUserId === undefined || email === undefined) {
+    return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X('USER_ID_OR_EMAIL')));
+  }
+
+  if (userId !== decodedUserId) {
+    return res.status(statusCode.UNAUTHORIZED).json(resJson.fail(resMessage.UNAUTHORIZED));
+  }
+
+  try {
+    const user = await usersService.readOne(userId);
+
+    if (!user) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.fail(resMessage.NO_X('유저')));
+    }
+
+    const now = dayjs();
+
+    if (user.exportationCount >= 2 && (user.exportedAt === null || dayjs(user.exportedAt).isSame(now, 'day'))) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.success('일일 전송 횟수를 초과했습니다.'));
+    }
+
+    const diaries = await diariesService.readAll(userId);
+
+    if (diaries.length === 0) {
+      return res.status(statusCode.BAD_REQUEST).json(resJson.success(resMessage.NO_X(DIARY)));
+    }
+
+    const exportDiaries = diaries.map((diary) => {
+      return {
+        contents: diary.contents,
+        wroteAt: diary.wroteAt,
+        sentense: diary.Sentence.contents,
+        sentenseBookName: diary.Sentence.bookName,
+        sentensePublisher: diary.Sentence.publisher,
+        sentenseWriter: diary.Sentence.writer,
+        emotion: diary.Emotion.name,
+      };
+    });
+
+    const fields = [
+      { value: 'contents', label: '일기 내용' },
+      { value: 'wroteAt', label: '작성 일자' },
+      { value: 'sentense', label: '책 문장' },
+      { value: 'sentenseBookName', label: '책 이름' },
+      { value: 'sentensePublisher', label: '출판사' },
+      { value: 'sentenseWriter', label: '작가' },
+      { value: 'emotion', label: '감정' },
+    ];
+
+    const csv = json2scv.parse(exportDiaries, { fields });
+    const csvBuffer = Buffer.from(csv, 'utf-8');
+
+    const transporter = createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'rdd9223@gmail.com',
+        pass: 'vqbubnmtylflacwj',
+      },
+    });
+
+    const mailOptions = {
+      from: 'rdd9223@gmail.com',
+      to: email,
+      subject: '모모 SCV파일입니다.',
+      attachments: [
+        {
+          filename: 'example.csv',
+          content: csvBuffer,
+        },
+      ],
+    };
+
+    const exportationCount = (() => {
+      if (user.exportationCount === 2) {
+        return 0;
+      }
+
+      if (!dayjs(user.exportedAt).isSame(now, 'day') && user.exportationCount > 1) {
+        return 1;
+      }
+
+      return user.exportationCount + 1;
+    })();
+
+    await transporter.sendMail(mailOptions);
+    await usersService.updateExportedAt(user, now.toDate(), exportationCount);
+
+    return res.status(statusCode.OK).json(resJson.success('일기 전송 성공'));
+  } catch (err) {
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json(resJson.fail('일기 전송 실패', err));
   }
 };

@@ -3,6 +3,7 @@ import Diary from '../models/diaries_model';
 import { random } from '../utils';
 import sequelize, { Op } from 'sequelize';
 import dayjs from 'dayjs';
+import { ReadAllServiceDto } from './dto/read_all_service.dto';
 
 interface ReadAllAttributes {
   userId: number;
@@ -20,10 +21,10 @@ const calculateTime = (year: number, month: number, day?: number) => {
 };
 
 export const readAll = async (userId: number) => {
-  const diaryList = await model.Diary.findAll({
+  const diaryList = (await model.Diary.findAll({
     where: { userId },
     include: [model.Sentence, model.Emotion],
-  });
+  })) as ReadAllServiceDto[];
   return diaryList;
 };
 

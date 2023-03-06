@@ -928,6 +928,80 @@ paths:
               example:
                 message: '일기통계 조회 실패'
                 error: 'error && error.message'
+  /diaries/exported:
+    post:
+      security:
+        - api_key: []
+      summary: '일기 내보내기(영우)'
+      tags:
+        - Diaries
+      requestBody:
+        description: '유저 번호와 이메일'
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  userId:
+                    type: integer
+                  email:
+                    type: string
+            example:
+              userId: 1
+              email: 'user@gmail.com'
+      responses:
+        '200':
+          description: 'SUCCESS: 일기 내보내기 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: '일기 전송 성공'
+        '400':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'id 값 오류':
+                  value:
+                    message: '존재하지 않는 일기'
+                'userId나 email이 존재하지 않는 경우':
+                  value:
+                    message: '존재하지 않는 USER_ID_OR_EMAIL'
+                '존재하지 않는 유저':
+                  value:
+                    message: '존재하지 않는 유저'
+                '일기가 없는 경우':
+                  value:
+                    message: '존재하지 않는 일기'
+                '일일 전송횟수 2회를 넘긴 경우':
+                  value:
+                    message: '일일 전송 횟수를 초과했습니다.'
+        '401':
+          description: 'FAIL : 잘못된 요청'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                'userId != 토큰 정보':
+                  value:
+                    message: '권한이 없습니다'
+        '500' :
+          description: '서버 내부 에러'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: '일기 수정 실패'
+                error: 'error && error.message'
   /diaries/recent:
     get:
       security:

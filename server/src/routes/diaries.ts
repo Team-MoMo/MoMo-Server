@@ -9,6 +9,7 @@ router.get('/statistics', jwt.isLoggedIn, validate(yup.diary.readStatisticsQuery
 router.get('/recent', jwt.isLoggedIn, validate(yup.diary.readRecentOneQuery), diariesController.readRecentOne);
 router.get('/:id', jwt.isLoggedIn, validate(yup.diary.readOneParams), diariesController.readOne);
 router.get('/', jwt.isLoggedIn, validate(yup.diary.readAllQuery), diariesController.readAll);
+router.post('/export', jwt.isLoggedIn, diariesController.exportUserDiaries);
 router.post('/', jwt.isLoggedIn, validate(yup.diary.createBody), diariesController.create);
 router.put(
   '/:id',

@@ -29,6 +29,8 @@ class User extends Model<UserAttributes> implements UserAttributes {
   public tempPassword!: string | null;
   public tempPasswordCreatedAt!: Date | null;
   public tempPasswordIssueCount!: number;
+  public exportationCount!: number;
+  public exportedAt!: Date;
   readonly createdAt!: Date;
   readonly updatedAt!: Date;
 
@@ -79,6 +81,15 @@ User.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
+    },
+    exportationCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    exportedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,

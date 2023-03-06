@@ -29,11 +29,11 @@ export const readAll = async () => {
 };
 
 export const readOne = async (id: number) => {
-  const user = await model.User.findOne({
+  const user = (await model.User.findOne({
     where: {
       id,
     },
-  });
+  })) as User;
   return user;
 };
 
@@ -85,5 +85,12 @@ export const updateAlarmTime = async (user: User, isAlarmSet: boolean, alarmTime
   return await user.update({
     isAlarmSet,
     alarmTime,
+  });
+};
+
+export const updateExportedAt = async (user: User, exportedAt: Date, exportationCount: number) => {
+  return await user.update({
+    exportedAt,
+    exportationCount,
   });
 };
