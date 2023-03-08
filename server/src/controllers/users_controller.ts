@@ -261,7 +261,7 @@ export const updateTempPassword = async (req: Request, res: Response) => {
     }
 
     const randomString = Math.random().toString(36).slice(5);
-    await emailUtil.send(email, randomString);
+    await emailUtil.email.send(email, randomString);
     const updatedUser = await usersService.updateTempPassword(user, randomString, tempPasswordIssueCount);
     const tempPasswordInfo = {
       email: email,

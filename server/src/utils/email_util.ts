@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
   port: 587,
@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const email = {
+export const email = {
   send: async (email: string, tempPassword: string) => {
     return await transporter.sendMail({
       from: `"MOMO" <${process.env.NODEMAILER_USER}>`,
@@ -37,5 +37,3 @@ const email = {
     });
   },
 };
-
-export default email;

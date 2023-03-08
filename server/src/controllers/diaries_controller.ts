@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { diariesService, usersService } from '../services';
-import { resJson, resMessage, statusCode } from '../utils';
+import { emailUtil, resJson, resMessage, statusCode } from '../utils';
 import Diary from '../models/diaries_model';
 import * as json2scv from 'json2csv';
 import { createTransport } from 'nodemailer';
@@ -231,21 +231,13 @@ export const exportUserDiaries = async (req: Request, res: Response) => {
     const csv = json2scv.parse(exportDiaries, { fields });
     const csvBuffer = Buffer.from(csv, 'utf-8');
 
-    const transporter = createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'rdd9223@gmail.com',
-        pass: 'vqbubnmtylflacwj',
-      },
-    });
-
     const mailOptions = {
-      from: 'rdd9223@gmail.com',
+      from: 'momoisdiary@gmail.com',
       to: email,
-      subject: '모모 SCV파일입니다.',
+      subject: 'MoMo 일기 CSV파일입니다.',
       attachments: [
         {
-          filename: 'example.csv',
+          filename: '모모일기.csv',
           content: csvBuffer,
         },
       ],
@@ -263,7 +255,7 @@ export const exportUserDiaries = async (req: Request, res: Response) => {
       return user.exportationCount + 1;
     })();
 
-    await transporter.sendMail(mailOptions);
+    await emailUtil.transporter.sendMail(mailOptions);
     await usersService.updateExportedAt(user, now.toDate(), exportationCount);
 
     return res.status(statusCode.OK).json(resJson.success('일기 전송 성공'));
