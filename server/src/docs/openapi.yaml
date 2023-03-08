@@ -928,7 +928,7 @@ paths:
               example:
                 message: '일기통계 조회 실패'
                 error: 'error && error.message'
-  /diaries/exported:
+  /diaries/export:
     post:
       security:
         - api_key: []
