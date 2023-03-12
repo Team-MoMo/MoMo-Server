@@ -7,7 +7,7 @@ info:
     name: MIT
 servers:
   - description: production server
-    url: https://momodiary.ga
+    url: https://momodiary.shop
   - description: master server
     url: http://3.36.79.14:3000
   - description: local server
